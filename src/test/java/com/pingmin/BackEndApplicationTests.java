@@ -1,4 +1,4 @@
-package com.pingmin.backend;
+package com.pingmin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
