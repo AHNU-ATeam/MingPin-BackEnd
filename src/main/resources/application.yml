@@ -4,3 +4,10 @@ spring:
     url: jdbc:sqlserver://119.45.239.3:1433;DatabaseName=mybatis;encrypt=false
     username: sa
     password: MingPin2024
+
+
+#spring事务管理日志
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+    org.mybatis : DEBUG
