@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://119.45.239.3:1433;DatabaseName=mybatis;encrypt=false
+    url: jdbc:sqlserver://119.45.239.3:1433;DatabaseName=mingpin;encrypt=false
     username: sa
     password: MingPin2024
 
@@ -11,3 +11,10 @@ logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
     org.mybatis : DEBUG
+
+aliyun:
+  oss:
+    endpoint: https://oss-cn-hangzhou.aliyuncs.com
+    accessKeyId: LTAI4GCH1vX6DKqJWxd6nEuW
+    accessKeySecret: yBshYweHOpqDuhCArrVHwIiBKpyqSL
+    bucketName: web-tlias
