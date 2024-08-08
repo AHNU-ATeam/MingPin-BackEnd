@@ -2,7 +2,7 @@ package com.chuanglian.mingpin.filter;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.chuanglian.mingpin.domain.LoginUser;
+import com.chuanglian.mingpin.domain.UserDetail;
 import com.chuanglian.mingpin.utils.JwtUtil;
 import com.chuanglian.mingpin.utils.RedisCache;
 import jakarta.servlet.FilterChain;
@@ -52,15 +52,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         // 从Redis中获取用户信息
         String redisKey = "login:" + userid;
-        LoginUser loginUser = redisCache.getCacheObject(redisKey);
-        if (Objects.isNull(loginUser)) {
+        UserDetail userDetail = redisCache.getCacheObject(redisKey);
+        if (Objects.isNull(userDetail)) {
             throw new RuntimeException("用户未登录");
         }
 
         // 存入SecurityContextHolder
         // TODO 获取权限信息封装到Authentication中
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUser,
+                new UsernamePasswordAuthenticationToken(userDetail,
                         null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 

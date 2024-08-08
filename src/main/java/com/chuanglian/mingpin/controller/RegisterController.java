@@ -1,14 +1,17 @@
 package com.chuanglian.mingpin.controller;
 
+import com.chuanglian.mingpin.domain.RegisterUser;
 import com.chuanglian.mingpin.entity.User;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.RegisterService;
 import com.chuanglian.mingpin.utils.Role;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,10 +22,11 @@ public class RegisterController {
     private RegisterService registerService;
 
     @PostMapping("/register")
-    public Result register(String type,
-                           @Pattern(regexp = "^\\S{11}$") String phone,
-                           @Pattern(regexp = "^\\S{6,25}$") String password) {
-        System.out.println(type + phone + password);
+    public Result register(@Valid @ModelAttribute RegisterUser registerUser) {
+        // 从请求体中提取信息
+        String type = registerUser.getRole();
+        String phone = registerUser.getPhone();
+        String password = registerUser.getPassword();
 
         // 查询用户是否重复
         User user = registerService.checkUserExists(phone);

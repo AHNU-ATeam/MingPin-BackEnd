@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.chuanglian.mingpin.utils.Role;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -16,19 +18,29 @@ import java.time.LocalDateTime;
 public class User {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
     @NonNull
     private Role role;
+
     @NonNull
     private String boundPhone;
+
     @NonNull
     private String password;
+
     private String avatar;
+
     @NonNull
     private String nickname;
+
     @NonNull
     private Integer boundId;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+
     @NonNull
     private String status;
+
 }
