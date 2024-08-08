@@ -1,10 +1,10 @@
-package com.mingpin;
+package com.chuanglian.mingpin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApplicationTests {
+class MingPinApplicationTests {
 
     @Test
     void contextLoads() {
