@@ -1,11 +1,11 @@
-package com.mingpin.controller;
+package com.chuanglian.mingpin.controller;
 
-import com.mingpin.pojo.Recipe;
-import com.mingpin.pojo.Result;
+import com.chuanglian.mingpin.pojo.Recipe;
+import com.chuanglian.mingpin.pojo.Result;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.mingpin.service.RecipeService;
+import com.chuanglian.mingpin.service.RecipeService;
 
 @RestController
 @RequestMapping("/recipe")

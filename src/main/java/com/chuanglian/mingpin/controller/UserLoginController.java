@@ -1,4 +1,4 @@
-package com.mingpin.controller;
+package com.chuanglian.mingpin.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package com.mingpin.pojo;
+package com.chuanglian.mingpin.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
-package com.mingpin.service.impl;
+package com.chuanglian.mingpin.service.impl;
 
-import com.mingpin.mapper.RecipeMapper;
-import com.mingpin.pojo.Recipe;
-import com.mingpin.service.RecipeService;
+import com.chuanglian.mingpin.mapper.RecipeMapper;
+import com.chuanglian.mingpin.pojo.Recipe;
+import com.chuanglian.mingpin.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

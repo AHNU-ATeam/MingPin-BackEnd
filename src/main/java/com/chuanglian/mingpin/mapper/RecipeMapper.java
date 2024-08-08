@@ -1,8 +1,7 @@
-package com.mingpin.mapper;
+package com.chuanglian.mingpin.mapper;
 
-import com.mingpin.pojo.Recipe;
+import com.chuanglian.mingpin.pojo.Recipe;
 import org.apache.ibatis.annotations.*;
-
 
 @Mapper
 public interface RecipeMapper {
