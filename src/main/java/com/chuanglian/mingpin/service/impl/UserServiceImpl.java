@@ -19,8 +19,7 @@ public class UserServiceImpl implements UserService {
     public Result logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetail userDetail = (UserDetail) authentication.getPrincipal();
-        Integer userId = userDetail.getLoginUser().getId();
-        System.out.println("login:" + userId);
+        Integer userId = userDetail.getLoginForm().getId();
         redisCache.deleteObject("login:" + userId);
         return Result.success("退出成功");
     }

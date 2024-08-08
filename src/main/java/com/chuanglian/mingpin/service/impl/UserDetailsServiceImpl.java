@@ -1,7 +1,7 @@
 package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.chuanglian.mingpin.domain.LoginUser;
+import com.chuanglian.mingpin.domain.LoginForm;
 import com.chuanglian.mingpin.domain.UserDetail;
 import com.chuanglian.mingpin.entity.User;
 import com.chuanglian.mingpin.mapper.UserMapper;
@@ -32,8 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // TODO 查询对应的权限信息
 
         // 用户数据封装成UserDetails返回
-        LoginUser loginUser = new LoginUser(user.getId(),
+        LoginForm loginForm = new LoginForm(user.getId(),
                 user.getBoundPhone(), user.getPassword());
-        return new UserDetail(loginUser);
+        return new UserDetail(loginForm);
     }
 }

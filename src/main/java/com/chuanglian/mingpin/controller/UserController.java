@@ -16,12 +16,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/test")
+    @RequestMapping("/test")
     public Result test() {
         return Result.success("测试成功");
     }
 
-    @PostMapping("/logout")
+    @RequestMapping("/logout")
     public Result logout() {
         return userService.logout();
     }

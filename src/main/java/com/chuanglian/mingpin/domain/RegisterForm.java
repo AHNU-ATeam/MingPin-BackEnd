@@ -1,6 +1,5 @@
 package com.chuanglian.mingpin.domain;
 
-import com.chuanglian.mingpin.utils.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterUser {
+public class RegisterForm {
 
     @NotBlank(message = "角色不能为空")
     private String role;
