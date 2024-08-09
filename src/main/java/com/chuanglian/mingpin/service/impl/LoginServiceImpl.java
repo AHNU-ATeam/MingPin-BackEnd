@@ -1,8 +1,7 @@
 package com.chuanglian.mingpin.service.impl;
 
-import com.chuanglian.mingpin.domain.LoginUser;
+import com.chuanglian.mingpin.domain.LoginForm;
 import com.chuanglian.mingpin.domain.UserDetail;
-import com.chuanglian.mingpin.entity.User;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.LoginService;
 import com.chuanglian.mingpin.utils.JwtUtil;
@@ -27,10 +26,10 @@ public class LoginServiceImpl implements LoginService {
     private RedisCache redisCache;
 
     @Override
-    public Result<Map<String, String>> login(LoginUser loginUser) {
+    public Result<Map<String, String>> login(LoginForm loginForm) {
         // 用户认证
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUser.getPhone(), loginUser.getPassword());
+                new UsernamePasswordAuthenticationToken(loginForm.getPhone(), loginForm.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
         // 认证不通过
         if (Objects.isNull(authenticate)) {
@@ -38,7 +37,7 @@ public class LoginServiceImpl implements LoginService {
         }
         // 认证通过，生成JWT，存入Result返回
         UserDetail userDetail = (UserDetail) authenticate.getPrincipal();
-        String userId = userDetail.getLoginUser().getId().toString();
+        String userId = userDetail.getLoginForm().getId().toString();
         // 生成载荷
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId);

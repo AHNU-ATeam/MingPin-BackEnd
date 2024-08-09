@@ -1,6 +1,5 @@
 package com.chuanglian.mingpin.domain;
 
-import com.chuanglian.mingpin.utils.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginUser {
+public class LoginForm {
     private Integer id;
 
     @NotBlank(message = "手机号不能为空")
