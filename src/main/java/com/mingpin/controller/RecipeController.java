@@ -14,7 +14,7 @@ public class RecipeController {
     private RecipeService recipeService;
 
     @PostMapping
-    public Result add(@RequestBody @Validated Recipe recipe) {
+    public Result add(@RequestBody Recipe recipe) {
         recipeService.add(recipe);
         return Result.success();
     }
