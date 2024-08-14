@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chuanglian.mingpin.mapper.ClassMgmtMapper">
+    <select id="getStudents" resultType="com.chuanglian.mingpin.entity.Student">
+        SELECT * FROM userManagement.student
+        WHERE student_id IN
+        <foreach item="id" collection="stuIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getAssistants" resultType="com.chuanglian.mingpin.entity.Teacher">
+        SELECT * FROM userManagement.teacher
+        WHERE teacher_id IN
+        <foreach item="id" collection="assistantIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>
