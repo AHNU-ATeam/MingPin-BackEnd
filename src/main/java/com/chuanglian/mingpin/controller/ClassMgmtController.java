@@ -41,6 +41,11 @@ public class ClassMgmtController {
         return Result.success();
     }
 
+    /**
+     * 删除班级
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     private Result delete(@PathVariable Integer id){
         log.info("删除班级{}",id);
@@ -63,5 +68,20 @@ public class ClassMgmtController {
     @GetMapping("/assistants")
     private Result getAssistants(@RequestBody Class cls){
         return Result.success(classMgmtService.getAssistants(cls));
+    }
+
+    @PutMapping("/changeClass")
+    private Result changeClass(@RequestBody Class cls){
+
+        return Result.success(classMgmtService.changeClass(cls));
+    }
+    @GetMapping("/class/{id}")
+    private Result selectClass(@PathVariable Integer id){
+        return Result.success(classMgmtService.selectClass(id));
+    }
+
+    @GetMapping("/{id}/Teachers")
+    private Result getTeachers(@PathVariable Integer id){
+        return Result.success(classMgmtService.getTeachers(id));
     }
 }
