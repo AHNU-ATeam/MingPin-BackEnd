@@ -11,6 +11,7 @@ import com.chuanglian.mingpin.service.ClassMgmtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,23 @@ public class ClassMgmtServiceImpl implements ClassMgmtService {
         assistantIds.add(assistantId3);
 
         return classMgmtMapper.getAssistants(assistantIds);
+    }
+
+    @Override
+    public int changeClass(Class cls) {
+        cls.setUpdatedAt(LocalDateTime.now());
+        return classMgmtMapper.updateById(cls);
+    }
+
+    @Override
+    public Class selectClass(Integer id) {
+        return classMgmtMapper.selectById(id);
+    }
+
+    @Override
+    public List<Teacher> getTeachers(Integer id) {
+        LambdaQueryWrapper<Teacher> wrapper=new LambdaQueryWrapper<Teacher>().eq(Teacher::getCampusId,id);
+        return teacherMapper.selectList(wrapper);
     }
 
 

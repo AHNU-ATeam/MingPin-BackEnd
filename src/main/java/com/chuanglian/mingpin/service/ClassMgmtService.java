@@ -20,4 +20,10 @@ public interface ClassMgmtService {
     List<Student> getStudents(Integer id);
 
     List<Teacher> getAssistants(Class cls);
+
+    int changeClass(Class cls);
+
+    Class selectClass(Integer id);
+
+    List<Teacher> getTeachers(Integer id);
 }

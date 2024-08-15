@@ -23,4 +23,5 @@ public class Teacher {
     private String position;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer campusId ;  //校区id
 }
