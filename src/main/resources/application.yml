@@ -14,7 +14,7 @@ logging:
 
 aliyun:
   oss:
-    endpoint: https://oss-cn-hangzhou.aliyuncs.com
-    accessKeyId: LTAI4GCH1vX6DKqJWxd6nEuW
-    accessKeySecret: yBshYweHOpqDuhCArrVHwIiBKpyqSL
-    bucketName: web-tlias
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    accessKeyId: LTAI5tJR7Pa9JX822rP66eLV
+    accessKeySecret: CxBj6WBWe4f9nGAIZLxaikoiW9yWyG
+    bucketName: test1872650

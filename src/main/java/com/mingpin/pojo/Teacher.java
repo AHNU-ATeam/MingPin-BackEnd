@@ -9,15 +9,11 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Campus {
+public class Teacher {
     private Integer id;
-    private String logo; //指地址
     private String name;
-    private String address;
-    private Integer principalId;
-    private LocalDate renewalStart,renewalEnd;
-    private String info;
-    private Integer population;
+    private String phone;
+    private String permissionStatus;
+    private String position;
     private LocalDate createdAt,updatedAt;
-
 }

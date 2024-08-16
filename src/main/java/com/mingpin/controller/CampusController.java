@@ -2,26 +2,30 @@ package com.mingpin.controller;
 
 
 import com.mingpin.pojo.Campus;
+import com.mingpin.pojo.PageBean;
 import com.mingpin.pojo.Result;
 import com.mingpin.service.CampService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import utils.AliOSSUtils;
+import com.mingpin.utils.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RestController
 public class CampusController {
 
     @Autowired
-    private CampService campService;
     private AliOSSUtils aliOSSUtils;
+
+    @Autowired
+    private CampService campService;
+
 
     /**
      * 创建新校区
@@ -52,10 +56,11 @@ public class CampusController {
         campus.setInfo(info);
         campus.setPopulation(population);
         campus.setCreatedAt(LocalDate.now());
-        campus.setUpdateAt(LocalDate.now());
+        campus.setUpdatedAt(LocalDate.now());
 
 
         //调用阿里云OSS工具类进行文件上传
+
 
         String url = aliOSSUtils.upload(campusLogo);
         log.info("文件上传完成,文件访问的url: {}", url);
@@ -65,6 +70,48 @@ public class CampusController {
         campService.addCampus(campus);
 
         return Result.success(campus.getLogo());
+    }
+
+    /**
+     *
+     * 分页展示校区
+     *
+     */
+
+    @GetMapping("/SearchCampus")
+    public Result page(@RequestParam(defaultValue = "1") Integer page,
+                       @RequestParam(defaultValue = "10") Integer pageSize,
+                       String name,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end){
+        log.info("分页查询, 参数: {},{},{},{},{}",page,pageSize,name,begin,end);
+        //调用service分页查询
+        PageBean pageBean = campService.page(page,pageSize,name,begin,end);
+        return Result.success(pageBean);
+    }
+
+    /**
+     * 删除校区
+     *
+     */
+    @DeleteMapping("/deleteByids")
+    public Result delete(@PathVariable List<Integer> ids){
+        log.info("批量删除操作, ids:{}",ids);
+        campService.delete(ids);
+        return Result.success();
+    }
+
+
+    /**
+     * 更新校区
+     * @param campus
+     * @return
+     */
+    @PutMapping("/updateCampus")
+    public Result update(@RequestBody Campus campus){
+        log.info("更新校区信息 : {}", campus);
+        campService.update(campus);
+        return Result.success();
     }
 
 

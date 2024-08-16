@@ -1,4 +1,4 @@
-package utils;
+package com.mingpin.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;

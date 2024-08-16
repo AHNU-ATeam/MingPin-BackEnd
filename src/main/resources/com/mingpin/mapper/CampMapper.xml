@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mingpin.mapper.CampMapper">
+
+<!--  查询校区  -->
+    <select id="list" resultType="com.mingpin.pojo.Campus">
+        select *
+        from campus
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+
+<!--    批量删除校区 -->
+    <delete id="delete">
+        delete
+        from campus
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--更新校区-->
+    <update id="update">
+        update campus
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="logo != null and logo != ''">
+                image = #{image},
+            </if>
+            <if test="address != null">
+                address = #{address},
+            </if>
+            <if test="principalId != null">
+                principal_id = #{principalId},
+            </if>
+            <if test="renewalStart != null">
+                renewal_start = #{renewalStart},
+            </if>
+            <if test="info != null">
+                info = #{info}
+            </if>
+            <if test="renewalEnd != null">
+                renewal_end = #{renewalEnd}
+            </if>
+            <if test="population != null">
+                population = #{population}
+            </if>
+
+        </set>
+        where campus_id = #{id}
+    </update>
+</mapper>
+
