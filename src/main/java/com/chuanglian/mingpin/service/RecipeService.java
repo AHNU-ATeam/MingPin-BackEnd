@@ -1,6 +1,6 @@
-package com.mingpin.service;
+package com.chuanglian.mingpin.service;
 
-import com.mingpin.pojo.Recipe;
+import com.chuanglian.mingpin.entity.Recipe;
 
 public interface RecipeService {
 

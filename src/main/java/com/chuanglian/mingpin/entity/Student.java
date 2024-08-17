@@ -24,4 +24,5 @@ public class Student {
     private String address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer campusId;
 }

@@ -1,8 +1,8 @@
-package com.mingpin.service.impl;
+package com.chuanglian.mingpin.service.impl;
 
-import com.mingpin.mapper.RecipeMapper;
-import com.mingpin.pojo.Recipe;
-import com.mingpin.service.RecipeService;
+import com.chuanglian.mingpin.mapper.RecipeMapper;
+import com.chuanglian.mingpin.entity.Recipe;
+import com.chuanglian.mingpin.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +15,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public void add(Recipe recipe) {
-        recipe.setCreated_at(LocalDateTime.now());
-        recipe.setUpdated_at(LocalDateTime.now());
+        recipe.setCreatedAt(LocalDateTime.now());
+        recipe.setUpdatedAt(LocalDateTime.now());
 
         recipeMapper.add(recipe);
     }
@@ -28,7 +28,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public void update(Recipe recipe) {
-        recipe.setUpdated_at(LocalDateTime.now());
+        recipe.setUpdatedAt(LocalDateTime.now());
         recipeMapper.update(recipe);
     }
 

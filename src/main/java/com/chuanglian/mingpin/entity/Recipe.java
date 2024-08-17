@@ -1,4 +1,4 @@
-package com.mingpin.pojo;
+package com.chuanglian.mingpin.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Recipe {
-    private int recipe_id;
+    private int recipeId;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime date;  //规定日期只能是"yyyy-MM-dd HH:mm:ss"格式
-    private int campus_id;
+    private int campusId;
     private String content;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

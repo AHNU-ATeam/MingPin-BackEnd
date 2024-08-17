@@ -1,11 +1,11 @@
-package com.mingpin.controller;
+package com.chuanglian.mingpin.controller;
 
-import com.mingpin.pojo.Recipe;
-import com.mingpin.pojo.Result;
+import com.chuanglian.mingpin.entity.Recipe;
+import com.chuanglian.mingpin.pojo.Result;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.mingpin.service.RecipeService;
+import com.chuanglian.mingpin.service.RecipeService;
 
 @RestController
 @RequestMapping("/recipe")
@@ -20,8 +20,8 @@ public class RecipeController {
     }
 
     @DeleteMapping
-    public Result delete(Integer recipe_id) {
-        recipeService.deleteById(recipe_id);
+    public Result delete(Integer recipeId) {
+        recipeService.deleteById(recipeId);
         return Result.success();
     }
 
@@ -32,8 +32,8 @@ public class RecipeController {
     }
 
     @GetMapping
-    public Result<Recipe> detail(Integer recipe_id) {
-        Recipe recipe = recipeService.findById(recipe_id);
+    public Result<Recipe> detail(Integer recipeId) {
+        Recipe recipe = recipeService.findById(recipeId);
         return Result.success(recipe);
     }
 }
