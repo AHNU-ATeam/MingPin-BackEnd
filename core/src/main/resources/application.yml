@@ -12,6 +12,8 @@ spring:
       password:
       database: 0
 
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
 
 #spring事务管理日志
 logging:

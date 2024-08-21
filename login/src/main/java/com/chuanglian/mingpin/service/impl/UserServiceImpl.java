@@ -1,6 +1,6 @@
 package com.chuanglian.mingpin.service.impl;
 
-import com.chuanglian.mingpin.domain.UserDetail;
+import com.chuanglian.mingpin.domain.UserForm;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.UserService;
 import com.chuanglian.mingpin.utils.RedisCache;
@@ -18,8 +18,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result logout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetail userDetail = (UserDetail) authentication.getPrincipal();
-        Integer userId = userDetail.getLoginForm().getId();
+        UserForm userForm = (UserForm) authentication.getPrincipal();
+        Integer userId = userForm.getLoginForm().getId();
         redisCache.deleteObject("login:" + userId);
         return Result.success("退出成功");
     }

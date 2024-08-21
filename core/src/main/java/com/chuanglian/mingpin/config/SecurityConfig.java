@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity()
 public class SecurityConfig {
 
     @Autowired
@@ -36,6 +39,20 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//
+//        UserDetails user = User.withUsername("john")
+//                .password("123456")
+//                .roles("")
+//                .build();
+//
+//        manager.createUser(user);
+//
+//        return manager;
+//    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -45,9 +62,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // 对于登录接口允许匿名访问
-                        .requestMatchers("/login").anonymous()
-                        .requestMatchers("/register").anonymous()
-                        .requestMatchers("/swagger-ui.html").anonymous()
+                        .requestMatchers("/login", "/register").anonymous()
+                        .requestMatchers("/swagger-ui.html").permitAll()
                         // 除上面外的所有请求全部需要鉴权认证
                         .anyRequest().authenticated()
 //                ).exceptionHandling(exception -> exception

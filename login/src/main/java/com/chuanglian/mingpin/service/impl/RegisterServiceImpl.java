@@ -1,10 +1,12 @@
 package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.Principal;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.entity.user.Teacher;
 import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
 import com.chuanglian.mingpin.mapper.user.PrincipalMapper;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
@@ -30,6 +32,9 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
     private StudentMapper studentMapper;
+
+    @Autowired
+    private UserRoleMapper userRoleMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -102,7 +107,6 @@ public class RegisterServiceImpl implements RegisterService {
 
         // 获取到对应的id，并添加到user表中
         User user = User.builder()
-                .role(role)
                 .boundPhone(phone)
                 .password(encoded)
                 .nickname(phone)
@@ -110,6 +114,16 @@ public class RegisterServiceImpl implements RegisterService {
                 .status("enable")
                 .build();
         userMapper.insert(user);
+
+        // 在user表中根据手机号查询
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getBoundPhone, phone);
+        user = userMapper.selectOne(queryWrapper);
+        Integer userId = user.getId();
+
+        UserRole userRole = new UserRole(userId, role.getCode());
+        userRoleMapper.insert(userRole);
+
         return Result.success("注册成功");
     }
 }

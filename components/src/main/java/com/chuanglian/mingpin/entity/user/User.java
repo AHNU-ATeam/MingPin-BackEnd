@@ -12,13 +12,10 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@TableName("[userManagement].[user]")
+@TableName("userManagement.[user]")
 public class User {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
-    @NonNull
-    private Role role;
 
     @NonNull
     private String boundPhone;

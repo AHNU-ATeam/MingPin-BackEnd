@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-@TableName("[userManagement].[teacher]")
+@TableName("userManagement.[teacher]")
 public interface TeacherMapper extends BaseMapper<Teacher> {
     @Select("select * from mingpin.userManagement.teacher")
     List<Teacher> list();
