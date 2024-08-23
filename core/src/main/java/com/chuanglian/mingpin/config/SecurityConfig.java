@@ -1,10 +1,13 @@
 package com.chuanglian.mingpin.config;
 
 import com.chuanglian.mingpin.filter.JwtAuthenticationTokenFilter;
+import com.chuanglian.mingpin.handler.AccessDeniedHandlerImpl;
+import com.chuanglian.mingpin.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,6 +21,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +32,12 @@ public class SecurityConfig {
 
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private AuthenticationEntryPointImpl authenticationEntryPoint;
+
+    @Autowired
+    private AccessDeniedHandlerImpl accessDeniedHandler;
 
     // BCrypt加密编码器
     @Bean
@@ -66,27 +78,34 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html").permitAll()
                         // 除上面外的所有请求全部需要鉴权认证
                         .anyRequest().authenticated()
-//                ).exceptionHandling(exception -> exception
-//                        .authenticationEntryPoint(authenticationEntryPoint())
-//                        .accessDeniedHandler(accessDeniedHandler())
                 );
 
+        // 添加JWT令牌过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // 配置异常处理器
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
+        );
+
+        // 允许跨域配置
+        http.cors(Customizer.withDefaults());
 
         return http.build();
     }
 
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return (request, response, authException) -> {
-            throw new RuntimeException("token非法");
-        };
-    }
-
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return (request, response, accessDeniedException) -> {
-            throw new RuntimeException("权限不足");
-        };
-    }
+//    @Bean
+//    public AuthenticationEntryPoint authenticationEntryPoint() {
+//        return (request, response, authException) -> {
+//            throw new RuntimeException("token非法");
+//        };
+//    }
+//
+//    @Bean
+//    public AccessDeniedHandler accessDeniedHandler() {
+//        return (request, response, accessDeniedException) -> {
+//            throw new RuntimeException("权限不足");
+//        };
+//    }
 }
