@@ -34,6 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userMapper.selectOne(queryWrapper);
         // 安全性校验
         if (Objects.isNull(user)) {
+//            return
             throw new RuntimeException("该用户不存在");
         }
 
