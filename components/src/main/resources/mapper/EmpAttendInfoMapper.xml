@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chuanglian.mingpin.mapper.attendance.EmpAttendInfoMapper">
+
+
+    <insert id="insertEmpAttendInfo" parameterType="map">
+        INSERT INTO mingpin.attendanceManagement.employee_attendance_info
+        (start_time, check_time, end_time, campus_id, type, active)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.start_time}, #{item.check_time}, #{item.end_time}, #{item.campus_id}, #{item.type}, #{item.active})
+        </foreach>
+    </insert>
+</mapper>
