@@ -1,12 +1,10 @@
-package org.chuanglian.mingpin.controller;
+package com.chuanglian.mingpin.controller;
 
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendanceInfo;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendanceInfo;
 import com.chuanglian.mingpin.pojo.Result;
-import jakarta.websocket.server.PathParam;
+import com.chuanglian.mingpin.service.AttendanceInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.chuanglian.mingpin.service.AttendanceInfoService;
-import org.chuanglian.mingpin.service.impl.AttendanceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,15 +12,17 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-//@RequestMapping("/AttendanceInfo")
+@RequestMapping("/AttendanceInfo")
 public class AttendanceInfoController {
+
     @Autowired
     private AttendanceInfoService attendanceInfoService;
 
-    @GetMapping  ("/emp1")
-//    @PreAuthorize("hasAuthority('sys:attendance:clock_in')")
-    public Result getEmpInfo(@PathParam("id") Integer id){
-        return Result.success(attendanceInfoService.getEmpInfo(id));
+    @GetMapping  ("/emp")
+    @PreAuthorize("hasAuthority('sys:attendance:clock_in')")
+//    public Result getEmpInfo(@PathParam("id") Integer id){
+    public Result getEmpInfo(){
+        return Result.success(attendanceInfoService.getEmpInfo(1));
     }
 
     @PutMapping("/emp")

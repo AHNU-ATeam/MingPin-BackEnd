@@ -1,4 +1,4 @@
-package org.chuanglian.mingpin;
+package com.chuanglian.mingpin;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

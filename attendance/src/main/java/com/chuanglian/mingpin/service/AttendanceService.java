@@ -1,4 +1,4 @@
-package org.chuanglian.mingpin.service;
+package com.chuanglian.mingpin.service;
 
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendance;

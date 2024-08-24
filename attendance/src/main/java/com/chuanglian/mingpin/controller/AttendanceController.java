@@ -1,11 +1,10 @@
-package org.chuanglian.mingpin.controller;
+package com.chuanglian.mingpin.controller;
 
-import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
 import com.chuanglian.mingpin.pojo.Result;
+import com.chuanglian.mingpin.service.AttendanceService;
 import jakarta.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
-import org.chuanglian.mingpin.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

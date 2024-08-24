@@ -1,4 +1,4 @@
-package org.chuanglian.mingpin.service.impl;
+package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
@@ -12,8 +12,8 @@ import com.chuanglian.mingpin.mapper.attendance.EmpAttendMapper;
 import com.chuanglian.mingpin.mapper.attendance.StuAttendMapper;
 import com.chuanglian.mingpin.mapper.campus.ClassStudentMapper;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
+import com.chuanglian.mingpin.service.AttendanceService;
 import lombok.extern.slf4j.Slf4j;
-import org.chuanglian.mingpin.service.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
