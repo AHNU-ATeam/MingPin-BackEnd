@@ -21,6 +21,7 @@
         <module>class-management</module>
         <module>campus-management</module>
         <module>attendance</module>
+        <module>student-management</module>
     </modules>
 
     <properties>
@@ -134,14 +135,12 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.3</version>
         </dependency>
-
         <!--PageHelper分页插件-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.2.3</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -152,5 +151,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

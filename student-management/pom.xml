@@ -7,10 +7,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>campus-management</artifactId>
+    <artifactId>student-management</artifactId>
     <packaging>jar</packaging>
 
-    <name>campus-management</name>
+    <name>student-management</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -28,6 +28,7 @@
             <groupId>com.chuanglian.mingpin</groupId>
             <artifactId>components</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

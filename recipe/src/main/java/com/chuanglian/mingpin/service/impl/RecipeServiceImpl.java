@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.chuanglian.mingpin.mapper.recipe.RecipeMapper;
 import com.chuanglian.mingpin.entity.recipe.Recipe;
 import com.chuanglian.mingpin.service.RecipeService;
@@ -15,10 +16,10 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public void add(Recipe recipe) {
-        recipe.setCreated_at(LocalDateTime.now());
-        recipe.setUpdated_at(LocalDateTime.now());
+        recipe.setCreatedAt(LocalDateTime.now());
+        recipe.setUpdatedAt(LocalDateTime.now());
 
-        recipeMapper.add(recipe);
+        recipeMapper.insert(recipe);
     }
 
     @Override
@@ -28,12 +29,21 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public void update(Recipe recipe) {
-        recipe.setUpdated_at(LocalDateTime.now());
-        recipeMapper.update(recipe);
+        // 设置更新时间
+        recipe.setUpdatedAt(LocalDateTime.now());
+
+        // 创建 UpdateWrapper 实例
+        UpdateWrapper<Recipe> wrapper = new UpdateWrapper<>();
+
+        // 可以根据需要添加更多条件
+        wrapper.eq("recipe_id", recipe.getRecipeId()); // 假设使用 id 作为唯一标识符
+
+        // 使用 UpdateWrapper 进行更新
+        recipeMapper.update(recipe, wrapper);
     }
 
     @Override
     public Recipe findById(Integer recipeId) {
-        return recipeMapper.findById(recipeId);
+        return recipeMapper.selectById(recipeId);
     }
 }

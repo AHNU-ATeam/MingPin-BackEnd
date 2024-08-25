@@ -1,11 +1,11 @@
-package org.chuanglian.mingpin.service.impl;
+package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendanceInfo;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendanceInfo;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendInfoMapper;
 import com.chuanglian.mingpin.mapper.attendance.StuAttendInfoMapper;
-import org.chuanglian.mingpin.service.AttendanceInfoService;
+import com.chuanglian.mingpin.service.AttendanceInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -14,14 +14,17 @@ public class RecipeController {
     private RecipeService recipeService;
 
     @PostMapping
-    public Result add(@RequestBody @Validated Recipe recipe) {
+    public Result add(@RequestBody Recipe recipe) {
+        System.out.println("OK");
+        System.out.println(recipe);
+
         recipeService.add(recipe);
         return Result.success();
     }
 
     @DeleteMapping
-    public Result delete(Integer recipe_id) {
-        recipeService.deleteById(recipe_id);
+    public Result delete(Integer recipeId) {
+        recipeService.deleteById(recipeId);
         return Result.success();
     }
 
@@ -32,8 +35,8 @@ public class RecipeController {
     }
 
     @GetMapping
-    public Result<Recipe> detail(Integer recipe_id) {
-        Recipe recipe = recipeService.findById(recipe_id);
+    public Result<Recipe> detail(Integer recipeId) {
+        Recipe recipe = recipeService.findById(recipeId);
         return Result.success(recipe);
     }
 }
