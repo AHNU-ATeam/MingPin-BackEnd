@@ -73,9 +73,13 @@ public class CampusController {
     }
 
     /**
-     *
      * 分页展示校区
-     *
+     * @param page
+     * @param pageSize
+     * @param name
+     * @param begin
+     * @param end
+     * @return
      */
 
     @GetMapping("/SearchCampus")
@@ -91,8 +95,9 @@ public class CampusController {
     }
 
     /**
-     * 删除校区
-     *
+     * 批量删除（可单）校区
+     * @param ids
+     * @return
      */
     @DeleteMapping("/deleteByids")
     public Result delete(@PathVariable List<Integer> ids){
@@ -113,6 +118,8 @@ public class CampusController {
         campService.update(campus);
         return Result.success();
     }
+
+
 
 
 }

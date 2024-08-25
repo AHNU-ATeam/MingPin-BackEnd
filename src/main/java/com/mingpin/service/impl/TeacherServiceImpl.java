@@ -36,4 +36,9 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setUpdatedAt(LocalDate.now());
         teacherMapper.update(teacher);
     }
+
+    @Override
+    public Teacher getTeacherById(Long teacherId) {
+        return teacherMapper.selectTeacherById(teacherId);
+    }
 }

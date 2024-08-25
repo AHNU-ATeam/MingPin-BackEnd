@@ -12,4 +12,6 @@ public interface TeacherService {
     void delete(Integer id);
 
     void update(Teacher teacher);
+
+    Teacher getTeacherById(Long teacherId);
 }

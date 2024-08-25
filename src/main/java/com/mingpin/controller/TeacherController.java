@@ -5,6 +5,7 @@ import com.mingpin.pojo.Teacher;
 import com.mingpin.service.TeacherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,17 +45,35 @@ public class TeacherController {
      * @param id
      * @return
      */
-    @DeleteMapping("/deleteById")
+    @DeleteMapping("deleteById/{id}")
     public Result deleteById(@PathVariable Integer id){
         log.info("删除教师");
         teacherService.delete(id);
         return Result.success();
     }
 
+    /**
+     * 更新信息
+     * @param teacher
+     * @return
+     */
     @PutMapping("/update")
     public Result update(@RequestBody Teacher teacher){
         log.info("更新教师信息");
         teacherService.update(teacher);
         return Result.success();
+    }
+
+    /**
+     * 根据id查询单个教师信息
+     * @param teacherId
+     * @return
+     */
+    @GetMapping("/searchById/{teacherId}")
+    public Result getTeacherById(@PathVariable Long teacherId) {
+        Teacher teacher = teacherService.getTeacherById(teacherId);
+
+            return Result.success(teacher);
+
     }
 }
