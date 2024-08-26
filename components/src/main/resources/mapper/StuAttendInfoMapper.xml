@@ -4,10 +4,10 @@
 
     <insert id="insertStuAttendInfo" parameterType="map">
         INSERT INTO mingpin.attendanceManagement.student_attendance_info
-        ( start_time, end_time, campus_id, type)
+        (start_time, end_time, campus_id, type)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{ #{item.start_time}, #{item.end_time}, #{item.campus_id}, #{item.type})
+            (#{item.start_time}, #{item.end_time}, #{item.campus_id}, #{item.type})
         </foreach>
     </insert>
 

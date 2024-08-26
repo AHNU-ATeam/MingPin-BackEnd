@@ -1,6 +1,7 @@
 package com.chuanglian.mingpin.entity.attendance;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.chuanglian.mingpin.entity.user.Teacher;
@@ -71,5 +72,6 @@ public class EmployeeAttendance {
 
     private LocalDateTime updatedAt;  // 记录更新时间
 
+    @TableField(exist = false)
     private Teacher teacher;
 }
