@@ -46,12 +46,12 @@
         </dependency>
         <dependency>
             <groupId>com.chuanglian.mingpin</groupId>
-            <artifactId>test</artifactId>
+            <artifactId>attendance</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.chuanglian.mingpin</groupId>
-            <artifactId>attendance</artifactId>
+            <artifactId>homework</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
