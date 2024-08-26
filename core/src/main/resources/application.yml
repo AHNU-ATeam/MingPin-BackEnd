@@ -1,0 +1,27 @@
+# SQL Server数据库配置
+spring:
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://119.45.239.3:1433;DatabaseName=mingpin;encrypt=false
+    username: sa
+    password: MingPin2024
+  data:
+    redis:
+      host: 119.45.239.3
+      port: 6379
+      password:
+      database: 0
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+
+#spring事务管理日志
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+    org.mybatis : DEBUG
+
+server:
+  port: 8080
+  servlet:
+    context-path:
