@@ -3,13 +3,11 @@ package com.chuanglian.mingpin.mapper.user;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chuanglian.mingpin.entity.user.Teacher;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+@Mapper
 @TableName("userManagement.[teacher]")
 public interface TeacherMapper extends BaseMapper<Teacher> {
     @Select("select * from mingpin.userManagement.teacher")

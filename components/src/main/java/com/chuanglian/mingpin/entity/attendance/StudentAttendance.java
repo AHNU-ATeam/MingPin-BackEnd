@@ -24,6 +24,7 @@ public class StudentAttendance
 {
     @TableId(value = "id",type = IdType.AUTO)
     private int id;  // 主键ID
+
     @JsonProperty("student_id")
     private int studentId;  // 学生ID
     @JsonProperty("attendance_id")
@@ -38,6 +39,6 @@ public class StudentAttendance
     private int type;  // 是否按时签到，"是" 或 "否"
     private String photo;  // 照片链接
     private LocalDateTime createdAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
     private Student student;
 }

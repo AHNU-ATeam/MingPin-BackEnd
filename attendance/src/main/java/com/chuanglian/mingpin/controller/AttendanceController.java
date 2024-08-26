@@ -26,7 +26,7 @@ public class AttendanceController {
     }
 
     /**
-     *
+     *根据班级id与日期查询签到信息
      * @param id 班级id
      * @param date 日期
      * @return
@@ -71,16 +71,20 @@ public class AttendanceController {
 
     /**
      * 教师打卡，根据type
-     * @param id 教师id
+     * @param teacher_id 教师id
      * @param type 打卡类型
      * @return
      */
     @PutMapping("teaAttendance")
-    public Result setTeaAttendance(@PathParam("teacher_id") Integer id,
+    public Result setTeaAttendance(@PathParam("teacher_id") Integer teacher_id,
                                    @PathParam("type") Integer type,
                                    @PathParam("location")String location,
                                    @PathParam("photo") String photo){
-        return Result.success(attendanceService.setTeaAttendance(id,type,location,photo));
+        System.out.println(teacher_id+"sdfghjk");
+        System.out.println(type);
+        Integer re = attendanceService.setTeaAttendance(teacher_id,type,location,photo);
+        System.out.println(re);
+        return Result.success(re);
     }
 
 }

@@ -6,6 +6,7 @@ import com.chuanglian.mingpin.entity.attendance.StudentAttendanceInfo;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendInfoMapper;
 import com.chuanglian.mingpin.mapper.attendance.StuAttendInfoMapper;
 import com.chuanglian.mingpin.service.AttendanceInfoService;
+import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +40,20 @@ public class AttendanceInfoServiceImpl implements AttendanceInfoService {
 
     @Override
     public List<StudentAttendanceInfo> getStuInfo(Integer id) {
-        LambdaQueryWrapper<StudentAttendanceInfo> wrapper = new LambdaQueryWrapper<StudentAttendanceInfo>().eq(StudentAttendanceInfo::getCampusTd,id);
+        System.out.println("22222");
+        LambdaQueryWrapper<StudentAttendanceInfo> wrapper = new LambdaQueryWrapper<StudentAttendanceInfo>().eq(StudentAttendanceInfo::getCampusId,id);
         int num = stuAttendInfoMapper.selectList(wrapper).size();
+        System.out.println(num);
         if(num==0){
             addStuAttendInfo(id);
+            System.out.println("数据库没有");
         }
         return stuAttendInfoMapper.selectList(wrapper);
     }
 
     @Override
     public int updateStuInfo(StudentAttendanceInfo studentAttendanceInfo) {
-        studentAttendanceInfo.setUpdateAt(LocalDateTime.now());
+        studentAttendanceInfo.setUpdatedAt(LocalDateTime.now());
         return stuAttendInfoMapper.updateById(studentAttendanceInfo);
     }
 
@@ -80,6 +84,7 @@ public class AttendanceInfoServiceImpl implements AttendanceInfoService {
         data.put("type", 0);  // 1表示需要两次上下班
 
         dataList.add(data);
+        System.out.println(dataList);
 
         empAttendInfoMapper.insertEmpAttendInfo(dataList);
     }
@@ -90,34 +95,35 @@ public class AttendanceInfoServiceImpl implements AttendanceInfoService {
         List<Map<String, Object>> dataList = new ArrayList<>();
 
         Map<String, Object> data1 = new HashMap<>();
-        data1.put("attendance_id", 1);
+//        data1.put("attendance_id", 1);
         data1.put("start_time", "05:00:22");
         data1.put("end_time", "10:59:49");
         data1.put("campus_id", campus_id);
 
-        data1.put("created_at", "2024-08-23 00:31:21.140");
-        data1.put("updated_at", "2024-08-23 00:31:21.140");
+//        data1.put("created_at", "2024-08-23 00:31:21.140");
+//        data1.put("updated_at", "2024-08-23 00:31:21.140");
         dataList.add(data1);
 
         Map<String, Object> data2 = new HashMap<>();
-        data2.put("attendance_id", 2);
+//        data2.put("attendance_id", 2);
         data2.put("start_time", "11:00:25");
         data2.put("end_time", "16:00:34");
         data2.put("campus_id", campus_id);
         data2.put("type", 2);
-        data2.put("created_at", "2024-08-23 00:31:51.397");
-        data2.put("updated_at", "2024-08-23 00:31:51.397");
+//        data2.put("created_at", "2024-08-23 00:31:51.397");
+//        data2.put("updated_at", "2024-08-23 00:31:51.397");
         dataList.add(data2);
 
         Map<String, Object> data3 = new HashMap<>();
-        data3.put("attendance_id", 3);
+//        data3.put("attendance_id", 3);
         data3.put("start_time", "16:10:29");
         data3.put("end_time", "23:59:39");
         data3.put("campus_id", campus_id);
         data3.put("type", 3);
-        data3.put("created_at", "2024-08-23 00:33:58.357");
-        data3.put("updated_at", "2024-08-23 00:33:58.357");
+//        data3.put("created_at", "2024-08-23 00:33:58.357");
+//        data3.put("updated_at", "2024-08-23 00:33:58.357");
         dataList.add(data3);
+        System.out.println(dataList);
 
         stuAttendInfoMapper.insertStuAttendInfo(dataList);
     }
