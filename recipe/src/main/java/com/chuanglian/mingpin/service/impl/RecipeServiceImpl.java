@@ -16,6 +16,8 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public void add(Recipe recipe) {
+        System.out.println(recipe);
+
         recipe.setCreatedAt(LocalDateTime.now());
         recipe.setUpdatedAt(LocalDateTime.now());
 

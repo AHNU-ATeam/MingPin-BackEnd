@@ -1,5 +1,7 @@
 package com.chuanglian.mingpin.entity.recipe;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,11 +14,11 @@ import java.time.LocalDateTime;
 @TableName("recipeManagement.recipe")
 @ToString
 public class Recipe {
-    @TableId
-    private int recipeId;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableId(value = "recipe_id", type = IdType.AUTO)
+    private Integer recipeId;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;  //规定日期只能是"yyyy-MM-dd HH:mm:ss"格式
-    private int campusId;
+    private Integer campusId;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
