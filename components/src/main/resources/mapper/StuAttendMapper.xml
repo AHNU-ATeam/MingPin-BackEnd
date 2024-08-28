@@ -35,7 +35,7 @@
 
     <!-- 根据学生 ID 查询学生信息 -->
     <select id="getStudentsByIds" parameterType="list" resultType="com.chuanglian.mingpin.entity.user.Student">
-        SELECT *
+        SELECT student.student_id,student.student_name
         FROM userManagement.student
         WHERE student_id IN
         <foreach item="id" collection="list" open="(" separator="," close=")">
