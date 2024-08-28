@@ -1,6 +1,7 @@
 package com.chuanglian.mingpin.entity.attendance;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.chuanglian.mingpin.entity.user.Student;
@@ -40,5 +41,15 @@ public class StudentAttendance
     private String photo;  // 照片链接
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Student student;
+    @TableField(exist = false)
+    private StudentDTO student;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class StudentDTO {
+        private int studentId;
+        private String studentName;
+
+    }
 }

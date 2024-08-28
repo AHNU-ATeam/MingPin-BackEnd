@@ -55,6 +55,9 @@ public class EmployeeAttendance {
 
 
     private String photo;  // 照片链接
+    private String photo2;  // 照片链接
+    private String photo3;  // 照片链接
+    private String photo4;  // 照片链接
 
     @JsonProperty("on_time")
     private int onTime;  // 第一次是否按时签到

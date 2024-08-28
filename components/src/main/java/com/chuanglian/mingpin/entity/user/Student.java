@@ -3,6 +3,7 @@ package com.chuanglian.mingpin.entity.user;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -13,8 +14,7 @@ import java.time.LocalDateTime;
 @TableName("[userManagement].[student]")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@JsonFilter("StudentFilter")
 public class Student {
 
     @TableId(value = "student_id", type = IdType.AUTO)

@@ -66,7 +66,9 @@ public class AttendanceServiceImpl implements AttendanceService {
         // 将学生信息设置到考勤记录中
         for (StudentAttendance studentAttendance : studAttendances) {
             Student student = students.get(studentAttendance.getStudentId());
-            studentAttendance.setStudent(student);
+            StudentAttendance.StudentDTO studentDTO = new StudentAttendance.StudentDTO(student.getStudentId(),student.getStudentName());
+
+            studentAttendance.setStudent(studentDTO);
         }
 
         // 按 type 分组考勤记录
@@ -80,7 +82,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer stuAttendance(StudentAttendance studentAttendance) {
+    public Integer stuAttendance(Integer studentAttendanceId) {
+
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
         studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setType(1);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
@@ -92,7 +96,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer stuUnattendance(StudentAttendance studentAttendance) {
+    public Integer stuUnattendance(Integer studentAttendanceId) {
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
         studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setType(0);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
@@ -103,7 +108,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer stuAskForLeave(StudentAttendance studentAttendance) {
+    public Integer stuAskForLeave(Integer studentAttendanceId) {
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
         studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setType(2);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
@@ -114,7 +120,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer StuSignOut(StudentAttendance studentAttendance) {
+    public Integer StuSignOut(Integer studentAttendanceId) {
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
         studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setSignOut(1);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
