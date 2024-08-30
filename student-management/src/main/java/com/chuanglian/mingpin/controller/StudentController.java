@@ -17,21 +17,21 @@ public class StudentController {
 
     //根据校区查询所有学生信息
     @GetMapping("/campusList")
-    public Result<List<Student>> campusList(Integer campusId) {
+    public Result<List<Student>> campusList(@PathVariable Integer campusId) {
         List<Student> Ls = studentService.campusList(campusId);
         return Result.success(Ls);
     }
 
     //根据班级查询所有学生信息
     @GetMapping("/classList")
-    public Result<List<Student>> classList(Integer classId) {
+    public Result<List<Student>> classList(@PathVariable Integer classId) {
         List<Student> Ls = studentService.classList(classId);
         return Result.success(Ls);
     }
 
     //查询单个学生信息
     @GetMapping
-    public Result<Student> detail(Integer studentId) {
+    public Result<Student> detail(@PathVariable Integer studentId) {
         Student student = studentService.findById(studentId);
         return Result.success(student);
     }
