@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Campus {
-    private Integer id;-
+    private Integer id;
     private String logo; //指地址
     private String name;
     private String address;
