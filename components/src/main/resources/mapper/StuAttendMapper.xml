@@ -1,12 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.chuanglian.mingpin.mapper.attendance.StuAttendMapper">
-<!--    <select id="getClassAttendance"></select>-->
+    <insert id="insertStuAttend" parameterType="com.chuanglian.mingpin.entity.attendance.StudentAttendance">
+        INSERT INTO attendanceManagement.student_attendance
+        (
+            student_id,
+            attendance_id,
+            date,
+            time,
+            location,
+            type,
+            photo,
+            created_at,
+            updated_at,
+            class_id,
+            sign_out
+        )
+        VALUES
+            (
+                #{studentId},
+                #{attendanceId},
+                #{date},
+                #{time},
+                #{location},
+                #{type},
+                #{photo},
+                #{createdAt},
+                #{updateAt},
+                #{classId},
+                #{signOut}
+            )
+    </insert>
+    <!--    <select id="getClassAttendance"></select>-->
 
     <!-- 根据学生 ID 查询学生信息 -->
     <select id="getStudentsByIds" parameterType="list" resultType="com.chuanglian.mingpin.entity.user.Student">
         SELECT student.student_id,student.student_name
-        FROM student
+        FROM userManagement.student
         WHERE student_id IN
         <foreach item="id" collection="list" open="(" separator="," close=")">
             #{id}

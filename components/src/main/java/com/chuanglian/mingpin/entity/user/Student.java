@@ -3,9 +3,8 @@ package com.chuanglian.mingpin.entity.user;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import com.fasterxml.jackson.annotation.JsonFilter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,58 +12,53 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @TableName("[userManagement].[student]")
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonFilter("StudentFilter")
 public class Student {
+
     @TableId(value = "student_id", type = IdType.AUTO)
-    private Integer studentId; // 学生ID，自增主键
+    private Integer studentId;
 
-    @NonNull
-    private String studentName; // 学生姓名
+    private String studentName;
 
-    @NonNull
-    private String gender; // 性别
+    private String gender;
 
-    @NonNull
-    private LocalDate birthDate; // 出生日期
+    private LocalDate birthDate;
 
-    @NonNull
-    private String calendarType; // 日历类型，公历/农历
+    private String calendarType;
 
-    @NonNull
-    private String schoolName; // 就读学校
+    private String schoolName;
 
-    @NonNull
-    private String gradeName; // 年级
+    private String gradeName;
 
-    @NonNull
-    private String className; // 班级
+    private String className;
 
-    @NonNull
-    private String parentName; // 家长姓名
+    private String parentName;
 
-    @NonNull
-    private String parentPhone; // 家长联系电话
+    private String parentPhone;
 
-    private String address; // 家庭住址
+    private String address;
 
-    private String emergencyContactPhone; // 紧急联系电话
+    private String emergencyContactPhone;
 
-    private String specialCondition; // 特异体质、特定疾病或异常心理状况
+    private String specialCondition;
 
-    private String serviceItem; // 服务项目
+    private String serviceItem;
 
-    private String parentSuggestions; // 家长的要求与建议
+    private String parentSuggestions;
 
-    private String studentSummary; // 学生情况综述
+    private String studentSummary;
 
-    private LocalDate admissionDate; // 入学日期
+    private LocalDate admissionDate;
 
-    private String teacherName; // 老师姓名
+    private String teacherName;
 
-    private LocalDateTime createdAt; // 创建时间
+    private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt; // 更新时间
+    private LocalDateTime updatedAt;
 
-    private int classId; // 班级id
+    private int classId;
 
-    private int campusId; // 校区id
+    private int campusId;
 }

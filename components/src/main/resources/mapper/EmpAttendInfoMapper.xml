@@ -5,10 +5,10 @@
 
     <insert id="insertEmpAttendInfo" parameterType="map">
         INSERT INTO mingpin.attendanceManagement.employee_attendance_info
-        (start_time, check_time, end_time, campus_id, type, active)
+        (start_time, end_time, start_time2, end_time2, start_time3, end_time3, start_time4, end_time4, campus_id, type)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.start_time}, #{item.check_time}, #{item.end_time}, #{item.campus_id}, #{item.type}, #{item.active})
+            (#{item.start_time}, #{item.end_time}, #{item.start_time_2}, #{item.end_time_2}, #{item.start_time_3}, #{item.end_time_3}, #{item.start_time_4}, #{item.end_time_4}, #{item.campus_id}, #{item.type})
         </foreach>
     </insert>
 </mapper>
