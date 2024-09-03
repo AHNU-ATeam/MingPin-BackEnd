@@ -20,3 +20,8 @@ logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
     org.mybatis : DEBUG
+
+server:
+  port: 8080
+  servlet:
+    context-path:
