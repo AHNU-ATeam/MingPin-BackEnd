@@ -11,12 +11,37 @@ spring:
       port: 6379
       password:
       database: 0
+  application:
+    name: springfox-swagger
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
+
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    accessKeyId: LTAI5tJR7Pa9JX822rP66eLV
+    accessKeySecret: ${AliAccessKeySecret}
+    bucketName: test1872650
 
 #spring事务管理日志
 logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
     org.mybatis : DEBUG
+
+server:
+  port: 8080
+  servlet:
+    context-path:
+
+# ===== 自定义swagger配置 ===== #
+swagger:
+  enable: true
+  application-name: ${spring.application.name}
+  application-version: 1.0
+  application-description: springfox swagger 3.0整合Demo
+  try-host: http://localhost:${server.port}
