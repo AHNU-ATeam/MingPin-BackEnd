@@ -15,6 +15,7 @@ import com.chuanglian.mingpin.mapper.user.TeacherMapper;
 import com.chuanglian.mingpin.service.AttendanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@EnableScheduling
 public class AttendanceServiceImpl implements AttendanceService {
     @Autowired
     private EmpAttendMapper empAttendMapper;
@@ -42,6 +44,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<Map<String, Object>> getClassAttendance(Integer id,String date) {
+        System.out.println(id+date);
         return stuAttendMapper.getClassAttendance(id,date);
     }
 
@@ -56,13 +59,16 @@ public class AttendanceServiceImpl implements AttendanceService {
             allStudentIds.add(studentAttendance.getStudentId());
         }
 
+        System.out.println(allStudentIds);
         // 查询所有学生信息
         Map<Integer, Student> students = stuAttendMapper.getStudentsByIds(allStudentIds);
 
         // 将学生信息设置到考勤记录中
         for (StudentAttendance studentAttendance : studAttendances) {
             Student student = students.get(studentAttendance.getStudentId());
-            studentAttendance.setStudent(student);
+            StudentAttendance.StudentDTO studentDTO = new StudentAttendance.StudentDTO(student.getStudentId(),student.getStudentName());
+
+            studentAttendance.setStudent(studentDTO);
         }
 
         // 按 type 分组考勤记录
@@ -76,8 +82,10 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer stuAttendance(StudentAttendance studentAttendance) {
-        studentAttendance.setUpdateAt(LocalDateTime.now());
+    public Integer stuAttendance(Integer studentAttendanceId) {
+
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
+        studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setType(1);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StudentAttendance::getClassId,studentAttendance.getClassId())
@@ -88,8 +96,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer stuUnattendance(StudentAttendance studentAttendance) {
-        studentAttendance.setUpdateAt(LocalDateTime.now());
+    public Integer stuUnattendance(Integer studentAttendanceId) {
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
+        studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setType(0);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StudentAttendance::getClassId,studentAttendance.getClassId())
@@ -99,8 +108,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer stuAskForLeave(StudentAttendance studentAttendance) {
-        studentAttendance.setUpdateAt(LocalDateTime.now());
+    public Integer stuAskForLeave(Integer studentAttendanceId) {
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
+        studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setType(2);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StudentAttendance::getClassId,studentAttendance.getClassId())
@@ -110,8 +120,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Integer StuSignOut(StudentAttendance studentAttendance) {
-        studentAttendance.setUpdateAt(LocalDateTime.now());
+    public Integer StuSignOut(Integer studentAttendanceId) {
+        StudentAttendance studentAttendance = stuAttendMapper.selectById(studentAttendanceId);
+        studentAttendance.setUpdatedAt(LocalDateTime.now());
         studentAttendance.setSignOut(1);
         LambdaQueryWrapper<StudentAttendance> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StudentAttendance::getClassId,studentAttendance.getClassId())
@@ -122,11 +133,11 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<EmployeeAttendance> getTeaAttendance(Integer id, String date) {
-        LambdaQueryWrapper<EmployeeAttendance> wrapper = new LambdaQueryWrapper<EmployeeAttendance>()
-                .eq(EmployeeAttendance::getCampus_id,id)
+        LambdaQueryWrapper<EmployeeAttendance> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(EmployeeAttendance::getCampus_id,id)
                 .eq(EmployeeAttendance::getDate,date);
         List<EmployeeAttendance> employeeAttendances = empAttendMapper.selectList(wrapper);
-
+        System.out.println("hello");
         // 为每个考勤记录设置对应的教师信息
         for (EmployeeAttendance attendance : employeeAttendances) {
             // 根据员工ID查询教师信息
@@ -138,13 +149,18 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public Integer setTeaAttendance(Integer id, Integer type, String location, String photo) {
+        System.out.println(id);
         Teacher teacher = teacherMapper.selectById(id);
+        System.out.println(teacher);
         LambdaQueryWrapper<EmployeeAttendanceInfo> infoWrapper = new LambdaQueryWrapper<>();
         infoWrapper.eq(EmployeeAttendanceInfo::getCampusId,teacher.getCampusId());
         List<EmployeeAttendanceInfo> employeeAttendanceInfos = empAttendInfoMapper.selectList(infoWrapper);
         EmployeeAttendanceInfo employeeAttendanceInfo = employeeAttendanceInfos.get(0);
         LocalDate localDate = LocalDate.now();
         LocalTime localTime = LocalTime.now();
+
+        System.out.println(localDate);
+
         LocalDateTime localDateTime = LocalDateTime.now();
         if(type==1){
             if(LocalTime.now().isAfter(employeeAttendanceInfo.getStartTime())&&LocalTime.now().isBefore(employeeAttendanceInfo.getEndTime())){
@@ -168,7 +184,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
 
-    @Scheduled(cron = "0 0 0 * * ?")  // 每天0点执行任务
+    @Scheduled(cron = "15 40 13 * * ?")  // 每天0点执行任务
     void insertDailyAttendance() {
         log.info("定时创建签到表");
         // 获取所有班级学生信息
@@ -177,23 +193,24 @@ public class AttendanceServiceImpl implements AttendanceService {
         // 遍历每个学生，插入考勤记录
         for (ClassStudent classStudent : classStudents) {
             StudentAttendance attendance = new StudentAttendance();
+            attendance.setId(5);
             attendance.setStudentId(classStudent.getStudentId());
-            attendance.setAttendanceId(0);  // 替换为实际的 attendanceId
+            attendance.setAttendanceId(0);
             attendance.setDate(LocalDate.now());
             attendance.setTime(LocalTime.now());
-
-            attendance.setType(0);  // 替换为实际的 type
-
-            attendance.setCreatedAt(LocalDateTime.now());
-            attendance.setUpdateAt(LocalDateTime.now());
+            attendance.setType(0);  // 设置实际的 type
             attendance.setClassId(classStudent.getClassId());
-
+//            attendance.setLocation(null);  // 可选字段，可以设置为 null 或空
+//            attendance.setPhoto(null);  // 可选字段，可以设置为 null 或空
+            attendance.setSignOut(0);  // 设置实际的 signOut
+            attendance.setUpdatedAt(LocalDateTime.now());
+            attendance.setCreatedAt(LocalDateTime.now());
             // 插入考勤记录
-            stuAttendMapper.insert(attendance);
+            stuAttendMapper.insertStuAttend(attendance);
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")  // 每天0点执行任务
+    @Scheduled(cron = "15 08 14 * * ?")  // 每天0点执行任务
     void insertDailyTeacherAttendance() {
         log.info("定时创建教师签到记录");
 
@@ -215,7 +232,7 @@ public class AttendanceServiceImpl implements AttendanceService {
             attendance.setCampus_id(teacher.getCampusId());
 
             // 插入考勤记录
-            empAttendMapper.insert(attendance);
+            empAttendMapper.insertempAttend(attendance);
         }
     }
 

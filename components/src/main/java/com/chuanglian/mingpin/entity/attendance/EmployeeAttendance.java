@@ -1,6 +1,7 @@
 package com.chuanglian.mingpin.entity.attendance;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.chuanglian.mingpin.entity.user.Teacher;
@@ -54,6 +55,9 @@ public class EmployeeAttendance {
 
 
     private String photo;  // 照片链接
+    private String photo2;  // 照片链接
+    private String photo3;  // 照片链接
+    private String photo4;  // 照片链接
 
     @JsonProperty("on_time")
     private int onTime;  // 第一次是否按时签到
@@ -71,5 +75,6 @@ public class EmployeeAttendance {
 
     private LocalDateTime updatedAt;  // 记录更新时间
 
+    @TableField(exist = false)
     private Teacher teacher;
 }

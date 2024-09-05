@@ -13,13 +13,13 @@ public interface AttendanceService {
     Map<Integer, List<StudentAttendance>> getStudAttendance(Integer id, String date);
 
 
-    Integer stuAttendance(StudentAttendance studentAttendance);
+    Integer stuAttendance(Integer studentAttendance);
 
-    Integer stuUnattendance(StudentAttendance studentAttendance);
+    Integer stuUnattendance(Integer studentAttendance);
 
-    Integer stuAskForLeave(StudentAttendance studentAttendance);
+    Integer stuAskForLeave(Integer studentAttendance);
 
-    Integer StuSignOut(StudentAttendance studentAttendance);
+    Integer StuSignOut(Integer studentAttendance);
 
     List<EmployeeAttendance> getTeaAttendance(Integer id, String date);
 

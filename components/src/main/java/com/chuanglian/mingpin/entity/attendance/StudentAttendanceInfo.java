@@ -28,9 +28,9 @@ public class StudentAttendanceInfo
     @JsonProperty("end_time")
     private LocalTime endTime;  // 截至时间
     @JsonProperty("campus_id")
-    private int campusTd;  // 校区ID
+    private int campusId;  // 校区ID
     private int type;  // 签到类型 (1: 早, 2: 中, 3: 晚)
     private LocalDateTime createdAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
 }
