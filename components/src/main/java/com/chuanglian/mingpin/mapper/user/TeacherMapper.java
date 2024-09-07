@@ -3,6 +3,7 @@ package com.chuanglian.mingpin.mapper.user;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chuanglian.mingpin.entity.user.Teacher;
+import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -10,19 +11,20 @@ import java.util.List;
 @Mapper
 @TableName("userManagement.[teacher]")
 public interface TeacherMapper extends BaseMapper<Teacher> {
-    @Select("select * from mingpin.userManagement.teacher")
+    @Select("select * from userManagement.teacher")
     List<Teacher> list();
 
 
-    @Insert("insert into userManagement.teacher(name, phone, permission_status, position, campus_id) values (#{name},#{phone},#{permissionStatus},#{position},#{campusId})")
-    void add(Teacher teacher);
+    @Insert("insert into userManagement.teacher(name, phone, permission_status, position,created_at,updated_at, avatar_address, sex, Identification_number, password) values (#{name},#{phone},#{permissionStatus},#{position},#{createdAt},#{updatedAt},#{avatarAddress},#{sex},#{IdentificationNumber},#{password})")
+    int add(Teacher teacher);
 
-    @Delete("delete from userManagement.teacher where teacher_id = #{id}")
-    void delete(Integer id);
+    @Delete("delete from userManagement.teacher where teacher_id = #{teacherId}")
+    int delete(Integer id);
 
-    void update(Teacher teacher);
+    @Update("UPDATE userManagement.teacher set  avatar_address = #{avatarAddress},sex = #{sex},name = #{name},identification_number = #{identificationNumber},phone = #{phone}, permission_status = #{permissionStatus},position = #{position}, password = #{password},campus_id = #{campusId},updated_at = #{updatedAt} where teacher_id = #{teacherId}")
+    int update(Teacher teacher);
 
-    @Select("select *from userManagement.teacher where teacher_id = #{teacherId}")
-    Teacher selectTeacherById(@Param("teacherId") Long teacherId);
+    @Select("select * from userManagement.teacher where teacher_id = #{teacherId}")
+    Teacher selectTeacherById(@Param("teacherId") Integer teacherId);
 }
 
