@@ -1,18 +1,24 @@
 package com.chuanglian.mingpin.controller;
 
 import com.chuanglian.mingpin.entity.user.Teacher;
+import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.TeacherService;
+import com.chuanglian.mingpin.utils.AliOSSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
 @RestController
 public class TeacherController {
+    @Autowired
+    private AliOSSUtils aliOSSUtils;
 
     @Autowired
     private TeacherService teacherService;
@@ -24,44 +30,51 @@ public class TeacherController {
     @GetMapping("/showTeacherMessage")
     public Result show(){
         log.info("展示所有教师信息");
-        List<Teacher> list = teacherService.list();
-        return Result.success(list);
+        return teacherService.list();
     }
 
     /**
      * 新增教师
-     * @param teacher
+     * @param teacherVO
      * @return
+     * @throws IOException
      */
     @PostMapping("/addTeacher")
-    public Result add(@RequestBody Teacher teacher){
-        log.info("新增教师: {}" , teacher);
-        teacherService.add(teacher);
-        return Result.success();
+    public Result add( @ModelAttribute TeacherVO teacherVO) throws IOException {
+        log.info("新增教师: {}" , teacherVO);
+        //调用阿里云OSS工具类进行文件上传
+        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
+        log.info("文件上传完成,文件访问的url: {}", url);
+        teacherVO.setAvatarAddress(url);
+        return teacherService.add(teacherVO);
     }
 
     /**
-     * 根据id删除教师
-     * @param id
+     *软删除：将教师id为teacherId的is_deleted设置为1
+     * @param teacherId
      * @return
      */
-    @DeleteMapping("/deleteById")
-    public Result deleteById(@PathVariable Integer id){
+    //@DeleteMapping("/deleteById/{teacherId}")
+    @RequestMapping(value = "/deleteById/{teacherId}", method = RequestMethod.POST)
+    public Result deleteById(@PathVariable Integer teacherId){
         log.info("删除教师");
-        teacherService.delete(id);
-        return Result.success();
+        return teacherService.delete(teacherId);
     }
 
     /**
-     * 更新信息
-     * @param teacher
+     *
+     * @param teacherVO
      * @return
+     * @throws IOException
      */
-    @PutMapping("/update")
-    public Result update(@RequestBody Teacher teacher){
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public Result update(@ModelAttribute TeacherVO teacherVO) throws IOException {
         log.info("更新教师信息");
-        teacherService.update(teacher);
-        return Result.success();
+        //调用阿里云OSS工具类进行文件上传
+        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
+        log.info("文件上传完成,文件访问的url: {}", url);
+        teacherVO.setAvatarAddress(url);
+        return teacherService.update(teacherVO);
     }
 
     /**
@@ -69,11 +82,9 @@ public class TeacherController {
      * @param teacherId
      * @return
      */
-    @GetMapping("/{teacherId}")
-    public Result getTeacherById(@PathVariable Long teacherId) {
-        Teacher teacher = teacherService.getTeacherById(teacherId);
-
-            return Result.success(teacher);
-
+    @GetMapping("/searchById/{teacherId}")
+    public Result getTeacherById(@PathVariable Integer teacherId) {
+           log.info("查询教师");
+           return teacherService.getTeacherById(teacherId);
     }
 }

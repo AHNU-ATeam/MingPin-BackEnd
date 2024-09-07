@@ -3,10 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mingpin.mapper.CampMapper">
+<mapper namespace="com.chuanglian.mingpin.mapper.campus.CampMapper">
 
 <!--  查询校区  -->
-    <select id="list" resultType="com.mingpin.pojo.Campus">
+    <select id="list" resultType="com.chuanglian.mingpin.entity.campus.Campus">
         select *
         from campus
         <where>
@@ -20,16 +20,6 @@
         </where>
         order by update_time desc
     </select>
-
-<!--    批量删除校区 -->
-    <delete id="delete">
-        delete
-        from campus
-        where id in
-        <foreach collection="ids" item="id" separator="," open="(" close=")">
-            #{id}
-        </foreach>
-    </delete>
 
     <!--更新校区-->
     <update id="update">
