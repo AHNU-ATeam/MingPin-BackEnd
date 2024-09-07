@@ -15,6 +15,13 @@ spring:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
 
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    accessKeyId: LTAI5tL3s5zeB1ZyFQ9C7cZy
+    accessKeySecret: ${AliAccessKeySecret}
+    bucketName: test1872650
+
 #spring事务管理日志
 logging:
   level:

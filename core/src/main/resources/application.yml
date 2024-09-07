@@ -18,7 +18,7 @@ mybatis-plus:
 aliyun:
   oss:
     endpoint: https://oss-cn-beijing.aliyuncs.com
-    accessKeyId: LTAI5tJR7Pa9JX822rP66eLV
+    accessKeyId: LTAI5tL3s5zeB1ZyFQ9C7cZy
     accessKeySecret: ${AliAccessKeySecret}
     bucketName: test1872650
 
