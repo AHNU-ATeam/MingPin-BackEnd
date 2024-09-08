@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @TableName("[userManagement].[student]")
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonFilter("StudentFilter")
+// @JsonFilter("StudentFilter") // TODO: 审查并决定是否需要此注解
 public class Student {
 
     @TableId(value = "student_id", type = IdType.AUTO)
@@ -61,4 +61,6 @@ public class Student {
     private int classId;
 
     private int campusId;
+
+    private int status;
 }

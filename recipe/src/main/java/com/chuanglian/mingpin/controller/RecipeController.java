@@ -28,10 +28,10 @@ public class RecipeController {
         return Result.success();
     }
 
-    @DeleteMapping
+    @PatchMapping("/delete/{recipeId}")
     @PreAuthorize("hasAuthority('sys:recipe:delete')")
     @ApiOperation(value = "通过id删除食谱", notes = "该接口主要用于删除食谱信息")
-    public Result delete(Integer recipeId) {
+    public Result delete(@PathVariable Integer recipeId) {
         recipeService.deleteById(recipeId);
         return Result.success();
     }
@@ -44,10 +44,10 @@ public class RecipeController {
         return Result.success();
     }
 
-    @GetMapping
+    @GetMapping("/{recipeId}")
     @PreAuthorize("hasAuthority('sys:recipe:select')")
     @ApiOperation(value = "通过id查询食谱", notes = "该接口主要用于通过食谱id查找食谱信息")
-    public Result<Recipe> detail(Integer recipeId) {
+    public Result<Recipe> detail(@PathVariable Integer recipeId) {
         Recipe recipe = recipeService.findById(recipeId);
         return Result.success(recipe);
     }

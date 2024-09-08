@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -26,7 +27,14 @@ public class StudentServiceImpl implements StudentService {
     }
     @Override
     public Student findById(Integer studentId) {
-        return studentMapper.selectById(studentId);
+        // 查询学生信息
+        Student student = studentMapper.selectById(studentId);
+
+        // 检查status字段
+        if (student != null && student.getStatus() == 1) return null;
+
+        // 返回查询结果
+        return student;
     }
 
     @Override
@@ -53,6 +61,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteById(Integer studentId) {
-        studentMapper.deleteById(studentId);
+        UpdateWrapper<Student> wrapper = new UpdateWrapper<>();
+        wrapper.eq("student_id", studentId);
+        wrapper.set("status", 1);
+        studentMapper.update(null, wrapper);
+
     }
 }
