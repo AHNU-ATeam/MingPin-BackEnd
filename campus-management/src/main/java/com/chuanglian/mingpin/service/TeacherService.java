@@ -2,17 +2,19 @@ package com.chuanglian.mingpin.service;
 
 
 import com.chuanglian.mingpin.entity.user.Teacher;
+import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
+import com.chuanglian.mingpin.pojo.Result;
 
 import java.util.List;
 
 public interface TeacherService {
-     void add(Teacher teacher) ;
+    Result add(TeacherVO teacher) ;
 
-    List<Teacher> list();
+    Result list();
 
-    void delete(Integer id);
+    Result delete(Integer teacherId);
 
-    void update(Teacher teacher);
+    Result update(TeacherVO teacherVO);
 
-    Teacher getTeacherById(Long teacherId);
+    Result getTeacherById(Integer teacherId);
 }

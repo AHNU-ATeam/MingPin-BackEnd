@@ -21,6 +21,7 @@
         <module>class-management</module>
         <module>campus-management</module>
         <module>attendance</module>
+        <module>homework</module>
         <module>student-management</module>
     </modules>
 
@@ -105,7 +106,12 @@
         <!--Swagger依赖-->
         <dependency>
             <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
             <version>3.0.0</version>
         </dependency>
         <!--阿里云OSS-->

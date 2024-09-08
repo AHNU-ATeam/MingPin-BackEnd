@@ -14,7 +14,7 @@ public interface CampMapper {
     // 新建校区
     @Insert("insert into campusManagement.campus (logo, name, address, principal_id, renewal_start,renewal_end,info,population, created_at,updated_at) values " +
             "(#{logo},#{name},#{address},#{principalId},#{renewalStart},#{renewalEnd},#{info},#{population},#{createdAt},#{updatedAt})")
-    void insertCamp(Campus campus);
+    int insertCamp(Campus campus);
 
     // 查询校区
     public  List<Campus> list(String name, LocalDate begin, LocalDate end);
