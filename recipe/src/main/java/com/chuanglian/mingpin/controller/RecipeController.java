@@ -19,7 +19,7 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("hasAuthority('sys:recipe:add')")
     @ApiOperation(value = "通过id添加食谱", notes = "该接口主要用于添加食谱信息")
     public Result add(@RequestBody Recipe recipe) {
@@ -28,7 +28,7 @@ public class RecipeController {
         return Result.success();
     }
 
-    @PatchMapping("/delete/{recipeId}")
+    @PostMapping("/delete/{recipeId}")
     @PreAuthorize("hasAuthority('sys:recipe:delete')")
     @ApiOperation(value = "通过id删除食谱", notes = "该接口主要用于删除食谱信息")
     public Result delete(@PathVariable Integer recipeId) {
@@ -36,7 +36,7 @@ public class RecipeController {
         return Result.success();
     }
 
-    @PutMapping
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:recipe:update')")
     @ApiOperation(value = "通过id修改食谱", notes = "该接口主要用于修改食谱信息")
     public Result update(@RequestBody @Validated Recipe recipe) {
@@ -55,7 +55,7 @@ public class RecipeController {
     //根据日期查询食谱
     @GetMapping("/date")
     @PreAuthorize("hasAuthority('sys:recipe:selectByDate')")
-    @ApiOperation(value = "通过日期添加食谱", notes = "该接口主要用于通过日期查找食谱信息")
+    @ApiOperation(value = "通过日期查找食谱", notes = "该接口主要用于通过日期查找食谱信息")
     public Result<List<Recipe>> findByDate(@RequestParam String date) {
         List<Recipe> recipeList = recipeService.findByDate(date);
         return Result.success(recipeList);
