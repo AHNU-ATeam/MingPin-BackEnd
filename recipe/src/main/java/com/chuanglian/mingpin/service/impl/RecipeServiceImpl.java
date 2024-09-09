@@ -56,7 +56,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public List<Recipe> findByDate(String date) {
-        return recipeMapper.selectByDate(date);
+    public List<Recipe> findByDate(String date, int type) {
+        return recipeMapper.selectByDate(date, type);
     }
 }

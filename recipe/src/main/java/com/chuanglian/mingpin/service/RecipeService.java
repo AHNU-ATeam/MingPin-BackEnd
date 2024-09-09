@@ -14,5 +14,5 @@ public interface RecipeService {
 
     Recipe findById(Integer recipeId);
 
-    List<Recipe> findByDate(String date);
+    List<Recipe> findByDate(String date, int type);
 }

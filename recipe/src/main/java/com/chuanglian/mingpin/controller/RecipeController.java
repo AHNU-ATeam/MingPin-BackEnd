@@ -56,8 +56,8 @@ public class RecipeController {
     @GetMapping("/date")
     @PreAuthorize("hasAuthority('sys:recipe:selectByDate')")
     @ApiOperation(value = "通过日期查找食谱", notes = "该接口主要用于通过日期查找食谱信息")
-    public Result<List<Recipe>> findByDate(@RequestParam String date) {
-        List<Recipe> recipeList = recipeService.findByDate(date);
+    public Result<List<Recipe>> findByDate(@RequestParam String date, @RequestParam int type) {
+        List<Recipe> recipeList = recipeService.findByDate(date, type);
         return Result.success(recipeList);
     }
 }
