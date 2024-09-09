@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -18,12 +18,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> campusList(Integer campusId) {
-        return studentMapper.selectCampusList(campusId);
+        List<Student> studentList = studentMapper.selectCampusList(campusId);
+        return studentList.stream()
+                .filter(student -> student.getStatus() !=1)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Student> classList(Integer classId) {
-        return studentMapper.selectClassList(classId);
+        List<Student> studentList = studentMapper.selectClassList(classId);
+        return studentList.stream()
+                .filter(student -> student.getStatus() !=1)
+                .collect(Collectors.toList());
     }
     @Override
     public Student findById(Integer studentId) {
