@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +19,15 @@ public class NotificationVO {
     
     private String content;
 
-    private Integer publisher;
+    private ImageVO[] images;
+
+    private FileVO[] files;
+
+    private String publisher;
 
     private String recipient;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

@@ -37,7 +37,7 @@ public class NotificationController {
 
 
     @PostMapping("/post")
-    public Result postNotice(
+    public Result<Integer> postNotice(
             MultipartFile[] pictures,
             MultipartFile[] documents,
             @RequestBody NotificationVO notificationVO) throws IOException {

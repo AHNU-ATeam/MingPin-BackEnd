@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public interface NotificationService {
 
-    Result postNotification(NotificationDTO notificationDTO) throws IOException;
+    Result<Integer> postNotification(NotificationDTO notificationDTO) throws IOException;
 
     Result updateNotification(NotificationDTO notificationDTO);
 

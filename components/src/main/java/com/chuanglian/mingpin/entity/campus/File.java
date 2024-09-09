@@ -3,28 +3,17 @@ package com.chuanglian.mingpin.entity.campus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Notification {
-
+public class File {
     private Integer id;
-    
-    private String title;
-    
-    private String content;
-
-    private Integer publisher;
-
-    private String recipient;
-    
-    private int status;
-    
+    private String url;
+    private Integer noticeId;
+    private Integer status;
     private LocalDateTime createdAt;
-    
     private LocalDateTime updatedAt;
 }
