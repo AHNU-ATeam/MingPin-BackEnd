@@ -22,4 +22,5 @@ public class Recipe {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Integer status;
 }

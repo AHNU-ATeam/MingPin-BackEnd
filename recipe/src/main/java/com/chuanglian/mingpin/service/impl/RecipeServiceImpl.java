@@ -27,7 +27,10 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public void deleteById(Integer recipeId) {
-        recipeMapper.deleteById(recipeId);
+        UpdateWrapper<Recipe> wrapper = new UpdateWrapper<>();
+        wrapper.eq("recipe_id", recipeId);
+        wrapper.set("status", 1);
+        recipeMapper.update(null, wrapper);
     }
 
     @Override
@@ -47,7 +50,9 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe findById(Integer recipeId) {
-        return recipeMapper.selectById(recipeId);
+        Recipe recipe = recipeMapper.selectById(recipeId);
+        if(recipe != null && recipe.getStatus() == 1) return null;
+        return recipe;
     }
 
     @Override
