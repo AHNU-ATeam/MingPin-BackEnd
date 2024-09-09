@@ -23,6 +23,7 @@
         <module>attendance</module>
         <module>homework</module>
         <module>student-management</module>
+        <module>notice-management</module>
     </modules>
 
     <properties>
@@ -112,6 +113,11 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-oas</artifactId>
             <version>3.0.0</version>
         </dependency>
         <!--阿里云OSS-->
