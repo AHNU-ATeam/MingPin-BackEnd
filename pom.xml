@@ -23,7 +23,6 @@
         <module>attendance</module>
         <module>homework</module>
         <module>student-management</module>
-        <module>notice-management</module>
     </modules>
 
     <properties>

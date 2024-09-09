@@ -1,4 +1,4 @@
-package com.chuanglian.mingpin.pojo.vo.campus;
+package com.chuanglian.mingpin.pojo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class NotificationVO {
     
     private String content;
 
-    private String publisher;
+    private Integer publisher;
 
     private String recipient;
 }

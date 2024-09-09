@@ -22,7 +22,7 @@ public class Notification {
     
     private String fileUrl;
 
-    private String publisher;
+    private Integer publisher;
 
     private String recipient;
     
