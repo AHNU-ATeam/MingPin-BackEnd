@@ -43,8 +43,12 @@ public class CampServiceImpl implements CampService {
     }
 
     @Override
-    public void delete(List<Integer> ids) {
-        campMapper.delete(ids);
+    public Result delete(Integer id) {
+        if(campMapper.delete(id) == 0){
+            return Result.error("删除失败");
+        }
+        return Result.success("删除成功");
+
     }
 
     @Override
