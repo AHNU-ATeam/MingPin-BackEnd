@@ -7,11 +7,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>core</artifactId>
+    <artifactId>point-management</artifactId>
     <packaging>jar</packaging>
 
-    <name>core</name>
-    <url>https://maven.apache.org</url>
+    <name>point-management</name>
+    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,31 +28,12 @@
             <groupId>com.chuanglian.mingpin</groupId>
             <artifactId>components</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.chuanglian.mingpin</groupId>
-            <artifactId>login</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.chuanglian.mingpin</groupId>
-            <artifactId>recipe</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.chuanglian.mingpin</groupId>
-            <artifactId>class-management</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.chuanglian.mingpin</groupId>
-            <artifactId>attendance</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.chuanglian.mingpin</groupId>
-            <artifactId>point-management</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.16</version>
         </dependency>
     </dependencies>
 </project>
