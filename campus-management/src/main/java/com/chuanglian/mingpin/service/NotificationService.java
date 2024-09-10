@@ -2,6 +2,7 @@ package com.chuanglian.mingpin.service;
 
 import com.chuanglian.mingpin.entity.campus.Notification;
 import com.chuanglian.mingpin.pojo.NotificationDTO;
+import com.chuanglian.mingpin.pojo.NotificationVO;
 import com.chuanglian.mingpin.pojo.Result;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ public interface NotificationService {
 
     Result updateNotification(NotificationDTO notificationDTO);
 
-    Result getNotification(Integer id);
+    Result<NotificationVO> getNotification(Integer id);
 
     Result getAllNotification();
 

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ImageVO {
     private Integer id;
+    private Integer order;
     private String url;
 
     public ImageVO(String url) {

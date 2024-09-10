@@ -1,5 +1,8 @@
 package com.chuanglian.mingpin.entity.campus;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -10,8 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@TableName("campusManagement.notifications")
 public class Notification {
-
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     
     private String title;

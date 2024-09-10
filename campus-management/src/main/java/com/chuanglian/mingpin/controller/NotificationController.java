@@ -6,10 +6,12 @@ import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.pojo.NotificationVO;
 import com.chuanglian.mingpin.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/notice")
@@ -37,10 +39,11 @@ public class NotificationController {
 
 
     @PostMapping("/post")
+    @PreAuthorize("hasAuthority('sys:notice:post')")
     public Result<Integer> postNotice(
-            MultipartFile[] pictures,
-            MultipartFile[] documents,
-            @RequestBody NotificationVO notificationVO) throws IOException {
+            @RequestParam(value = "images", required = false) MultipartFile[] pictures,
+            @RequestParam(value = "files", required = false) MultipartFile[] documents,
+            @ModelAttribute NotificationVO notificationVO) throws IOException {
 
         // TODO 验证逻辑省略
 
@@ -52,11 +55,16 @@ public class NotificationController {
         return notificationService.postNotification(notificationDTO);
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("update/{id}")
+    @PreAuthorize("hasAuthority('sys:notice:update')")
     public Result updateNotice(
             @PathVariable("id") Integer id,
-            MultipartFile[] files,
-            @RequestBody NotificationVO notificationVO) {
+            @RequestParam(value = "images", required = false) MultipartFile[] pictures,
+            @RequestParam(value = "files", required = false) MultipartFile[] documents,
+            @RequestParam(value = "change", required = false) HashMap<Integer, String> change,
+            @RequestParam(value = "images_swap", required = false) HashMap<Integer, String> picturesSwapUrl,
+            @RequestParam(value = "files_swap", required = false) HashMap<Integer, String> documentsSwapUrl,
+            @ModelAttribute NotificationVO notificationVO) {
 
         NotificationDTO notificationDTO = new NotificationDTO();
 
@@ -64,16 +72,19 @@ public class NotificationController {
     }
 
     @GetMapping("/get/{id}")
-    public Result getNotice(@PathVariable("id") Integer id) {
+    @PreAuthorize("hasAuthority('sys:notice:select')")
+    public Result<NotificationVO> getNotice(@PathVariable("id") Integer id) {
         return notificationService.getNotification(id);
     }
 
-    @GetMapping("/get-all")
+    @PostMapping("/get/all")
+    @PreAuthorize("hasAuthority('sys:notice:select')")
     public Result getAllNotice() {
         return notificationService.getAllNotification();
     }
 
     @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('sys:notice:delete')")
     public Result deleteNotice(@PathVariable("id") Integer id) {
         return notificationService.deleteNotification(id);
     }

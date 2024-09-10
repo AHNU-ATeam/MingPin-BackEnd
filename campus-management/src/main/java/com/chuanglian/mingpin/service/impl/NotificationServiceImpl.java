@@ -12,14 +12,11 @@ import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.service.NotificationService;
 import com.chuanglian.mingpin.utils.AliOSSUtils;
-import com.chuanglian.mingpin.utils.JacksonUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
 
@@ -64,7 +61,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         notification.setRecipient(vo.getRecipient());
 
-        // 执行插入并获得id
+        // 执行入并获得id
         int row = notificationMapper.insert(notification);
         Integer id = notification.getId();
 
@@ -73,21 +70,35 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         // 将图片和文件上传至OSS并保存至数据库
-        for (MultipartFile pic : pictures) {
-            String url = aliOSSUtils.upload(pic);
-            Image image = new Image();
-            image.setUrl(url);
-            image.setNoticeId(id);
-            imageMapper.insert(image);
+        if (pictures != null && pictures.length > 0) {
+            for (int i = 0; i < pictures.length; i++) {
+                MultipartFile pic = pictures[i];
+                if (!pic.isEmpty()) {
+                    String url = aliOSSUtils.upload(pic);
+                    Image image = new Image();
+                    image.setUrl(url);
+                    image.setOrderId(i);
+                    image.setNoticeId(id);
+                    imageMapper.insert(image);
+                }
+            }
         }
 
-        for (MultipartFile doc : documents) {
-            String url = aliOSSUtils.upload(doc);
-            File file = new File();
-            file.setUrl(url);
-            file.setNoticeId(id);
-            filesMapper.insert(file);
+        if (documents != null && documents.length > 0) {
+            for (int i = 0; i < documents.length; i++) {
+                MultipartFile doc = documents[i];
+                if (!doc.isEmpty()) {
+                    String url = aliOSSUtils.upload(doc);
+                    File file = new File();
+                    file.setUrl(url);
+                    file.setOrderId(i);
+                    file.setNoticeId(id);
+                    filesMapper.insert(file);
+                }
+            }
         }
+
+
 
         return Result.success(id);
     }
@@ -98,12 +109,16 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Result getNotification(Integer id) {
+    public Result<NotificationVO> getNotification(Integer id) {
         // 通过id获得notification的实体信息
         Notification notification = notificationMapper.selectById(id);
 
         if (notification == null) {
             return Result.error("查询失败");
+        }
+
+        if (notification.getStatus() == 1) {
+            return Result.error("资源不存在");
         }
 
         // 查询对应id并返回符合条件的记录，包含图片和文件url
@@ -117,31 +132,38 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 将查询的到实体类转换成VO
         ImageVO[] images = new ImageVO[selectImages.size()];
-        FileVO[] files = new FileVO[selectImages.size()];
+        FileVO[] files = new FileVO[selectFiles.size()];
 
-        for (int i = 0; i < images.length; i++) {
-            Image selectImage = selectImages.get(i);
-            ImageVO image = new ImageVO();
-            image.setId(selectImage.getId());
-            image.setUrl(selectImage.getUrl());
-            images[i] = image;
+        if (!selectImages.isEmpty()) {
+            for (int i = 0; i < images.length; i++) {
+                Image selectImage = selectImages.get(i);
+                ImageVO imageVO = new ImageVO();
+                imageVO.setId(selectImage.getId());
+                imageVO.setOrder(selectImage.getOrderId());
+                imageVO.setUrl(selectImage.getUrl());
+                images[i] = imageVO;
+            }
         }
 
-        for (int i = 0; i < files.length; i++) {
-            File selectFile = selectFiles.get(i);
-            FileVO file = new FileVO();
-            file.setId(selectFile.getId());
-            file.setUrl(selectFile.getUrl());
-            files[i] = file;
+        if (!selectFiles.isEmpty()) {
+            for (int i = 0; i < files.length; i++) {
+                File selectFile = selectFiles.get(i);
+                FileVO fileVO = new FileVO();
+                fileVO.setId(selectFile.getId());
+                fileVO.setOrder(selectFile.getOrderId());
+                fileVO.setUrl(selectFile.getUrl());
+                files[i] = fileVO;
+            }
         }
+
 
         // 将所有信息封装成NotificationVO
         NotificationVO notificationVO = new NotificationVO();
         notificationVO.setId(notification.getId());
-        notificationVO.setTitle(notificationVO.getTitle());
+        notificationVO.setTitle(notification.getTitle());
         notificationVO.setContent(notification.getContent());
-        notificationVO.setImages(images);
-        notificationVO.setFiles(files);
+        notificationVO.setImageVOs(images);
+        notificationVO.setFilesVOs(files);
 
         // 通过user_id查询昵称
         User user = userMapper.selectById(notification.getPublisher());
@@ -150,7 +172,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationVO.setUpdatedAt(notification.getUpdatedAt());
         notificationVO.setCreatedAt(notification.getCreatedAt());
 
-        return null;
+        return Result.success(notificationVO);
     }
 
     @Override

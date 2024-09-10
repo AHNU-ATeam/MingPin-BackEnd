@@ -19,9 +19,9 @@ public class NotificationVO {
     
     private String content;
 
-    private ImageVO[] images;
+    private ImageVO[] imageVOs;
 
-    private FileVO[] files;
+    private FileVO[] filesVOs;
 
     private String publisher;
 

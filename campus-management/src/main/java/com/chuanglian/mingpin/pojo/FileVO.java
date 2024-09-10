@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FileVO {
     private Integer id;
+    private Integer order;
     private String url;
 
     public FileVO(String url) {
