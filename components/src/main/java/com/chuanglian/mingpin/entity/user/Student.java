@@ -59,4 +59,6 @@ public class Student {
     private int classId;
 
     private int campusId;
+
+    private int status;
 }
