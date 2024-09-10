@@ -50,8 +50,9 @@ public class StudentController {
         return Result.success();
     }
 
+
     //修改学生个人信息
-    @GetMapping("/update")
+    @PostMapping("/update")
     @ApiOperation(value = "通过id修改学生", notes = "该接口主要用于更新学生信息")
     public Result update(@RequestBody @Validated Student student) {
         studentService.update(student);
