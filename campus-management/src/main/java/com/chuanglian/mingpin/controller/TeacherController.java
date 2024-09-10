@@ -50,11 +50,12 @@ public class TeacherController {
     }
 
     /**
-     *
+     *软删除：将教师id为teacherId的is_deleted设置为1
      * @param teacherId
      * @return
      */
-    @DeleteMapping("/deleteById/{teacherId}")
+    //@DeleteMapping("/deleteById/{teacherId}")
+    @RequestMapping(value = "/deleteById/{teacherId}", method = RequestMethod.POST)
     public Result deleteById(@PathVariable Integer teacherId){
         log.info("删除教师");
         return teacherService.delete(teacherId);
@@ -66,7 +67,7 @@ public class TeacherController {
      * @return
      * @throws IOException
      */
-    @PutMapping("/update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Result update(@ModelAttribute TeacherVO teacherVO) throws IOException {
         log.info("更新教师信息");
         //调用阿里云OSS工具类进行文件上传

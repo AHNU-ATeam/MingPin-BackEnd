@@ -19,5 +19,5 @@ public class Campus {
     private String info;
     private Integer population;
     private LocalDate createdAt,updatedAt;
-
+    private String campusPicsUrls,teacherPicsUrls;
 }

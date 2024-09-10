@@ -16,7 +16,7 @@ public interface CampService {
 
     PageBean page(Integer page, Integer pageSize, String name, LocalDate begin, LocalDate end);
 
-    void delete(List<Integer> ids);
+    Result delete(Integer ids);
 
     void update(Campus campus);
 }
