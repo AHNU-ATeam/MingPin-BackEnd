@@ -3,6 +3,7 @@ package com.chuanglian.mingpin.service.impl;
 import com.chuanglian.mingpin.entity.campus.Campus;
 import com.chuanglian.mingpin.mapper.campus.CampMapper;
 import com.chuanglian.mingpin.pojo.PageBean;
+import com.chuanglian.mingpin.pojo.Result;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
@@ -20,8 +21,11 @@ public class CampServiceImpl implements CampService {
     @Autowired
     private CampMapper campMapper;
     @Override
-    public void addCampus(Campus campus) {
-        campMapper.insertCamp(campus);
+    public Result addCampus(Campus campus) {
+        if(campMapper.insertCamp(campus) ==0){
+            return Result.error("添加失败");
+        }
+        return Result.success("添加成功");
     }
 
     @Override

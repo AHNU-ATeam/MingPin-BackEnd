@@ -51,7 +51,7 @@ public class StudentController {
     }
 
     //修改学生个人信息
-    @PutMapping
+    @GetMapping("/update")
     @ApiOperation(value = "通过id修改学生", notes = "该接口主要用于更新学生信息")
     public Result update(@RequestBody @Validated Student student) {
         studentService.update(student);
@@ -59,9 +59,9 @@ public class StudentController {
     }
 
     //删除学生个人信息
-    @DeleteMapping
+    @PostMapping("/delete/{studentId}")
     @ApiOperation(value = "通过id删除学生", notes = "该接口主要用于删除学生信息")
-    public Result delete(Integer studentId) {
+    public Result delete(@PathVariable Integer studentId) {
         studentService.deleteById(studentId);
         return Result.success();
     }

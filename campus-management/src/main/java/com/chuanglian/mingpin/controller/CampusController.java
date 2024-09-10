@@ -66,7 +66,9 @@ public class CampusController {
 
         campus.setLogo(url);
 
-        campService.addCampus(campus);
+        if(campService.addCampus(campus).getMassage().equals("添加失败")){
+            return Result.error("添加失败");
+        }
 
         return Result.success(campus.getLogo());
     }

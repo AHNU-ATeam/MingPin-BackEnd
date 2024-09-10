@@ -6,6 +6,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### OSS Secret ###
+core/src/main/resources/oss.txt
+
 ### STS ###
 .apt_generated
 .classpath

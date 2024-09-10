@@ -18,7 +18,7 @@ public class JwtUtil {
         // 生成JWT
         return JWT.create()
                 .withClaim("user", claims) // 添加载荷
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 30)) // 过期时间2小时
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30)) // 过期时间2小时
                 .sign(Algorithm.HMAC256("com/chuanglian/mingpin")); // 设置密钥
     }
 
