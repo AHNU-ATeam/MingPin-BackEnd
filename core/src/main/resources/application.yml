@@ -16,16 +16,19 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  config:
+    import: classpath:oss.properties
+
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
 
 aliyun:
   oss:
-    endpoint: https://oss-cn-beijing.aliyuncs.com
-    accessKeyId: LTAI5tL3s5zeB1ZyFQ9C7cZy
-    accessKeySecret: ${AliAccessKeySecret}
-    bucketName: test1872650
+    endpoint: ${server_endpoint}
+    accessKeyId: ${access_key_id}
+    accessKeySecret: ${access_key_secret}
+    bucketName: ${bucket_name}
 
 #spring事务管理日志
 logging:
