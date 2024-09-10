@@ -2,6 +2,7 @@ package com.chuanglian.mingpin.filter;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.chuanglian.mingpin.controller.UserController;
 import com.chuanglian.mingpin.domain.UserForm;
 import com.chuanglian.mingpin.utils.JwtUtil;
 import com.chuanglian.mingpin.utils.RedisCache;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;

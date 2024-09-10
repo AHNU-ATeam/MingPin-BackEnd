@@ -1,20 +1,16 @@
 package com.chuanglian.mingpin.mapper.recipe;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chuanglian.mingpin.entity.recipe.Recipe;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Select;
 
-@Mapper
-public interface RecipeMapper {
-    @Insert("insert into recipeManagement.recipe(content,date,campus_id,created_at,updated_at)"+
-            "values (#{content},#{date},#{campus_id},#{created_at},#{updated_at})")
-    void add(Recipe recipe);
+import java.util.List;
 
-    @Delete("delete from recipeManagement.recipe where recipe_id=#{recipeId}")
-    void deleteById(Integer recipeId);
 
-    @Update("update recipeManagement.recipe set content = #{content}, campus_id = #{campus_id}, updated_at = #{updated_at} where recipe_id = #{recipe_id}")
-    void update(Recipe recipe);
+@TableName("recipeManagement.recipe")
+public interface RecipeMapper extends BaseMapper<Recipe> {
 
-    @Select("select * from recipeManagement.recipe where recipe_id = #{recipeId}")
-    Recipe findById(Integer recipeId);
+    @Select("SELECT * FROM recipeManagement.recipe WHERE date = #{date} and type = #{type}")
+    List<Recipe> selectByDate(String date, int type);
 }
