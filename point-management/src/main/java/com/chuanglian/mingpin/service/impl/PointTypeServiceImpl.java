@@ -19,6 +19,7 @@ public class PointTypeServiceImpl implements PointTypeService {
         LambdaQueryWrapper<PointType> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PointType::getCampusId,campusId);
         List<PointType> pointTypes = pointTypeMapper.selectList(wrapper);
+
         return pointTypes;
     }
 }
