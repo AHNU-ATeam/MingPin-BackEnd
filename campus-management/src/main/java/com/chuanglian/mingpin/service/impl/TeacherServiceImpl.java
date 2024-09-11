@@ -31,7 +31,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Result list() {
-        if(teacherMapper.list() == null){
+        if(teacherMapper.list() == null ){
             return Result.error("查询失败 ");
         }
         return Result.success(teacherMapper.list());

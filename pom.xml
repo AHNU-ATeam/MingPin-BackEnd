@@ -24,6 +24,7 @@
         <module>point-management</module>
         <module>homework</module>
         <module>student-management</module>
+        <module>album</module>
     </modules>
 
     <properties>
