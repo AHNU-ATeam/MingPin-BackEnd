@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 public class Video {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
     
     private String url;
     
-    private Integer noticeId;
+    private Long albumId;
     
     private Integer orderId;
     
