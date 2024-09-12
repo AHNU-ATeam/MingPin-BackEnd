@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VideoVO {
-    private Integer id;
+    private Long id;
     private Integer order;
     private String url;
 }

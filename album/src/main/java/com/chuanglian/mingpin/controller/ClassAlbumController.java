@@ -16,14 +16,21 @@ public class ClassAlbumController {
     private ClassAlbumService classAlbumService;
 
     @PostMapping("/upload")
-    public Result<Integer> uploadClassAlbum(
-            @RequestParam(value = "images", required = false) MultipartFile[] pictures,
-            @RequestParam(value = "files", required = false) MultipartFile[] documents,
-            @ModelAttribute ClassAlbumVO classAlbumVO) {
+    public Result<Long> uploadClassAlbum(@ModelAttribute ClassAlbumVO classAlbumVO) {
 
         ClassAlbumDTO classAlbumDTO = new ClassAlbumDTO();
+        classAlbumDTO.setClassId(classAlbumVO.getClassId());
+        classAlbumDTO.setClassName(classAlbumVO.getClassName());
+        classAlbumDTO.setImageVOS(classAlbumVO.getImageVOS());
+        classAlbumDTO.setVideoVOS(classAlbumVO.getVideoVOS());
+        classAlbumDTO.setPublisher(classAlbumVO.getPublisher());
 
         return classAlbumService.createNewAlbum(classAlbumDTO);
+    }
+
+    @GetMapping("/get/{id}")
+    public Result<ClassAlbumVO> getClassAlbum(@RequestParam("id") Long id) {
+        return classAlbumService.getClassAlbum(id);
     }
 
 }
