@@ -11,8 +11,4 @@ public class FileVO {
     private Integer id;
     private Integer order;
     private String url;
-
-    public FileVO(String url) {
-        this.url = url;
-    }
 }
