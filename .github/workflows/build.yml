@@ -3,10 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - '**'  # 监听所有分支
-    pull_request: # 在创建 pull request 时也触发
-      branches:
-        - '**'
+      - develop
 
 
 jobs:
