@@ -46,7 +46,7 @@ public class StudentController {
     @PostMapping
     @PreAuthorize("hasAuthority('sys:student:add')")
     @ApiOperation(value = "通过id添加学生", notes = "该接口主要用于添加学生信息")
-    public Result add(@RequestBody Student student) {
+    public Result add(@RequestBody @Validated Student student) {
         studentService.add(student);
         return Result.success();
     }

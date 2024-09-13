@@ -11,6 +11,4 @@ import java.util.List;
 @TableName("recipeManagement.recipe")
 public interface RecipeMapper extends BaseMapper<Recipe> {
 
-    @Select("SELECT * FROM recipeManagement.recipe WHERE date = #{date} and type = #{type}")
-    List<Recipe> selectByDate(String date, int type);
 }
