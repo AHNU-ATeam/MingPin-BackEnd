@@ -1,7 +1,6 @@
 package com.chuanglian.mingpin.pojo;
 
 
-import com.chuanglian.mingpin.entity.album.Video;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +18,9 @@ public class ClassAlbumVO {
 
     private String className;
 
-    private ImageVO[] imageVOS;
+    private ClassAlbumImageVO[] images;
 
-    private VideoVO[] videoVOS;
+    private ClassAlbumVideoVO[] video;
 
     private String publisher;
 
