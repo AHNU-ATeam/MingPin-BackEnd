@@ -11,34 +11,34 @@ import com.chuanglian.mingpin.mapper.campus.NotificationMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.service.NotificationService;
-import com.chuanglian.mingpin.utils.AliOSSUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
+    private final NotificationMapper notificationMapper;
+    private final ImageMapper imageMapper;
+    private final FilesMapper filesMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private NotificationMapper notificationMapper;
-
-    @Autowired
-    private ImageMapper imageMapper;
-
-    @Autowired
-    private FilesMapper filesMapper;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
+    public NotificationServiceImpl(
+            NotificationMapper notificationMapper,
+            ImageMapper imageMapper,
+            FilesMapper filesMapper,
+            UserMapper userMapper
+    ) {
+        this.notificationMapper = notificationMapper;
+        this.imageMapper = imageMapper;
+        this.filesMapper = filesMapper;
+        this.userMapper = userMapper;
+    }
 
     @Override
+    @Transactional
     public Result<Integer> postNotification(NotificationDTO notificationDTO) {
         // 将图片和文件从DTO中提取出来
         ImageVO[] pictures = notificationDTO.getImageVOS();
@@ -56,7 +56,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             notification.setPublisher(Integer.parseInt(vo.getPublisher()));
         } catch (MissingFormatArgumentException e) {
-            return Result.error("未知错误" + e);
+            throw new IllegalStateException("未知错误" + e);
         }
 
         notification.setRecipient(vo.getRecipient());
@@ -66,7 +66,7 @@ public class NotificationServiceImpl implements NotificationService {
         Integer id = notification.getId();
 
         if (row == 0) {
-            return Result.error("上传失败");
+            throw new IllegalStateException("上传失败");
         }
 
         // 将图片和文件上传至OSS并保存至数据库
@@ -78,7 +78,7 @@ public class NotificationServiceImpl implements NotificationService {
                     image.setOrderId(pic.getOrder());
                     image.setNoticeId(id);
                     if (imageMapper.insert(image) == 0) {
-                        return Result.error("上传失败");
+                        throw new IllegalStateException("上传失败");
                     }
                 }
             }
@@ -92,7 +92,7 @@ public class NotificationServiceImpl implements NotificationService {
                     file.setOrderId(doc.getOrder());
                     file.setNoticeId(id);
                     if (filesMapper.insert(file) == 0) {
-                        return Result.error("上传失败");
+                        throw new IllegalStateException("上传失败");
                     }
                 }
             }
@@ -102,21 +102,28 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional
     public Result updateNotification(NotificationDTO notificationDTO) {
+        Notification notification = new Notification();
+        BeanUtils.copyProperties(notificationDTO.getNotificationVO(), notification);
+
+
+
         return Result.error("尚未实现");
     }
 
     @Override
+    @Transactional
     public Result<NotificationVO> getNotification(Integer id) {
         // 通过id获得notification的实体信息
         Notification notification = notificationMapper.selectById(id);
 
         if (notification == null) {
-            return Result.error("查询失败");
+            throw new IllegalStateException("查询失败");
         }
 
         if (notification.getStatus() == 1) {
-            return Result.error("资源不存在");
+            throw new IllegalStateException("资源不存在");
         }
 
         // 查询对应id并返回符合条件的记录，包含图片和文件url
@@ -175,6 +182,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public Result getAllNotification() {
+
+
+
         return Result.error("尚未实现");
     }
 
@@ -189,7 +199,7 @@ public class NotificationServiceImpl implements NotificationService {
         int row = notificationMapper.updateById(notification);
 
         if (row == 0) {
-            return Result.error("删除失败");
+            throw new IllegalStateException("删除失败");
         }
 
         return Result.success("删除成功");

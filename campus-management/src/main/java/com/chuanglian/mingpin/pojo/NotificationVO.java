@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,10 @@ public class NotificationVO {
     
     private String content;
 
+    @JsonProperty("images")
     private ImageVO[] imageVOs;
 
+    @JsonProperty("files")
     private FileVO[] filesVOs;
 
     private String publisher;
