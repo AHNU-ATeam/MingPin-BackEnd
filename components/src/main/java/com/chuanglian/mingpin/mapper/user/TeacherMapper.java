@@ -15,7 +15,7 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
     List<Teacher> list();
 
 
-    @Insert("insert into userManagement.teacher(name, phone, permission_status, position,created_at,updated_at, avatar_address, sex, Identification_number, password) values (#{name},#{phone},#{permissionStatus},#{position},#{createdAt},#{updatedAt},#{avatarUrl},#{sex},#{IdentificationNumber},#{password})")
+    @Insert("insert into userManagement.teacher(name, phone, permission_status, position,created_at,updated_at, avatar_address, sex, Identification_number, password,is_deleted) values (#{name},#{phone},#{permissionStatus},#{position},#{createdAt},#{updatedAt},#{avatarAddress},#{sex},#{IdentificationNumber},#{password},#{0})")
     int add(Teacher teacher);
 
     @Update("UPDATE userManagement.teacher\n" +
@@ -23,7 +23,7 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
             "WHERE teacher_id = #{id}")
     int delete(Integer id);
 
-    @Update("UPDATE userManagement.teacher set  avatar_address = #{avatarUrl},sex = #{sex},name = #{name},identification_number = #{identificationNumber},phone = #{phone}, permission_status = #{permissionStatus},position = #{position}, password = #{password},campus_id = #{campusId},updated_at = #{updatedAt} where teacher_id = #{teacherId}")
+    @Update("UPDATE userManagement.teacher set  avatar_address = #{avatarAddress},sex = #{sex},name = #{name},identification_number = #{identificationNumber},phone = #{phone}, permission_status = #{permissionStatus},position = #{position}, password = #{password},campus_id = #{campusId},updated_at = #{updatedAt} where teacher_id = #{teacherId}")
     int update(Teacher teacher);
 
     @Select("select * from userManagement.teacher where teacher_id = #{teacherId}")

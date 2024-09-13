@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TeacherVO {
     private int teacherId;
-    private String avatarUrl;
+    private String avatarAddress;
     private String sex;  //男 ？ 女
     private String name;
     private String IdentificationNumber;
