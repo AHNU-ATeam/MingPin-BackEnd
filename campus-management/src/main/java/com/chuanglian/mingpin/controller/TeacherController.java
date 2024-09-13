@@ -67,7 +67,7 @@ public class TeacherController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @PostMapping(value = "/update")
     public Result update(@ModelAttribute TeacherVO teacherVO) throws IOException {
         log.info("更新教师信息");
 //        调用阿里云OSS工具类进行文件上传

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.album.ClassAlbum;
 import com.chuanglian.mingpin.entity.album.Image;
 import com.chuanglian.mingpin.entity.album.Video;
-import com.chuanglian.mingpin.entity.campus.File;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.album.ClassAlbumMapper;
 import com.chuanglian.mingpin.mapper.album.ImagesMapper;
@@ -14,7 +13,9 @@ import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.service.ClassAlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -51,7 +52,7 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         // 在images和video表中存储图片url和顺序
         Long albumId = classAlbum.getId();
 
-        for (ImageVO i : classAlbumDTO.getImageVOS()) {
+        for (ClassAlbumImageVO i : classAlbumDTO.getImageVOS()) {
             Image image = new Image();
             image.setUrl(i.getUrl());
             image.setAlbumId(albumId);
@@ -59,7 +60,7 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
             imagesMapper.insert(image);
         }
 
-        for (VideoVO v : classAlbumDTO.getVideoVOS()) {
+        for (ClassAlbumVideoVO v : classAlbumDTO.getVideoVOS()) {
             Video video = new Video();
             video.setUrl(v.getUrl());
             video.setAlbumId(albumId);
@@ -77,6 +78,7 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
 
         // 查找基本信息
         ClassAlbum classAlbum = classAlbumMapper.selectById(id);
+        classAlbumVO.setId(classAlbum.getId());
         classAlbumVO.setClassId(classAlbum.getClassId());
         classAlbumVO.setClassName(classAlbum.getClassName());
 
@@ -99,15 +101,15 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         videoLambdaQueryWrapper.eq(Video::getAlbumId, id);
         List<Video> selectVideo = videoMapper.selectList(videoLambdaQueryWrapper);
 
-
         // 将查询的到实体类转换成VO
-        ImageVO[] images = new ImageVO[selectImages.size()];
-        VideoVO[] video = new VideoVO[selectVideo.size()];
+        ClassAlbumImageVO[] images = new ClassAlbumImageVO[selectImages.size()];
+        ClassAlbumVideoVO[] video = new ClassAlbumVideoVO[selectVideo.size()];
 
+        // 将具体信息填入具体VO
         if (!selectImages.isEmpty()) {
             for (int i = 0; i < images.length; i++) {
                 Image selectImage = selectImages.get(i);
-                ImageVO imageVO = new ImageVO();
+                ClassAlbumImageVO imageVO = new ClassAlbumImageVO();
                 imageVO.setId(selectImage.getId());
                 imageVO.setOrder(selectImage.getOrderId());
                 imageVO.setUrl(selectImage.getUrl());
@@ -118,7 +120,7 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         if (!selectVideo.isEmpty()) {
             for (int i = 0; i < video.length; i++) {
                 Video selectVideoSingle = selectVideo.get(i);
-                VideoVO videoVO = new VideoVO();
+                ClassAlbumVideoVO videoVO = new ClassAlbumVideoVO();
                 videoVO.setId(selectVideoSingle.getId());
                 videoVO.setOrder(selectVideoSingle.getOrderId());
                 videoVO.setUrl(selectVideoSingle.getUrl());
@@ -126,7 +128,52 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
             }
         }
 
+        // 填入返回VO
+        classAlbumVO.setImages(images);
+        classAlbumVO.setVideo(video);
+
+        // 添加时间
+        classAlbumVO.setCreatedAt(classAlbum.getCreatedAt());
+        classAlbumVO.setUpdatedAt(classAlbum.getUpdatedAt());
+
 
         return Result.success(classAlbumVO);
+    }
+
+    @Override
+    public Result updateClassAlbum(Long id, ClassAlbumDTO classAlbumDTO) {
+        // 获取待更新的文件VO
+        ClassAlbumImageVO[] images = classAlbumDTO.getImageVOS();
+        ClassAlbumVideoVO[] video = classAlbumDTO.getVideoVOS();
+
+        // 更新class_album表
+        ClassAlbum classAlbum = ClassAlbum.builder()
+                .classId(classAlbumDTO.getClassId())
+                .className(classAlbumDTO.getClassName())
+                .publisher(Long.parseLong(classAlbumDTO.getPublisher()))
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        if (classAlbumMapper.updateById(classAlbum) == 0) {
+            return Result.error("添加失败");
+        }
+
+        for (ClassAlbumImageVO i : images) {
+            Image image = Image.builder()
+                    .id(i.getId())
+                    .url(i.getUrl())
+                    .albumId(id)
+                    .orderId(i.getOrder())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+
+            if (imagesMapper.updateById(image) == 0) {
+                return Result.error("添加失败");
+            }
+        }
+
+
+
+        return null;
     }
 }
