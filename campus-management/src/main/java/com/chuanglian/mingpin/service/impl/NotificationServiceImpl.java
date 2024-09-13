@@ -189,6 +189,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Transactional
     public Result deleteNotification(Integer id) {
         // 软删除操作
         Notification notification = new Notification();

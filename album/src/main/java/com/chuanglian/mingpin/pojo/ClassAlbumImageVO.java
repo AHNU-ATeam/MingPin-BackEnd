@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ClassAlbumImageVO {
     private Long id;
-    private Integer order;
+    @JsonProperty("order")
+    private Integer orderId;
     private String url;
 }

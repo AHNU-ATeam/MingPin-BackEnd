@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.album.ClassAlbum;
 import com.chuanglian.mingpin.entity.album.Image;
 import com.chuanglian.mingpin.entity.album.Video;
+import com.chuanglian.mingpin.entity.campus.Notification;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.album.ClassAlbumMapper;
 import com.chuanglian.mingpin.mapper.album.ImagesMapper;
@@ -11,83 +12,112 @@ import com.chuanglian.mingpin.mapper.album.VideoMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.service.ClassAlbumService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.MissingFormatArgumentException;
 
 @Service
 public class ClassAlbumServiceImpl implements ClassAlbumService {
 
-    @Autowired
-    private ClassAlbumMapper classAlbumMapper;
+    private final ClassAlbumMapper classAlbumMapper;
 
-    @Autowired
-    private ImagesMapper imagesMapper;
+    private final ImagesMapper imagesMapper;
 
-    @Autowired
-    private VideoMapper videoMapper;
+    private final VideoMapper videoMapper;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
+
+    public ClassAlbumServiceImpl(
+            ClassAlbumMapper classAlbumMapper,
+            ImagesMapper imagesMapper,
+            VideoMapper videoMapper,
+            UserMapper userMapper
+    ) {
+        this.classAlbumMapper = classAlbumMapper;
+        this.imagesMapper = imagesMapper;
+        this.videoMapper = videoMapper;
+        this.userMapper = userMapper;
+    }
 
     @Override
+    @Transactional
     public Result<Long> createNewAlbum(ClassAlbumDTO classAlbumDTO) {
         // 提取DTO当中的数据
+        // 获取待更新的文件VO
+        ClassAlbumImageVO[] images = classAlbumDTO.getImageVOS();
+        ClassAlbumVideoVO[] video = classAlbumDTO.getVideoVOS();
+
+        // 填入其他需更新内容
         ClassAlbum classAlbum = new ClassAlbum();
-        classAlbum.setClassId(classAlbumDTO.getClassId());
-        classAlbum.setClassName(classAlbumDTO.getClassName());
+        BeanUtils.copyProperties(classAlbumDTO, classAlbum);
 
         try {
             Long publisherID = Long.parseLong(classAlbumDTO.getPublisher());
             classAlbum.setPublisher(publisherID);
-        } catch (Exception e) {
-            return Result.error(e.toString());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("id不合法", e);
         }
 
-        classAlbumMapper.insert(classAlbum);
+        if (classAlbumMapper.insert(classAlbum) == 0) {
+            throw new IllegalStateException("创建相册失败");
+        }
 
         // 在images和video表中存储图片url和顺序
         Long albumId = classAlbum.getId();
 
-        for (ClassAlbumImageVO i : classAlbumDTO.getImageVOS()) {
-            Image image = new Image();
-            image.setUrl(i.getUrl());
-            image.setAlbumId(albumId);
-            image.setOrderId(i.getOrder());
-            imagesMapper.insert(image);
+        if (video != null) {
+            for (ClassAlbumImageVO i : classAlbumDTO.getImageVOS()) {
+                Image image = new Image();
+                BeanUtils.copyProperties(i, image);
+                image.setAlbumId(albumId);
+                if (imagesMapper.insert(image) == 0) {
+                    throw new IllegalStateException("创建照片池失败");
+                }
+            }
         }
 
-        for (ClassAlbumVideoVO v : classAlbumDTO.getVideoVOS()) {
-            Video video = new Video();
-            video.setUrl(v.getUrl());
-            video.setAlbumId(albumId);
-            video.setOrderId(v.getOrder());
-            videoMapper.insert(video);
+        if (video != null) {
+            for (ClassAlbumVideoVO v : classAlbumDTO.getVideoVOS()) {
+                Video videoSingle = new Video();
+                BeanUtils.copyProperties(v, video);
+                videoSingle.setAlbumId(albumId);
+                if (videoMapper.insert(videoSingle) == 0) {
+                    throw new IllegalStateException("创建视频池失败");
+                }
+            }
         }
 
         return Result.success("上传成功", albumId);
     }
 
     @Override
+    @Transactional
     public Result<ClassAlbumVO> getClassAlbum(Long id) {
         // 创建VO对象
         ClassAlbumVO classAlbumVO = new ClassAlbumVO();
 
         // 查找基本信息
         ClassAlbum classAlbum = classAlbumMapper.selectById(id);
-        classAlbumVO.setId(classAlbum.getId());
-        classAlbumVO.setClassId(classAlbum.getClassId());
-        classAlbumVO.setClassName(classAlbum.getClassName());
+        BeanUtils.copyProperties(classAlbum, classAlbumVO);
+
+        // 判断是否删除
+        if (classAlbum.getStatus() == 1) {
+            throw new IllegalStateException("相册已删除");
+        }
 
         // 获取昵称
         Long publisherId = classAlbum.getPublisher();
         User publisher = userMapper.selectById(publisherId);
 
         if (publisher == null) {
-            return Result.error("昵称获取失败");
+            throw new IllegalStateException("昵称获取失败");
         }
 
         classAlbumVO.setPublisher(publisher.getNickname());
@@ -110,9 +140,7 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
             for (int i = 0; i < images.length; i++) {
                 Image selectImage = selectImages.get(i);
                 ClassAlbumImageVO imageVO = new ClassAlbumImageVO();
-                imageVO.setId(selectImage.getId());
-                imageVO.setOrder(selectImage.getOrderId());
-                imageVO.setUrl(selectImage.getUrl());
+                BeanUtils.copyProperties(selectImage, imageVO);
                 images[i] = imageVO;
             }
         }
@@ -121,59 +149,76 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
             for (int i = 0; i < video.length; i++) {
                 Video selectVideoSingle = selectVideo.get(i);
                 ClassAlbumVideoVO videoVO = new ClassAlbumVideoVO();
-                videoVO.setId(selectVideoSingle.getId());
-                videoVO.setOrder(selectVideoSingle.getOrderId());
-                videoVO.setUrl(selectVideoSingle.getUrl());
+                BeanUtils.copyProperties(selectVideoSingle, videoVO);
                 video[i] = videoVO;
             }
         }
 
         // 填入返回VO
-        classAlbumVO.setImages(images);
-        classAlbumVO.setVideo(video);
-
-        // 添加时间
-        classAlbumVO.setCreatedAt(classAlbum.getCreatedAt());
-        classAlbumVO.setUpdatedAt(classAlbum.getUpdatedAt());
-
+        classAlbumVO.setImageVOS(images);
+        classAlbumVO.setVideoVOS(video);
 
         return Result.success(classAlbumVO);
     }
 
     @Override
+    @Transactional
     public Result updateClassAlbum(Long id, ClassAlbumDTO classAlbumDTO) {
         // 获取待更新的文件VO
         ClassAlbumImageVO[] images = classAlbumDTO.getImageVOS();
         ClassAlbumVideoVO[] video = classAlbumDTO.getVideoVOS();
 
         // 更新class_album表
-        ClassAlbum classAlbum = ClassAlbum.builder()
-                .classId(classAlbumDTO.getClassId())
-                .className(classAlbumDTO.getClassName())
-                .publisher(Long.parseLong(classAlbumDTO.getPublisher()))
-                .updatedAt(LocalDateTime.now())
-                .build();
+        ClassAlbum classAlbum = new ClassAlbum();
+        BeanUtils.copyProperties(classAlbumDTO, classAlbum);
+        classAlbum.setUpdatedAt(LocalDateTime.now());
 
+        // 填入需要更新的id
+        classAlbum.setId(id);
         if (classAlbumMapper.updateById(classAlbum) == 0) {
-            return Result.error("添加失败");
+            throw new IllegalStateException("相册更新失败");
         }
 
-        for (ClassAlbumImageVO i : images) {
-            Image image = Image.builder()
-                    .id(i.getId())
-                    .url(i.getUrl())
-                    .albumId(id)
-                    .orderId(i.getOrder())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-
-            if (imagesMapper.updateById(image) == 0) {
-                return Result.error("添加失败");
+        // 更新images表
+        if (images != null) {
+            for (ClassAlbumImageVO i : images) {
+                Image image = new Image();
+                BeanUtils.copyProperties(i, image);
+                image.setUpdatedAt(LocalDateTime.now());
+                if (imagesMapper.updateById(image) == 0) {
+                    return Result.error("图片更新失败");
+                }
             }
         }
 
+        // 更新video表
+        if (video != null) {
+            for (ClassAlbumVideoVO v : video) {
+                Video videoSingle = new Video();
+                BeanUtils.copyProperties(v, videoSingle);
+                videoSingle.setUpdatedAt(LocalDateTime.now());
+                if (videoMapper.updateById(videoSingle) == 0) {
+                    throw new IllegalStateException("视频更新失败");
+                }
+            }
+        }
 
+        return Result.success();
+    }
 
-        return null;
+    @Override
+    @Transactional
+    public Result deleteClassAlbum(Long id) {
+        // 软删除操作
+        ClassAlbum classAlbum = new ClassAlbum();
+        classAlbum.setId(id);
+        classAlbum.setStatus(1);
+
+        // 获取更新的行数
+        if (classAlbumMapper.updateById(classAlbum) == 0) {
+            throw new IllegalStateException("删除失败或该条记录不存在");
+        }
+
+        return Result.success("删除成功");
     }
 }
