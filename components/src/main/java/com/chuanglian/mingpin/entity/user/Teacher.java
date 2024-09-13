@@ -23,7 +23,7 @@ public class Teacher {
     private String permissionStatus;
 
     //新增
-    private String avatarAddress;
+    private String avatarUrl;
     private String sex;
     private String IdentificationNumber;
     private String password;
@@ -38,7 +38,7 @@ public class Teacher {
         this.name = teacherVO.getName();
         this.phone = teacherVO.getPhone();
         this.permissionStatus =teacherVO.getPermissionStatus();
-        this.avatarAddress = teacherVO.getAvatarAddress();
+        this.avatarUrl = teacherVO.getAvatarUrl();
         this.sex = teacherVO.getSex();
         IdentificationNumber = teacherVO.getIdentificationNumber();
         this.password = teacherVO.getPassword();
