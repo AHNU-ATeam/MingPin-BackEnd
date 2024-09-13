@@ -30,7 +30,9 @@ public class NotificationVO {
 
     private String recipient;
 
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 }

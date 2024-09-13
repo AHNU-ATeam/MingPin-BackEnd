@@ -4,29 +4,24 @@ import com.chuanglian.mingpin.pojo.ClassAlbumDTO;
 import com.chuanglian.mingpin.pojo.ClassAlbumVO;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.ClassAlbumService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/class/album")
 public class ClassAlbumController {
 
-    static {
-        System.out.println(ClassAlbumController.class.getName());
-    }
+    private final ClassAlbumService classAlbumService;
 
-    @Autowired
-    private ClassAlbumService classAlbumService;
+    public ClassAlbumController(ClassAlbumService classAlbumService) {
+        this.classAlbumService = classAlbumService;
+    }
 
     @PostMapping("/upload")
     public Result<Long> uploadClassAlbum(@RequestBody ClassAlbumVO classAlbumVO) {
 
         ClassAlbumDTO classAlbumDTO = new ClassAlbumDTO();
-        classAlbumDTO.setClassId(classAlbumVO.getClassId());
-        classAlbumDTO.setClassName(classAlbumVO.getClassName());
-        classAlbumDTO.setImageVOS(classAlbumVO.getImages());
-        classAlbumDTO.setVideoVOS(classAlbumVO.getVideo());
-        classAlbumDTO.setPublisher(classAlbumVO.getPublisher());
+        BeanUtils.copyProperties(classAlbumVO, classAlbumDTO);
 
         return classAlbumService.createNewAlbum(classAlbumDTO);
     }
@@ -40,15 +35,14 @@ public class ClassAlbumController {
     public Result updateClassAlbum(@RequestBody ClassAlbumVO classAlbumVO) {
         Long id = classAlbumVO.getId();
 
-        ClassAlbumDTO classAlbumDTO = ClassAlbumDTO.builder()
-                .classId(classAlbumVO.getClassId())
-                .className(classAlbumVO.getClassName())
-                .imageVOS(classAlbumVO.getImages())
-                .videoVOS(classAlbumVO.getVideo())
-                .publisher(classAlbumVO.getPublisher())
-                .build();
+        ClassAlbumDTO classAlbumDTO = new ClassAlbumDTO();
+        BeanUtils.copyProperties(classAlbumVO, classAlbumDTO);
 
         return classAlbumService.updateClassAlbum(id, classAlbumDTO);
     }
 
+    @PostMapping("/delete/{id}")
+    public Result deleteClassAlbum(@PathVariable("id") Long id) {
+        return classAlbumService.deleteClassAlbum(id);
+    }
 }

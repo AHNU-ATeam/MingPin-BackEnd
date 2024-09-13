@@ -10,4 +10,6 @@ public interface ClassAlbumService {
     Result<ClassAlbumVO> getClassAlbum(Long id);
 
     Result updateClassAlbum(Long id, ClassAlbumDTO classAlbumDTO);
+
+    Result deleteClassAlbum(Long id);
 }
