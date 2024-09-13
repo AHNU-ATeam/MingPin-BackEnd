@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageVO {
+public class ClassAlbumVideoVO {
     private Long id;
     private Integer order;
     private String url;
