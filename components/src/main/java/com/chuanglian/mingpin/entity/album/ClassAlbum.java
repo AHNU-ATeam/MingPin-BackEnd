@@ -23,10 +23,6 @@ public class ClassAlbum {
     
     private String className;
     
-    private String imageUrl;
-    
-    private String videoUrl;
-    
     private Long publisher;
     
     private Integer status;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -57,6 +58,9 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public List<Recipe> findByDate(String date, int type) {
-        return recipeMapper.selectByDate(date, type);
+        List<Recipe> recipeList = recipeMapper.selectByDate(date, type);
+        return recipeList.stream()
+                .filter(recipe -> recipe.getStatus() !=1)
+                .collect(Collectors.toList());
     }
 }
