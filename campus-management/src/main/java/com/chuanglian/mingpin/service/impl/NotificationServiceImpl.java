@@ -39,10 +39,10 @@ public class NotificationServiceImpl implements NotificationService {
     private AliOSSUtils aliOSSUtils;
 
     @Override
-    public Result<Integer> postNotification(NotificationDTO notificationDTO) throws IOException {
+    public Result<Integer> postNotification(NotificationDTO notificationDTO) {
         // 将图片和文件从DTO中提取出来
-        MultipartFile[] pictures = notificationDTO.getPictures();
-        MultipartFile[] documents = notificationDTO.getDocuments();
+        ImageVO[] pictures = notificationDTO.getImageVOS();
+        FileVO[] documents = notificationDTO.getFileVOS();
 
         // 将文本信息从DTO中提取出来
         NotificationVO vo = notificationDTO.getNotificationVO();
@@ -70,35 +70,33 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         // 将图片和文件上传至OSS并保存至数据库
-        if (pictures != null && pictures.length > 0) {
-            for (int i = 0; i < pictures.length; i++) {
-                MultipartFile pic = pictures[i];
-                if (!pic.isEmpty()) {
-                    String url = aliOSSUtils.upload(pic);
+        if (pictures != null) {
+            for (ImageVO pic : pictures) {
+                if (pic != null) {
                     Image image = new Image();
-                    image.setUrl(url);
-                    image.setOrderId(i);
+                    image.setUrl(pic.getUrl());
+                    image.setOrderId(pic.getOrder());
                     image.setNoticeId(id);
-                    imageMapper.insert(image);
+                    if (imageMapper.insert(image) == 0) {
+                        return Result.error("上传失败");
+                    }
                 }
             }
         }
 
-        if (documents != null && documents.length > 0) {
-            for (int i = 0; i < documents.length; i++) {
-                MultipartFile doc = documents[i];
-                if (!doc.isEmpty()) {
-                    String url = aliOSSUtils.upload(doc);
+        if (documents != null) {
+            for (FileVO doc : documents) {
+                if (doc != null) {
                     File file = new File();
-                    file.setUrl(url);
-                    file.setOrderId(i);
+                    file.setUrl(doc.getUrl());
+                    file.setOrderId(doc.getOrder());
                     file.setNoticeId(id);
-                    filesMapper.insert(file);
+                    if (filesMapper.insert(file) == 0) {
+                        return Result.error("上传失败");
+                    }
                 }
             }
         }
-
-
 
         return Result.success(id);
     }

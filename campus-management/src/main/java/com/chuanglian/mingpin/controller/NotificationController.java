@@ -20,7 +20,6 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
-
     /*
 
         // 合法的照片格式和大小
@@ -37,19 +36,16 @@ public class NotificationController {
 
     */
 
-
     @PostMapping("/post")
     @PreAuthorize("hasAuthority('sys:notice:post')")
     public Result<Integer> postNotice(
-            @RequestParam(value = "images", required = false) MultipartFile[] pictures,
-            @RequestParam(value = "files", required = false) MultipartFile[] documents,
             @ModelAttribute NotificationVO notificationVO) throws IOException {
 
         // TODO 验证逻辑省略
 
         NotificationDTO notificationDTO = new NotificationDTO();
-        notificationDTO.setPictures(pictures);
-        notificationDTO.setDocuments(documents);
+        notificationDTO.setImageVOS(notificationVO.getImageVOs());
+        notificationDTO.setFileVOS(notificationVO.getFilesVOs());
         notificationDTO.setNotificationVO(notificationVO);
 
         return notificationService.postNotification(notificationDTO);
