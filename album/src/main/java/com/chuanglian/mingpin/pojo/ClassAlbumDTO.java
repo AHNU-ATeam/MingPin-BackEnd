@@ -1,6 +1,7 @@
 package com.chuanglian.mingpin.pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,20 +10,16 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ClassAlbumDTO {
 
     private Long classId;
 
     private String className;
 
-    private ImageVO[] imageVOS;
+    private ClassAlbumImageVO[] imageVOS;
 
-    private VideoVO[] videoVOS;
+    private ClassAlbumVideoVO[] videoVOS;
 
     private String publisher;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
 }
