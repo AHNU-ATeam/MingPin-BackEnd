@@ -23,30 +23,34 @@ public class StudentController {
     @PreAuthorize("hasAuthority('sys:student:select')")
     @ApiOperation(value = "通过校区id查询学生", notes = "该接口主要用于通过校区id查询所有学生")
     public Result<List<Student>> campusList(@PathVariable Integer campusId) {
-        List<Student> students = studentService.campusList(campusId);
-        return Result.success(students);
+        return Result.success(studentService.campusList(campusId));
     }
 
     @GetMapping("/classList/{classId}")
     @PreAuthorize("hasAuthority('sys:student:select')")
     @ApiOperation(value = "通过班级id查询学生", notes = "该接口主要用于通过班级id查询所有学生")
     public Result<List<Student>> classList(@PathVariable Integer classId) {
-        List<Student> students = studentService.classList(classId);
-        return Result.success(students);
+        return Result.success(studentService.classList(classId));
     }
 
     @GetMapping("/{studentId}")
     @PreAuthorize("hasAuthority('sys:student:select')")
     @ApiOperation(value = "通过id查询学生", notes = "该接口主要用于通过学生id查询该学生")
     public Result<Student> detail(@PathVariable Integer studentId) {
-        Student student = studentService.findById(studentId);
-        return Result.success(student);
+        return Result.success(studentService.findById(studentId));
+    }
+
+    @GetMapping("/keyWordList")
+    @PreAuthorize("hasAnyAuthority('sys:student:select')")
+    @ApiOperation(value = "关键字查询学生", notes = "该接口主要用于通过关键字模糊查找学生")
+    public Result<List<Student>> selectByKeyWord(@RequestParam String keyWord) {
+        return Result.success(studentService.selectByKeyWord(keyWord));
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('sys:student:add')")
     @ApiOperation(value = "通过id添加学生", notes = "该接口主要用于添加学生信息")
-    public Result add(@RequestBody Student student) {
+    public Result add(@RequestBody @Validated Student student) {
         studentService.add(student);
         return Result.success();
     }
@@ -66,4 +70,5 @@ public class StudentController {
         studentService.deleteById(studentId);
         return Result.success();
     }
+
 }

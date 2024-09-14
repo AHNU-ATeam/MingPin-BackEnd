@@ -12,10 +12,5 @@ import java.util.List;
 @Mapper
 public interface StudentMapper extends BaseMapper<Student> {
 
-    @Select("select * from userManagement.student where campus_id = #{campusId}")
-    List<Student> selectCampusList(Integer campusId);
-
-    @Select("select * from userManagement.student where class_id = #{classId}")
-    List<Student> selectClassList(Integer classId);
 }
 
