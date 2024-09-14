@@ -29,21 +29,21 @@ public class HomeworkAssignmentController {
     }
 
     @GetMapping("/select/{assignmentId}")
-    @PreAuthorize("hasAuthority('sys:homeworkAssignment:selectById')")
+    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "获取作业信息", notes = "该接口用于获取发布的作业详情")
     public Result<HomeworkAssignment> detail(@PathVariable Integer assignmentId) {
         return Result.success(homeworkAssignmentService.findById(assignmentId));
     }
 
     @GetMapping("/select/class/{classId}")
-    @PreAuthorize("hasAuthority('sys:homeworkAssignment:selectByClass')")
+    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "通过班级id获取作业列表", notes = "该接口用于通过班级id获取所有的作业")
     public Result<List<HomeworkAssignment>> findByClass (@PathVariable Integer classId) {
         return Result.success(homeworkAssignmentService.findByClass(classId));
     }
 
     @GetMapping("/select/teacher/{teacherId}")
-    @PreAuthorize("hasAuthority('sys:homeworkAssignment:selectByTeacher')")
+    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "通过教师id获取作业列表", notes = "该接口用于通过教师id获取所有的作业")
     public Result<List<HomeworkAssignment>> findByTeacher(@PathVariable Integer teacherId) {
         return Result.success(homeworkAssignmentService.findByTeacher(teacherId));

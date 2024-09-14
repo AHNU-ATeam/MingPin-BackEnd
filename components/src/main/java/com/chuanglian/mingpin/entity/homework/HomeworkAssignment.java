@@ -1,5 +1,7 @@
 package com.chuanglian.mingpin.entity.homework;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomeworkAssignment {
+    @TableId(value = "assignment_id", type = IdType.AUTO)
     private Integer assignmentId; // 主键
     private String title;         // 作业标题
     private String description;   // 作业描述

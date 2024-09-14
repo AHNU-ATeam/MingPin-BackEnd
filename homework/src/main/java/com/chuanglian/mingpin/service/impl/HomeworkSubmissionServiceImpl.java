@@ -42,8 +42,10 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     @Override
     public void update(HomeworkSubmission homeworkSubmission) {
         homeworkSubmission.setUpdatedAt(LocalDateTime.now());
+
         LambdaUpdateWrapper<HomeworkSubmission> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(HomeworkSubmission::getAssignmentId, homeworkSubmission.getAssignmentId());
+        wrapper.eq(HomeworkSubmission::getSubmissionId, homeworkSubmission.getSubmissionId());
+
         homeworkSubmissionMapper.update(homeworkSubmission, wrapper);
     }
 
@@ -82,6 +84,7 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
         }
         homeworkSubmission.setScore(correctSubmissionVo.getScore());
         homeworkSubmission.setComments(correctSubmissionVo.getComment());
+        homeworkSubmission.setSubmitStatus(2);
         homeworkSubmissionMapper.updateById(homeworkSubmission);
     }
 
