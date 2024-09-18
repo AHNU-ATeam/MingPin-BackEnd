@@ -26,7 +26,6 @@ public class Teacher {
     private String avatarAddress;
     private String sex;
     private String IdentificationNumber;
-    private String password;
 
 
     private String position;
@@ -41,7 +40,6 @@ public class Teacher {
         this.avatarAddress = teacherVO.getAvatarAddress();
         this.sex = teacherVO.getSex();
         IdentificationNumber = teacherVO.getIdentificationNumber();
-        this.password = teacherVO.getPassword();
         this.position = teacherVO.getPosition();
     }
 }

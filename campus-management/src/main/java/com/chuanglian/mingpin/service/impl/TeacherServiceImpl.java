@@ -31,7 +31,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Result list() {
-        if(teacherMapper.list() == null){
+        if(teacherMapper.list() == null ){
             return Result.error("查询失败 ");
         }
         return Result.success(teacherMapper.list());
@@ -51,7 +51,10 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacher = new Teacher(teacherVO);
         teacher.setTeacherId(Math.toIntExact(teacherVO.getTeacherId()));
         teacher.setUpdatedAt(LocalDateTime.now());
-        if(teacherMapper.update(teacher) == 0){
+
+        System.out.println(teacherVO.getPassword());
+
+        if(teacherMapper.updateById(teacher) == 0){
             return Result.error("更新失败");
         }
         return Result.success("更新成功");

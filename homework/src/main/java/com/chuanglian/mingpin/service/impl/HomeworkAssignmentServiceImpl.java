@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.chuanglian.mingpin.entity.homework.HomeworkAssignment;
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
-import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.mapper.homework.HomeworkAssignmentMapper;
 import com.chuanglian.mingpin.mapper.homework.HomeworkSubmissionMapper;
 import com.chuanglian.mingpin.service.HomeworkAssignmentService;

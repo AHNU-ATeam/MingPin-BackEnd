@@ -42,10 +42,10 @@ public class TeacherController {
     @PostMapping("/addTeacher")
     public Result add( @ModelAttribute TeacherVO teacherVO) throws IOException {
         log.info("新增教师: {}" , teacherVO);
-        //调用阿里云OSS工具类进行文件上传
-        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
-        log.info("文件上传完成,文件访问的url: {}", url);
-        teacherVO.setAvatarAddress(url);
+//        调用阿里云OSS工具类进行文件上传
+//        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
+//        log.info("文件上传完成,文件访问的url: {}", url);
+//        teacherVO.setAvatarAddress(url);
         return teacherService.add(teacherVO);
     }
 
@@ -67,13 +67,14 @@ public class TeacherController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @PostMapping(value = "/update")
     public Result update(@ModelAttribute TeacherVO teacherVO) throws IOException {
         log.info("更新教师信息");
-        //调用阿里云OSS工具类进行文件上传
-        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
-        log.info("文件上传完成,文件访问的url: {}", url);
-        teacherVO.setAvatarAddress(url);
+//        调用阿里云OSS工具类进行文件上传
+//        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
+//        log.info("文件上传完成,文件访问的url: {}", url);
+//        teacherVO.setAvatarAddress(url);
+
         return teacherService.update(teacherVO);
     }
 

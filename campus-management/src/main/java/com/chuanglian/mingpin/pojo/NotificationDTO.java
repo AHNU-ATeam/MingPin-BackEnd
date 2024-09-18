@@ -12,9 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 public class NotificationDTO {
 
-    private MultipartFile[] pictures;
+    private ImageVO[] imageVOS;
 
-    private MultipartFile[] documents;
+    private FileVO[] fileVOS;
 
     private NotificationVO notificationVO;
 
