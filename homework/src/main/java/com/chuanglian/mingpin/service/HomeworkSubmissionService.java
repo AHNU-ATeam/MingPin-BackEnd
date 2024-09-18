@@ -2,6 +2,7 @@ package com.chuanglian.mingpin.service;
 
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
 import com.chuanglian.mingpin.entity.homework.vo.CorrectSubmissionVo;
+import com.chuanglian.mingpin.entity.homework.vo.SubmissionDetailVo;
 
 import java.util.List;
 
@@ -14,11 +15,11 @@ public interface HomeworkSubmissionService {
 
     HomeworkSubmission selectById(Integer submissionId);
 
-    List<HomeworkSubmission> selectByStudent(Integer studentId);
+    List<SubmissionDetailVo> selectByStudent(Integer studentId);
 
-    List<HomeworkSubmission> selectBySubmission(Integer assignmentId);
+    List<SubmissionDetailVo> selectBySubmission(Integer assignmentId);
 
     void correct(CorrectSubmissionVo correctSubmissionVo);
 
-    List<HomeworkSubmission> selectBySubmitStatus(Integer assignmentId, Integer submitStatus);
+    List<SubmissionDetailVo> selectBySubmitStatus(Integer assignmentId, Integer submitStatus);
 }
