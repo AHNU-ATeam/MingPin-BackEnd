@@ -1,7 +1,7 @@
 package com.chuanglian.mingpin.pojo;
 
 
-import com.chuanglian.mingpin.entity.album.Video;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,18 +15,24 @@ public class ClassAlbumVO {
 
     private Long id;
 
+    @JsonProperty("class_id")
     private Long classId;
 
+    @JsonProperty("class_name")
     private String className;
 
-    private ImageVO[] imageVOS;
+    @JsonProperty("images")
+    private ClassAlbumImageVO[] imageVOS;
 
-    private VideoVO[] videoVOS;
+    @JsonProperty("video")
+    private ClassAlbumVideoVO[] videoVOS;
 
     private String publisher;
 
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
 }

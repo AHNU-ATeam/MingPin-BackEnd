@@ -11,38 +11,38 @@ import com.chuanglian.mingpin.mapper.campus.NotificationMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.service.NotificationService;
-import com.chuanglian.mingpin.utils.AliOSSUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
+    private final NotificationMapper notificationMapper;
+    private final ImageMapper imageMapper;
+    private final FilesMapper filesMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private NotificationMapper notificationMapper;
-
-    @Autowired
-    private ImageMapper imageMapper;
-
-    @Autowired
-    private FilesMapper filesMapper;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
+    public NotificationServiceImpl(
+            NotificationMapper notificationMapper,
+            ImageMapper imageMapper,
+            FilesMapper filesMapper,
+            UserMapper userMapper
+    ) {
+        this.notificationMapper = notificationMapper;
+        this.imageMapper = imageMapper;
+        this.filesMapper = filesMapper;
+        this.userMapper = userMapper;
+    }
 
     @Override
-    public Result<Integer> postNotification(NotificationDTO notificationDTO) throws IOException {
+    @Transactional
+    public Result<Integer> postNotification(NotificationDTO notificationDTO) {
         // 将图片和文件从DTO中提取出来
-        MultipartFile[] pictures = notificationDTO.getPictures();
-        MultipartFile[] documents = notificationDTO.getDocuments();
+        ImageVO[] pictures = notificationDTO.getImageVOS();
+        FileVO[] documents = notificationDTO.getFileVOS();
 
         // 将文本信息从DTO中提取出来
         NotificationVO vo = notificationDTO.getNotificationVO();
@@ -56,7 +56,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             notification.setPublisher(Integer.parseInt(vo.getPublisher()));
         } catch (MissingFormatArgumentException e) {
-            return Result.error("未知错误" + e);
+            throw new IllegalStateException("未知错误" + e);
         }
 
         notification.setRecipient(vo.getRecipient());
@@ -66,59 +66,64 @@ public class NotificationServiceImpl implements NotificationService {
         Integer id = notification.getId();
 
         if (row == 0) {
-            return Result.error("上传失败");
+            throw new IllegalStateException("上传失败");
         }
 
         // 将图片和文件上传至OSS并保存至数据库
-        if (pictures != null && pictures.length > 0) {
-            for (int i = 0; i < pictures.length; i++) {
-                MultipartFile pic = pictures[i];
-                if (!pic.isEmpty()) {
-                    String url = aliOSSUtils.upload(pic);
+        if (pictures != null) {
+            for (ImageVO pic : pictures) {
+                if (pic != null) {
                     Image image = new Image();
-                    image.setUrl(url);
-                    image.setOrderId(i);
+                    image.setUrl(pic.getUrl());
+                    image.setOrderId(pic.getOrder());
                     image.setNoticeId(id);
-                    imageMapper.insert(image);
+                    if (imageMapper.insert(image) == 0) {
+                        throw new IllegalStateException("上传失败");
+                    }
                 }
             }
         }
 
-        if (documents != null && documents.length > 0) {
-            for (int i = 0; i < documents.length; i++) {
-                MultipartFile doc = documents[i];
-                if (!doc.isEmpty()) {
-                    String url = aliOSSUtils.upload(doc);
+        if (documents != null) {
+            for (FileVO doc : documents) {
+                if (doc != null) {
                     File file = new File();
-                    file.setUrl(url);
-                    file.setOrderId(i);
+                    file.setUrl(doc.getUrl());
+                    file.setOrderId(doc.getOrder());
                     file.setNoticeId(id);
-                    filesMapper.insert(file);
+                    if (filesMapper.insert(file) == 0) {
+                        throw new IllegalStateException("上传失败");
+                    }
                 }
             }
         }
-
-
 
         return Result.success(id);
     }
 
     @Override
+    @Transactional
     public Result updateNotification(NotificationDTO notificationDTO) {
+        Notification notification = new Notification();
+        BeanUtils.copyProperties(notificationDTO.getNotificationVO(), notification);
+
+
+
         return Result.error("尚未实现");
     }
 
     @Override
+    @Transactional
     public Result<NotificationVO> getNotification(Integer id) {
         // 通过id获得notification的实体信息
         Notification notification = notificationMapper.selectById(id);
 
         if (notification == null) {
-            return Result.error("查询失败");
+            throw new IllegalStateException("查询失败");
         }
 
         if (notification.getStatus() == 1) {
-            return Result.error("资源不存在");
+            throw new IllegalStateException("资源不存在");
         }
 
         // 查询对应id并返回符合条件的记录，包含图片和文件url
@@ -177,10 +182,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public Result getAllNotification() {
+
+
+
         return Result.error("尚未实现");
     }
 
     @Override
+    @Transactional
     public Result deleteNotification(Integer id) {
         // 软删除操作
         Notification notification = new Notification();
@@ -191,7 +200,7 @@ public class NotificationServiceImpl implements NotificationService {
         int row = notificationMapper.updateById(notification);
 
         if (row == 0) {
-            return Result.error("删除失败");
+            throw new IllegalStateException("删除失败");
         }
 
         return Result.success("删除成功");

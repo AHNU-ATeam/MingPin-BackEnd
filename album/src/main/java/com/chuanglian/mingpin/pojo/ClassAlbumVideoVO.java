@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoVO {
+public class ClassAlbumVideoVO {
     private Long id;
-    private Integer order;
+    @JsonProperty("order")
+    private Integer orderId;
     private String url;
 }
