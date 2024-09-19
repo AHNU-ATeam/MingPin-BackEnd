@@ -4,7 +4,7 @@ import com.chuanglian.mingpin.domain.RegisterForm;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.RegisterService;
-import com.chuanglian.mingpin.utils.Role;
+import com.chuanglian.mingpin.utils.RoleEnum;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +30,7 @@ public class RegisterController {
         User user = registerService.checkUserExists(phone);
         if (user == null) {
             // 没有被占用，执行注册
-            Role role = Role.fromType(type);
+            RoleEnum role = RoleEnum.fromType(type);
             registerService.register(role, phone, password);
             return Result.success();
         } else {

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Role {
+public enum RoleEnum {
     PRINCIPAL(1, "principal"),
     TEACHER(2, "teacher"),
     STUDENT(3, "student");
@@ -15,8 +15,8 @@ public enum Role {
     private final String type;
 
     // 根据code获取对应的枚举实例
-    public static Role fromCode(int code) {
-        for (Role role : Role.values()) {
+    public static RoleEnum fromCode(int code) {
+        for (RoleEnum role : RoleEnum.values()) {
             if (role.code == code) {
                 return role;
             }
@@ -25,8 +25,8 @@ public enum Role {
     }
 
     // 根据type获取对应的枚举实例
-    public static Role fromType(String type) {
-        for (Role role : Role.values()) {
+    public static RoleEnum fromType(String type) {
+        for (RoleEnum role : RoleEnum.values()) {
             if (role.type.equalsIgnoreCase(type)) {
                 return role;
             }

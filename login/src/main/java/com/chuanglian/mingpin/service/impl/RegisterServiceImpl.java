@@ -13,7 +13,7 @@ import com.chuanglian.mingpin.mapper.user.TeacherMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.RegisterService;
-import com.chuanglian.mingpin.utils.Role;
+import com.chuanglian.mingpin.utils.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,7 +48,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public Result register(Role role, String phone, String password) {
+    public Result register(RoleEnum role, String phone, String password) {
         // 加密
         String encoded = passwordEncoder.encode(password);
 
