@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @TableName("permissionManagement.user_role")
 public class UserRole {
-
+    @TableId("user_id")
     private Integer userId;
 
     private Integer roleId;

@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chuanglian.mingpin.entity.campus.File;
 import com.chuanglian.mingpin.entity.campus.Image;
@@ -11,12 +12,16 @@ import com.chuanglian.mingpin.mapper.campus.NotificationMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.service.NotificationService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingFormatArgumentException;
+import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -126,6 +131,15 @@ public class NotificationServiceImpl implements NotificationService {
             throw new IllegalStateException("资源不存在");
         }
 
+        NotificationVO notificationVO = getNotificationMediaByNoticeID(notification);
+
+        return Result.success(notificationVO);
+    }
+
+    private NotificationVO getNotificationMediaByNoticeID(Notification notification) {
+        // 获取对应Notification实体的ID
+        Integer id = notification.getId();
+
         // 查询对应id并返回符合条件的记录，包含图片和文件url
         QueryWrapper<Image> imageQueryWrapper = new QueryWrapper<>();
         imageQueryWrapper.eq("notice_id", id);
@@ -177,15 +191,33 @@ public class NotificationServiceImpl implements NotificationService {
         notificationVO.setUpdatedAt(notification.getUpdatedAt());
         notificationVO.setCreatedAt(notification.getCreatedAt());
 
-        return Result.success(notificationVO);
+        return notificationVO;
     }
 
     @Override
-    public Result getAllNotification() {
+    public Result<PageInfo<NotificationVO>> getAllNotification(Integer pageNum, Integer pageSize, Long publisher) {
+        // 启动分页
+        PageHelper.startPage(pageNum, pageSize);
 
+        // 获取查询结果，指定id，并排除已被删除的结果
+        LambdaQueryWrapper<Notification> getAllNotificationByPublisher = new LambdaQueryWrapper<>();
+        getAllNotificationByPublisher
+                .eq(Notification::getPublisher, publisher)
+                .eq(Notification::getStatus, 0);
+        List<Notification> resultSet = notificationMapper.selectList(getAllNotificationByPublisher);
 
+        // 将结果集包装成VO类集
+        List<NotificationVO> resultVO = resultSet.stream()
+                .map(Optional::ofNullable)  // 包装为 Optional 处理 null
+                // 检查 null 并抛出异常
+                .map(notice -> notice.orElseThrow(() -> new IllegalStateException("数据提取错误")))
+                .map(this::getNotificationMediaByNoticeID)  // 转换为 VO
+                .toList();
 
-        return Result.error("尚未实现");
+        // 使用 PageInfo 封装分页信息
+        PageInfo<NotificationVO> pageInfo = new PageInfo<>(resultVO);
+
+        return Result.success(pageInfo);
     }
 
     @Override

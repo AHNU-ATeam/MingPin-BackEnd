@@ -4,6 +4,7 @@ import com.chuanglian.mingpin.pojo.NotificationDTO;
 import com.chuanglian.mingpin.pojo.NotificationVO;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.NotificationService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -55,8 +56,11 @@ public class NotificationController {
 
     @PostMapping("/get/all")
     @PreAuthorize("hasAuthority('sys:notice:select')")
-    public Result getAllNotice() {
-        return notificationService.getAllNotification();
+    public Result<PageInfo<NotificationVO>> getAllNotice(
+            @RequestParam(defaultValue = "1") Integer num,
+            @RequestParam(defaultValue = "9999") Integer size,
+            @RequestParam Long publisher) {
+        return notificationService.getAllNotification(num, size, publisher);
     }
 
     @PostMapping("/delete/{id}")

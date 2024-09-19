@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.mapper.point;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chuanglian.mingpin.entity.point.Point;
 import org.apache.ibatis.annotations.Mapper;
