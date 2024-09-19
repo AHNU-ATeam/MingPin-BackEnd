@@ -6,13 +6,17 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.chuanglian.mingpin.entity.homework.HomeworkAssignment;
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
 import com.chuanglian.mingpin.entity.homework.vo.CorrectSubmissionVo;
+import com.chuanglian.mingpin.entity.homework.vo.SubmissionDetailVo;
+import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.mapper.homework.HomeworkAssignmentMapper;
 import com.chuanglian.mingpin.mapper.homework.HomeworkSubmissionMapper;
+import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.service.HomeworkSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +26,8 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     private HomeworkSubmissionMapper homeworkSubmissionMapper;
     @Autowired
     private HomeworkAssignmentMapper homeworkAssignmentMapper;
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Override
     public void submit(HomeworkSubmission homeworkSubmission) {
@@ -58,20 +64,25 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     }
 
     @Override
-    public List<HomeworkSubmission> selectByStudent(Integer studentId) {
+    public List<SubmissionDetailVo> selectByStudent(Integer studentId) {
         QueryWrapper<HomeworkSubmission> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("student_id", studentId)
                 .ne("status", 1);
-        return homeworkSubmissionMapper.selectList(queryWrapper);
+        List<HomeworkSubmission> submissions = homeworkSubmissionMapper.selectList(queryWrapper);
+        return convertToVoList(submissions);
     }
 
     @Override
-    public List<HomeworkSubmission> selectBySubmission(Integer assignmentId) {
+    public List<SubmissionDetailVo> selectBySubmission(Integer assignmentId) {
         QueryWrapper<HomeworkSubmission> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("assignment_id", assignmentId)
                 .ne("status", 1);
-        return homeworkSubmissionMapper.selectList(queryWrapper);
+
+        List<HomeworkSubmission> submissions = homeworkSubmissionMapper.selectList(queryWrapper);
+
+        return convertToVoList(submissions);
     }
+
 
     @Override
     public void correct(CorrectSubmissionVo correctSubmissionVo) {
@@ -89,10 +100,33 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     }
 
     @Override
-    public List<HomeworkSubmission> selectBySubmitStatus(Integer assignmentId, Integer submitStatus) {
+    public List<SubmissionDetailVo> selectBySubmitStatus(Integer assignmentId, Integer submitStatus) {
         QueryWrapper<HomeworkSubmission> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("assignment_id", assignmentId)
                 .eq("submit_status", submitStatus);
-        return homeworkSubmissionMapper.selectList(queryWrapper);
+        List<HomeworkSubmission> submissions = homeworkSubmissionMapper.selectList(queryWrapper);
+        // 将查询到的 HomeworkSubmission 转换成 SubmissionDetailVo 列表
+        return convertToVoList(submissions);
+    }
+
+    private List<SubmissionDetailVo> convertToVoList(List<HomeworkSubmission> submissions) {
+        List<SubmissionDetailVo> voList = new ArrayList<>();
+        for (HomeworkSubmission submission : submissions) {
+            Student student = studentMapper.selectById(submission.getStudentId());
+            SubmissionDetailVo vo = SubmissionDetailVo.builder()
+                    .submissionId(submission.getSubmissionId())
+                    .assignmentId(submission.getAssignmentId())
+                    .studentId(submission.getStudentId())
+                    .textContent(submission.getTextContent())
+                    .submissionDate(submission.getSubmissionDate())
+                    .score(submission.getScore())
+                    .comments(submission.getComments())
+                    .submitStatus(submission.getSubmitStatus())
+                    .status(submission.getStatus())
+                    .studentName(student.getStudentName())
+                    .build();
+            voList.add(vo);
+        }
+        return voList;
     }
 }
