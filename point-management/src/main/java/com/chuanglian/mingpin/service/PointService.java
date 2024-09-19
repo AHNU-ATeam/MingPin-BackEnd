@@ -3,7 +3,7 @@ package com.chuanglian.mingpin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chuanglian.mingpin.entity.point.Point;
-import com.chuanglian.mingpin.entity.point.vo.PointRecordsVo;
+import com.chuanglian.mingpin.pojo.PointRecordsVo;
 
 import java.util.List;
 
