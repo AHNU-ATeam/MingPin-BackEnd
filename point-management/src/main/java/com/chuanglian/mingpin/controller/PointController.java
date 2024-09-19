@@ -1,15 +1,9 @@
 package com.chuanglian.mingpin.controller;
 
-import com.chuanglian.mingpin.entity.point.Point;
-import com.chuanglian.mingpin.entity.point.PointRecords;
-import com.chuanglian.mingpin.entity.point.vo.PointRecordsVo;
 import com.chuanglian.mingpin.service.PointService;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.chuanglian.mingpin.pojo.Result;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("point")

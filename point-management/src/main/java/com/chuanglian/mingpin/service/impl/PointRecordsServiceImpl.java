@@ -3,7 +3,7 @@ package com.chuanglian.mingpin.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.point.PointRecords;
-import com.chuanglian.mingpin.entity.point.vo.PointRecordsVo;
+import com.chuanglian.mingpin.pojo.PointRecordsVo;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.entity.user.vo.StudentVo;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
