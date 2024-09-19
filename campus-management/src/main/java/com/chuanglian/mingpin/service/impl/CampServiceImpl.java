@@ -22,7 +22,7 @@ public class CampServiceImpl implements CampService {
     private CampMapper campMapper;
     @Override
     public Result addCampus(Campus campus) {
-        if(campMapper.insert(campus) == 0){
+        if(campMapper.insertCamp(campus) ==0){
             return Result.error("添加失败");
         }
         return Result.success("添加成功");

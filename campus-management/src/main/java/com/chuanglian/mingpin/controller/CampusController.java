@@ -30,43 +30,73 @@ public class CampusController {
 
 
     /**
-     *
-     * @param campus
+     * 创建新校区
+     * @param campusLogo
+     * @param name
+     * @param address
+     * @param principalId
+     * @param renewalStart
+     * @param renewalEnd
+     * @param info
+     * @param population
      * @return
      * @throws IOException
      */
     @PostMapping("/camp")
-    public Result addCampus(@RequestBody Campus campus) throws IOException {
+    public Result addCampus(MultipartFile campusLogo,
+                            String name,String principalName,String region,
+                            String address,String info,
+                            ArrayList<MultipartFile> campusPics,ArrayList<MultipartFile> teacherPics,
+                            @RequestParam(defaultValue = "0") Integer principalId,
+                            @DateTimeFormat(pattern = "yyyy-mm-dd") @RequestParam(defaultValue = "1999-01-01") LocalDate renewalStart,
+                            @DateTimeFormat(pattern = "yyyy-mm-dd") @RequestParam(defaultValue = "2000-01-01")LocalDate renewalEnd,
+                             Integer population) throws IOException {
 
-//        Campus campus = new Campus();
-//        campus.setName(name);
-//        campus.setRegion(region);
-//        campus.setPrincipalName(principalName);
-//        campus.setAddress(address);
-//        campus.setPrincipalId(principalId);
-//        campus.setRenewalStart(renewalStart);
-//        campus.setRenewalEnd(renewalEnd);
-//        campus.setInfo(info);
-//        campus.setPopulation(population);
+        Campus campus = new Campus();
+        campus.setName(name);
+        campus.setAddress(address);
+        campus.setPrincipalId(principalId);
+        campus.setRenewalStart(renewalStart);
+        campus.setRenewalEnd(renewalEnd);
+        campus.setInfo(info);
+        campus.setPopulation(population);
         campus.setCreatedAt(LocalDate.now());
         campus.setUpdatedAt(LocalDate.now());
-//
-//        campus.setLogoUrl(campusLogo);
 
 
-        //存照片数组
+        //调用阿里云OSS工具类进行文件上传
+
+
+        String url = aliOSSUtils.upload(campusLogo);
+        log.info("文件上传完成,文件访问的url: {}", url);
+
+        campus.setLogo(url);
+
+
+        //存照片
+        ArrayList<String> campusPicsUrls = new ArrayList<>();
+        ArrayList<String> teacherPicsUrls = new ArrayList<>();
+
+        for (MultipartFile file : campusPics) {
+            String campusPicsUrl = aliOSSUtils.upload(file);
+            campusPicsUrls.add(campusPicsUrl);
+        }
+        for (MultipartFile file : teacherPics) {
+            String teacherPicsUrl = aliOSSUtils.upload(file);
+            teacherPicsUrls.add(teacherPicsUrl);
+        }
+
+
 
        // 使用 Jackson 将 ArrayList 转换为 JSON 字符串
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String campusPicsUrlsJson = objectMapper.writeValueAsString(campus.getCampusPics());
+            String campusPicsUrlsJson = objectMapper.writeValueAsString(campusPicsUrls);
             log.info("将list转成json");
-            //System.out.println(campusPicsUrlsJson);
             campus.setCampusPicsUrls(campusPicsUrlsJson);
 
-            String teacherPicsUrlsJson = objectMapper.writeValueAsString(campus.getTeacherPics());
+            String teacherPicsUrlsJson = objectMapper.writeValueAsString(teacherPicsUrls);
             log.info("将list转成json");
-            //System.out.println(teacherPicsUrlsJson);
             campus.setTeacherPicsUrls(teacherPicsUrlsJson);
 
         } catch (JsonProcessingException e) {
@@ -80,7 +110,7 @@ public class CampusController {
             return Result.error("添加校区失败");
         }
 
-        return Result.success(campus.getCampusLogo());
+        return Result.success(campus.getLogo());
     }
 
     /**
