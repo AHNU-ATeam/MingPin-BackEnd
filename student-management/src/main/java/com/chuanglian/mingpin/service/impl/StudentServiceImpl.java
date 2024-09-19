@@ -74,4 +74,14 @@ public class StudentServiceImpl implements StudentService {
 
         studentMapper.update(null, wrapper);
     }
+
+    @Override
+    public List<Student> selectByKeyWord(String keyWord) {
+        LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(Student::getStudentName, keyWord); // 模糊匹配学生名字
+        wrapper.ne(Student::getStatus, 1); // 排除status为1的学生
+
+        // 调用BaseMapper的selectList方法执行查询
+        return studentMapper.selectList(wrapper);
+    }
 }

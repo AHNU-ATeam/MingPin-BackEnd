@@ -2,6 +2,7 @@ package com.chuanglian.mingpin.controller;
 
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
 import com.chuanglian.mingpin.entity.homework.vo.CorrectSubmissionVo;
+import com.chuanglian.mingpin.entity.homework.vo.SubmissionDetailVo;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.HomeworkSubmissionService;
 import io.swagger.annotations.Api;
@@ -37,7 +38,7 @@ public class HomeworkSubmissionController {
         return Result.success();
     }
 
-    @PostMapping("/update/{submissionId}")
+    @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:update')")
     @ApiOperation(value = "修改作业", notes = "该接口用于老师或学生修改作业")
     public Result update(@RequestBody @Validated HomeworkSubmission homeworkSubmission) {
@@ -53,16 +54,16 @@ public class HomeworkSubmissionController {
     }
 
     @GetMapping("/select/student/{studentId}")
-    @PreAuthorize("hasAuthority('sys:homeworkAssignment:selectByStudent')")
+    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "查询学生所有作业", notes = "该接口用于老师或学生根据学生id查询作业")
-    public Result<List<HomeworkSubmission>> selectByStudent(@PathVariable Integer studentId) {
+    public Result<List<SubmissionDetailVo>> selectByStudent(@PathVariable Integer studentId) {
         return Result.success(homeworkSubmissionService.selectByStudent(studentId));
     }
 
     @GetMapping("/select/assignment/{assignmentId}")
-    @PreAuthorize("hasAuthority('sys:homeworkAssignment:selectByAssignment')")
+    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "查询所有提交的作业", notes = "该接口用于老师查询自己发布的作业下的所有提交")
-    public Result<List<HomeworkSubmission>> selectBySubmission(@PathVariable Integer assignmentId) {
+    public Result<List<SubmissionDetailVo>> selectBySubmission(@PathVariable Integer assignmentId) {
         return Result.success(homeworkSubmissionService.selectBySubmission(assignmentId));
     }
 
@@ -75,9 +76,9 @@ public class HomeworkSubmissionController {
     }
 
     @GetMapping("/select/submitStatus/{assignmentId}/{submitStatus}")
-    @PreAuthorize("hasAuthority('sys:homeworkAssignment:selectByStatus')")
+    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "通过提交状态查询所有的作业", notes = "该接口用于老师通过提交状态查看自己发布的作业的提交情况")
-    public Result<List<HomeworkSubmission>> selectBySubmitStatus(@PathVariable Integer assignmentId, @PathVariable Integer submitStatus) {
+    public Result<List<SubmissionDetailVo>> selectBySubmitStatus(@PathVariable Integer assignmentId, @PathVariable Integer submitStatus) {
         return Result.success(homeworkSubmissionService.selectBySubmitStatus(assignmentId, submitStatus));
     }
 

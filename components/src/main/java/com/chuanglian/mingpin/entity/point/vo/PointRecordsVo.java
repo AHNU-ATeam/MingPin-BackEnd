@@ -17,4 +17,5 @@ public class PointRecordsVo {
     private Integer pointChange;
     private String type;
     private StudentVo student;
+    private LocalDateTime createdAt;
 }
