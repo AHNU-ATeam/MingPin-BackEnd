@@ -1,4 +1,4 @@
-package com.chuanglian.mingpin.entity.point.vo;
+package com.chuanglian.mingpin.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.chuanglian.mingpin.entity.user.vo.StudentVo;
