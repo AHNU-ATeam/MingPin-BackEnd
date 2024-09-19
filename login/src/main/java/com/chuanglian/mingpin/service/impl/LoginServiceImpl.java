@@ -7,7 +7,6 @@ import com.chuanglian.mingpin.entity.campus.Campus;
 import com.chuanglian.mingpin.entity.permission.Role;
 import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.User;
-import com.chuanglian.mingpin.mapper.attendance.StuAttendInfoMapper;
 import com.chuanglian.mingpin.mapper.campus.CampMapper;
 import com.chuanglian.mingpin.mapper.permission.RoleMapper;
 import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
@@ -18,7 +17,6 @@ import com.chuanglian.mingpin.service.LoginService;
 import com.chuanglian.mingpin.utils.JwtUtil;
 import com.chuanglian.mingpin.utils.RedisCache;
 import com.chuanglian.mingpin.utils.RoleEnum;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,25 +28,31 @@ import java.util.stream.Collectors;
 @Service
 public class LoginServiceImpl implements LoginService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private RedisCache redisCache;
+    private final RedisCache redisCache;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private CampMapper campMapper;
+    private final CampMapper campMapper;
 
-    @Autowired
-    private RoleMapper roleMapper;
+    private final RoleMapper roleMapper;
 
-    @Autowired
-    private UserRoleMapper userRoleMapper;
+    private final UserRoleMapper userRoleMapper;
 
-
+    public LoginServiceImpl(
+            AuthenticationManager authenticationManager,
+            RedisCache redisCache, UserMapper userMapper,
+            CampMapper campMapper, RoleMapper roleMapper,
+            UserRoleMapper userRoleMapper
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.redisCache = redisCache;
+        this.userMapper = userMapper;
+        this.campMapper = campMapper;
+        this.roleMapper = roleMapper;
+        this.userRoleMapper = userRoleMapper;
+    }
 
     @Override
     public Result<UserVO> login(LoginForm loginForm) {
@@ -79,9 +83,9 @@ public class LoginServiceImpl implements LoginService {
         Role role = roleMapper.selectById(roleId);
         List<Integer> campusIdList = new ArrayList<>();
 
-        if (role.getRole().equals(RoleEnum.PRINCIPAL)) {
-            LambdaQueryWrapper<Campus> getCampusId = new LambdaQueryWrapper();
-            getCampusId.select(Campus::getId).eq(Campus::getPrincipalId, id);
+        if (role.getRole().equals(RoleEnum.PRINCIPAL.getType())) {
+            LambdaQueryWrapper<Campus> getCampusId = new LambdaQueryWrapper<>();
+            getCampusId.select(Campus::getCampusId).eq(Campus::getPrincipalId, id);
             List<Object> list = campMapper.selectObjs(getCampusId);
 
             campusIdList = list.stream()
