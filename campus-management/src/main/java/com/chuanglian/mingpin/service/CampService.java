@@ -1,7 +1,6 @@
 package com.chuanglian.mingpin.service;
 
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.chuanglian.mingpin.entity.campus.Campus;
 import com.chuanglian.mingpin.pojo.PageBean;
 import com.chuanglian.mingpin.pojo.Result;
