@@ -2,7 +2,7 @@ package com.chuanglian.mingpin.service;
 
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.pojo.Result;
-import com.chuanglian.mingpin.utils.Role;
+import com.chuanglian.mingpin.utils.RoleEnum;
 
 public interface RegisterService {
 
@@ -10,6 +10,6 @@ public interface RegisterService {
     User checkUserExists(String phone);
 
     // 注册服务
-    Result register(Role role, String phone, String password);
+    Result register(RoleEnum role, String phone, String password);
 
 }
