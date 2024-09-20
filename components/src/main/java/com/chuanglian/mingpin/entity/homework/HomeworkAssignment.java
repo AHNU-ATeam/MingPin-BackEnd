@@ -19,9 +19,7 @@ public class HomeworkAssignment {
     private Integer assignmentId; // 主键
     private String title;         // 作业标题
     private String description;   // 作业描述
-    private LocalDateTime assignedDate;    // 作业分配日期
-    private LocalDateTime dueDate;         // 作业截止日期
-    private Integer teacherId;    // 教师ID
+    private Integer studentUserId;    // 学生ID
     private Integer classId;      // 班级ID
     private LocalDateTime createdAt;       // 作业创建时间
     private LocalDateTime updatedAt;       // 作业更新时间

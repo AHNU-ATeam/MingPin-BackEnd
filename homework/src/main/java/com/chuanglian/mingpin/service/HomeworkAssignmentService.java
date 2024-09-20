@@ -9,11 +9,10 @@ public interface HomeworkAssignmentService {
 
     HomeworkAssignment findById(Integer assignmentId);
 
-    List<HomeworkAssignment> findByClass(Integer classId);
-
-    List<HomeworkAssignment> findByTeacher(Integer teacherId);
+    List<HomeworkAssignment> findByStudent(Integer studentUserId);
 
     void delete(Integer assignmentId);
 
     void update(HomeworkAssignment homeworkAssignment);
+
 }

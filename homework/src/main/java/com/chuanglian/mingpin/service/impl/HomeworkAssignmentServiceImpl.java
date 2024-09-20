@@ -23,6 +23,7 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
 
     @Override
     public void publish(HomeworkAssignment homeworkAssignment) {
+
         homeworkAssignment.setCreatedAt(LocalDateTime.now());
         homeworkAssignment.setUpdatedAt(LocalDateTime.now());
         homeworkAssignmentMapper.insert(homeworkAssignment);
@@ -43,17 +44,9 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
     }
 
     @Override
-    public List<HomeworkAssignment> findByClass(Integer classId) {
+    public List<HomeworkAssignment> findByStudent(Integer studentUserId) {
         QueryWrapper<HomeworkAssignment> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("class_id", classId)
-                .ne("status", 1); // 不等于 1，即未被删除的作业
-        return homeworkAssignmentMapper.selectList(queryWrapper);
-    }
-
-    @Override
-    public List<HomeworkAssignment> findByTeacher(Integer teacherId) {
-        QueryWrapper<HomeworkAssignment> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("teacher_id", teacherId)
+        queryWrapper.eq("student_user_id", studentUserId)
                 .ne("status", 1); // 不等于 1，即未被删除的作业
         return homeworkAssignmentMapper.selectList(queryWrapper);
     }
@@ -79,4 +72,5 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
         wrapper.eq(HomeworkAssignment::getAssignmentId, homeworkAssignment.getAssignmentId());
         homeworkAssignmentMapper.update(homeworkAssignment, wrapper);
     }
+
 }

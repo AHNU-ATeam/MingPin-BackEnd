@@ -22,7 +22,7 @@ public class HomeworkAssignmentController {
 
     @PostMapping("/publish")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:publish')")
-    @ApiOperation(value = "发布作业", notes = "该接口用于教师发布作业")
+    @ApiOperation(value = "发布作业", notes = "该接口用于学生发布作业")
     public Result publish(@RequestBody @Validated HomeworkAssignment homeworkAssignment){
         homeworkAssignmentService.publish(homeworkAssignment);
         return Result.success();
@@ -35,19 +35,13 @@ public class HomeworkAssignmentController {
         return Result.success(homeworkAssignmentService.findById(assignmentId));
     }
 
-    @GetMapping("/select/class/{classId}")
+    @GetMapping("/select/student/{studentUserId}")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
-    @ApiOperation(value = "通过班级id获取作业列表", notes = "该接口用于通过班级id获取所有的作业")
-    public Result<List<HomeworkAssignment>> findByClass (@PathVariable Integer classId) {
-        return Result.success(homeworkAssignmentService.findByClass(classId));
+    @ApiOperation(value = "通过学生id获取作业列表", notes = "该接口用于通过学生id获取所有的作业")
+    public Result<List<HomeworkAssignment>> findByStudent(@PathVariable Integer studentUserId) {
+        return Result.success(homeworkAssignmentService.findByStudent(studentUserId));
     }
 
-    @GetMapping("/select/teacher/{teacherId}")
-    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
-    @ApiOperation(value = "通过教师id获取作业列表", notes = "该接口用于通过教师id获取所有的作业")
-    public Result<List<HomeworkAssignment>> findByTeacher(@PathVariable Integer teacherId) {
-        return Result.success(homeworkAssignmentService.findByTeacher(teacherId));
-    }
 
     @PostMapping("/delete/{assignmentId}")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:delete')")
