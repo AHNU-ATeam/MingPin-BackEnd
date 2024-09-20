@@ -6,6 +6,7 @@ import com.chuanglian.mingpin.entity.homework.HomeworkAssignment;
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
 import com.chuanglian.mingpin.mapper.homework.HomeworkAssignmentMapper;
 import com.chuanglian.mingpin.mapper.homework.HomeworkSubmissionMapper;
+import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.service.HomeworkAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
     private HomeworkAssignmentMapper homeworkAssignmentMapper;
     @Autowired
     private HomeworkSubmissionMapper homeworkSubmissionMapper;
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Override
     public void publish(HomeworkAssignment homeworkAssignment) {
