@@ -16,6 +16,4 @@ public interface StudentService {
     void update(Student student);
 
     void deleteById(Integer studentId);
-
-    List<Student> selectByKeyWord(String keyWord);
 }

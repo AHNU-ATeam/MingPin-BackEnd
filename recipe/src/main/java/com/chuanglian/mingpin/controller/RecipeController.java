@@ -22,7 +22,7 @@ public class RecipeController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('sys:recipe:add')")
     @ApiOperation(value = "通过id添加食谱", notes = "该接口主要用于添加食谱信息")
-    public Result add(@RequestBody @Validated Recipe recipe) {
+    public Result add(@RequestBody Recipe recipe) {
         recipe.setRecipeId(null);
         recipeService.add(recipe);
         return Result.success();

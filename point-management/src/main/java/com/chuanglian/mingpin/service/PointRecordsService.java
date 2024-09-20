@@ -1,7 +1,6 @@
 package com.chuanglian.mingpin.service;
 
-import com.chuanglian.mingpin.entity.point.PointRecords;
-import com.chuanglian.mingpin.entity.point.vo.PointRecordsVo;
+import com.chuanglian.mingpin.pojo.PointRecordsVo;
 
 import java.util.List;
 
