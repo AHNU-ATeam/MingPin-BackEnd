@@ -1,6 +1,7 @@
 package com.chuanglian.mingpin.service;
 
 import com.chuanglian.mingpin.entity.user.Student;
+import com.chuanglian.mingpin.entity.user.vo.StudentVo;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface StudentService {
 
     Student findById(Integer studentId);
 
-    void add(Student student);
+    void add(StudentVo studentVo);
 
     void update(Student student);
 

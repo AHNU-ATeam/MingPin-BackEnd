@@ -3,15 +3,15 @@ package com.chuanglian.mingpin.entity.user;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @TableName("userManagement.[user]")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;

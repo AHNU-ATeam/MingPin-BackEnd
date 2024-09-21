@@ -1,6 +1,7 @@
 package com.chuanglian.mingpin.controller;
 
 import com.chuanglian.mingpin.entity.user.Student;
+import com.chuanglian.mingpin.entity.user.vo.StudentVo;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.StudentService;
 import io.swagger.annotations.Api;
@@ -46,8 +47,8 @@ public class StudentController {
     @PostMapping
     @PreAuthorize("hasAuthority('sys:student:add')")
     @ApiOperation(value = "通过id添加学生", notes = "该接口主要用于添加学生信息")
-    public Result add(@RequestBody Student student) {
-        studentService.add(student);
+    public Result add(@RequestBody StudentVo studentVo) {
+        studentService.add(studentVo);
         return Result.success();
     }
 
