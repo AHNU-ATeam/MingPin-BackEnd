@@ -18,7 +18,7 @@ public class Student {
     @TableId(value = "student_id", type = IdType.AUTO)
     private Integer studentId;
 
-    private String studentName;
+    private Integer userId;
 
     private String gender;
 

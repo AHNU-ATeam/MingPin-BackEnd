@@ -19,9 +19,10 @@ public class HomeworkAssignment {
     private Integer assignmentId; // 主键
     private String title;         // 作业标题
     private String description;   // 作业描述
-    private Integer studentUserId;    // 学生ID
+    private Integer studentUserId;    // 学生的用户ID
     private Integer classId;      // 班级ID
     private LocalDateTime createdAt;       // 作业创建时间
     private LocalDateTime updatedAt;       // 作业更新时间
     private Integer status;       // 删除状态 (0 表示未删除, 1 表示已删除)
+    private Integer correctStatus;
 }

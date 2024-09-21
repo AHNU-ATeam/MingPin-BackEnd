@@ -1,47 +1,46 @@
 package com.chuanglian.mingpin.service.impl;
 
-import com.aliyun.oss.ServiceException;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.chuanglian.mingpin.entity.homework.HomeworkAssignment;
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
-//import com.chuanglian.mingpin.entity.homework.vo.CorrectSubmissionVo;
-//import com.chuanglian.mingpin.entity.homework.vo.SubmissionDetailVo;
-import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.mapper.homework.HomeworkAssignmentMapper;
 import com.chuanglian.mingpin.mapper.homework.HomeworkSubmissionMapper;
-import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.service.HomeworkSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService {
 
+    private final HomeworkSubmissionMapper homeworkSubmissionMapper;
+
+    private final HomeworkAssignmentMapper homeworkAssignmentMapper;
+
     @Autowired
-    private HomeworkSubmissionMapper homeworkSubmissionMapper;
-    @Autowired
-    private HomeworkAssignmentMapper homeworkAssignmentMapper;
-    @Autowired
-    private StudentMapper studentMapper;
+    public HomeworkSubmissionServiceImpl(HomeworkSubmissionMapper homeworkSubmissionMapper, HomeworkAssignmentMapper homeworkAssignmentMapper) {
+        this.homeworkSubmissionMapper = homeworkSubmissionMapper;
+        this.homeworkAssignmentMapper = homeworkAssignmentMapper;
+    }
 
     @Override
+    @Transactional
     public void submit(HomeworkSubmission homeworkSubmission) {
+        HomeworkAssignment homeworkAssignment = homeworkAssignmentMapper.selectById(homeworkSubmission.getAssignmentId());
+        homeworkAssignment.setCorrectStatus(1);
         homeworkSubmission.setCreatedAt(LocalDateTime.now());
         homeworkSubmission.setUpdatedAt(LocalDateTime.now());
-        homeworkSubmission.setSubmitStatus(1);
         homeworkSubmissionMapper.insert(homeworkSubmission);
     }
 
     @Override
     public void delete(Integer submissionId) {
         LambdaUpdateWrapper<HomeworkSubmission> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(HomeworkSubmission::getSubmissionId, submissionId);
-        wrapper.set(HomeworkSubmission::getStatus, 1);
+        wrapper.eq(HomeworkSubmission::getSubmissionId, submissionId)
+                .set(HomeworkSubmission::getStatus, 1);
         homeworkSubmissionMapper.update(null, wrapper);
     }
 
@@ -56,77 +55,10 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     }
 
     @Override
-    public HomeworkSubmission selectById(Integer submissionId) {
-        QueryWrapper<HomeworkSubmission> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("submission_id", submissionId)
-                .ne("status", 1);
+    public HomeworkSubmission selectById(Integer assignmentId) {
+        LambdaQueryWrapper<HomeworkSubmission> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(HomeworkSubmission::getAssignmentId, assignmentId)
+                .ne(HomeworkSubmission::getStatus, 1);
         return homeworkSubmissionMapper.selectOne(queryWrapper);
     }
-
-//    @Override
-//    public List<SubmissionDetailVo> selectByStudent(Integer studentId) {
-//        QueryWrapper<HomeworkSubmission> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("student_id", studentId)
-//                .ne("status", 1);
-//        List<HomeworkSubmission> submissions = homeworkSubmissionMapper.selectList(queryWrapper);
-//        return convertToVoList(submissions);
-//    }
-//
-//    @Override
-//    public List<SubmissionDetailVo> selectBySubmission(Integer assignmentId) {
-//        QueryWrapper<HomeworkSubmission> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("assignment_id", assignmentId)
-//                .ne("status", 1);
-//
-//        List<HomeworkSubmission> submissions = homeworkSubmissionMapper.selectList(queryWrapper);
-//
-//        return convertToVoList(submissions);
-//    }
-//
-//
-//    @Override
-//    public void correct(CorrectSubmissionVo correctSubmissionVo) {
-//        HomeworkSubmission homeworkSubmission = homeworkSubmissionMapper.selectById(correctSubmissionVo.getSubmissionId());
-//        Integer assignmentId = homeworkSubmission.getAssignmentId();
-//        HomeworkAssignment homeworkAssignment = homeworkAssignmentMapper.selectById(assignmentId);
-//        Integer teacherId = homeworkAssignment.getTeacherId();
-//        if (!correctSubmissionVo.getTeacherId().equals(teacherId)) {
-//            throw new ServiceException("您不能批改此作业");
-//        }
-//        homeworkSubmission.setScore(correctSubmissionVo.getScore());
-//        homeworkSubmission.setComments(correctSubmissionVo.getComment());
-//        homeworkSubmission.setSubmitStatus(2);
-//        homeworkSubmissionMapper.updateById(homeworkSubmission);
-//    }
-//
-//    @Override
-//    public List<SubmissionDetailVo> selectBySubmitStatus(Integer assignmentId, Integer submitStatus) {
-//        QueryWrapper<HomeworkSubmission> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.eq("assignment_id", assignmentId)
-//                .eq("submit_status", submitStatus);
-//        List<HomeworkSubmission> submissions = homeworkSubmissionMapper.selectList(queryWrapper);
-//        // 将查询到的 HomeworkSubmission 转换成 SubmissionDetailVo 列表
-//        return convertToVoList(submissions);
-//    }
-//
-//    private List<SubmissionDetailVo> convertToVoList(List<HomeworkSubmission> submissions) {
-//        List<SubmissionDetailVo> voList = new ArrayList<>();
-//        for (HomeworkSubmission submission : submissions) {
-//            Student student = studentMapper.selectById(submission.getStudentId());
-//            SubmissionDetailVo vo = SubmissionDetailVo.builder()
-//                    .submissionId(submission.getSubmissionId())
-//                    .assignmentId(submission.getAssignmentId())
-//                    .studentId(submission.getStudentId())
-//                    .textContent(submission.getTextContent())
-//                    .submissionDate(submission.getSubmissionDate())
-//                    .score(submission.getScore())
-//                    .comments(submission.getComments())
-//                    .submitStatus(submission.getSubmitStatus())
-//                    .status(submission.getStatus())
-//                    .studentName(student.getStudentName())
-//                    .build();
-//            voList.add(vo);
-//        }
-//        return voList;
-//    }
 }

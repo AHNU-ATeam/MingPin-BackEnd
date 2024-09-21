@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/homeworkSubmission")
@@ -22,7 +21,7 @@ public class HomeworkSubmissionController {
 
     @PostMapping("/submit")
     @PreAuthorize("hasAuthority('sys:homeworkSubmission:submit')")
-    @ApiOperation(value = "提交作业", notes = "该接口用于学生提交作业")
+    @ApiOperation(value = "提交作业", notes = "该接口用于老师提交作业")
     public Result submit(@RequestBody @Validated HomeworkSubmission homeworkSubmission) {
         homeworkSubmissionService.submit(homeworkSubmission);
         return Result.success();
@@ -38,46 +37,17 @@ public class HomeworkSubmissionController {
 
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:update')")
-    @ApiOperation(value = "修改作业", notes = "该接口用于老师或学生修改作业")
+    @ApiOperation(value = "修改作业", notes = "该接口用于老师修改作业")
     public Result update(@RequestBody @Validated HomeworkSubmission homeworkSubmission) {
         homeworkSubmissionService.update(homeworkSubmission);
         return Result.success();
     }
 
-    @GetMapping("/select/{submissionId}")
+    @GetMapping("/select/{assignmentId}")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "通过id查询作业", notes = "该接口用于查询单个作业")
-    public Result<HomeworkSubmission> selectById(@PathVariable Integer submissionId) {
-        return Result.success(homeworkSubmissionService.selectById(submissionId));
+    public Result<HomeworkSubmission> selectById(@PathVariable Integer assignmentId) {
+        return Result.success(homeworkSubmissionService.selectById(assignmentId));
     }
-
-//    @GetMapping("/select/student/{studentId}")
-//    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
-//    @ApiOperation(value = "查询学生所有作业", notes = "该接口用于老师或学生根据学生id查询作业")
-//    public Result<List<SubmissionDetailVo>> selectByStudent(@PathVariable Integer studentId) {
-//        return Result.success(homeworkSubmissionService.selectByStudent(studentId));
-//    }
-//
-//    @GetMapping("/select/assignment/{assignmentId}")
-//    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
-//    @ApiOperation(value = "查询所有提交的作业", notes = "该接口用于老师查询自己发布的作业下的所有提交")
-//    public Result<List<SubmissionDetailVo>> selectBySubmission(@PathVariable Integer assignmentId) {
-//        return Result.success(homeworkSubmissionService.selectBySubmission(assignmentId));
-//    }
-//
-//    @PostMapping("/correct")
-//    @PreAuthorize("hasAuthority('sys:homeworkAssignment:correct')")
-//    @ApiOperation(value = "批改作业", notes = "该接口用于老师批改自己发布的作业或更正自己批改的作业")
-//    public Result correct(@RequestBody CorrectSubmissionVo correctSubmissionVo) {
-//        homeworkSubmissionService.correct(correctSubmissionVo);
-//        return Result.success();
-//    }
-//
-//    @GetMapping("/select/submitStatus/{assignmentId}/{submitStatus}")
-//    @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
-//    @ApiOperation(value = "通过提交状态查询所有的作业", notes = "该接口用于老师通过提交状态查看自己发布的作业的提交情况")
-//    public Result<List<SubmissionDetailVo>> selectBySubmitStatus(@PathVariable Integer assignmentId, @PathVariable Integer submitStatus) {
-//        return Result.success(homeworkSubmissionService.selectBySubmitStatus(assignmentId, submitStatus));
-//    }
 
 }
