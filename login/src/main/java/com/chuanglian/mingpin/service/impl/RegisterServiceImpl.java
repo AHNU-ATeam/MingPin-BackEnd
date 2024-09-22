@@ -70,36 +70,35 @@ public class RegisterServiceImpl implements RegisterService {
                 principal = principalMapper.selectOne(queryWrapper);
                 id = principal.getPrincipalId();
             }
-            case TEACHER -> {
-                // 教师初始化信息
-                Teacher teacher = Teacher.builder()
-                        .phone(phone)
-                        .permissionStatus("teacher")
-                        .build();
-                // 在teacher表中插入信息
-                teacherMapper.insert(teacher);
-
-                // 在teacher表中根据手机号查询
-                LambdaQueryWrapper<Teacher> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(Teacher::getPhone, phone);
-                teacher = teacherMapper.selectOne(queryWrapper);
-                id = teacher.getTeacherId();
-            }
-            case STUDENT -> {
-                // 学生初始化信息
-                Student student = Student.builder()
-                        .parentPhone(phone)
-                        .build();
-                student.setParentPhone(phone);
-                // 在student表中插入信息
-                studentMapper.insert(student);
-
-                // 在student表中根据手机号查询
-                LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(Student::getParentPhone, phone);
-                student = studentMapper.selectOne(queryWrapper);
-                id = student.getStudentId();
-            }
+//            case TEACHER -> {
+//                // 教师初始化信息
+//                Teacher teacher = Teacher.builder()
+//                        .permissionStatus("teacher")
+//                        .build();
+//                // 在teacher表中插入信息
+//                teacherMapper.insert(teacher);
+//
+//                // 在teacher表中根据手机号查询
+//                LambdaQueryWrapper<Teacher> queryWrapper = new LambdaQueryWrapper<>();
+//                queryWrapper.eq(Teacher::getPhone, phone);
+//                teacher = teacherMapper.selectOne(queryWrapper);
+//                id = teacher.getTeacherId();
+//            }
+//            case STUDENT -> {
+//                // 学生初始化信息
+//                Student student = Student.builder()
+//                        .parentPhone(phone)
+//                        .build();
+//                student.setParentPhone(phone);
+//                // 在student表中插入信息
+//                studentMapper.insert(student);
+//
+//                // 在student表中根据手机号查询
+//                LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
+//                queryWrapper.eq(Student::getParentPhone, phone);
+//                student = studentMapper.selectOne(queryWrapper);
+//                id = student.getStudentId();
+//            }
             default -> {
                 return Result.error("角色类型不存在");
             }

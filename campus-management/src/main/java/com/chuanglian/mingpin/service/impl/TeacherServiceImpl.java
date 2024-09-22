@@ -1,31 +1,61 @@
 package com.chuanglian.mingpin.service.impl;
 
 import com.chuanglian.mingpin.entity.user.Teacher;
-import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
+import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.mapper.user.UserMapper;
+import com.chuanglian.mingpin.pojo.TeacherVO;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.TeacherService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
 
-    @Autowired
-    private TeacherMapper teacherMapper;
+    private final TeacherMapper teacherMapper;
+
+    private final UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public TeacherServiceImpl(
+            TeacherMapper teacherMapper,
+            UserMapper userMapper,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.teacherMapper = teacherMapper;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
+    @Transactional
     public Result add(TeacherVO teacherVo) {
-        Teacher teacher = new Teacher(teacherVo);
+        Teacher teacher = new Teacher();
+        User user = new User();
+        BeanUtils.copyProperties(teacherVo, teacher);
+        BeanUtils.copyProperties(teacherVo, user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         teacher.setCreatedAt(LocalDateTime.now());
         teacher.setUpdatedAt(LocalDateTime.now());
+
+        if (userMapper.insert(user) == 0) {
+            throw new IllegalStateException("创建失败");
+        }
+
+        int id = user.getId();
+        teacher.setUserId(id);
+
         if (teacherMapper.add(teacher) == 0) {
             return Result.error("创建失败");
         }
+
         return Result.success("创建成功");
     }
 
@@ -48,15 +78,16 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Result update(TeacherVO teacherVO) {
-        Teacher teacher = new Teacher(teacherVO);
-        teacher.setTeacherId(Math.toIntExact(teacherVO.getTeacherId()));
-        teacher.setUpdatedAt(LocalDateTime.now());
-
-        System.out.println(teacherVO.getPassword());
-
-        if(teacherMapper.updateById(teacher) == 0){
-            return Result.error("更新失败");
-        }
+//        TODO
+//        Teacher teacher = new Teacher(teacherVO);
+//        teacher.setTeacherId(Math.toIntExact(teacherVO.getTeacherId()));
+//        teacher.setUpdatedAt(LocalDateTime.now());
+//
+//        System.out.println(teacherVO.getPassword());
+//
+//        if(teacherMapper.updateById(teacher) == 0){
+//            throw new IllegalStateException("更新失败");
+//        }
         return Result.success("更新成功");
     }
 

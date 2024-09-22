@@ -3,7 +3,6 @@ package com.chuanglian.mingpin.mapper.user;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.chuanglian.mingpin.entity.user.Teacher;
-import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
