@@ -3,13 +3,13 @@ package com.chuanglian.mingpin.entity.user;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @TableName("userManagement.[user]")
 public class User {
@@ -27,7 +27,6 @@ public class User {
     @NonNull
     private String nickname;
 
-    @NonNull
     private Integer boundId;
 
     private LocalDateTime createdAt;
