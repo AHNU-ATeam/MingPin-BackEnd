@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.point.Point;
 import com.chuanglian.mingpin.entity.point.PointRecords;
 import com.chuanglian.mingpin.entity.user.Student;
-import com.chuanglian.mingpin.entity.user.vo.StudentVo;
+import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
 import com.chuanglian.mingpin.mapper.point.PointMapper;
 import com.chuanglian.mingpin.mapper.point.PointRecordsMapper;
@@ -43,7 +43,7 @@ public class PointServiceImpl implements PointService {
         LambdaQueryWrapper<Point> wrapper= new LambdaQueryWrapper<Point>().eq(Point::getStudentId,studentId);
         Point point = pointMapper.selectOne(wrapper);
         Student student = studentMapper.selectById(studentId);
-        StudentVo studentVo = BeanUtil.copyProperties(student, StudentVo.class);
+        StudentVO studentVo = BeanUtil.copyProperties(student, StudentVO.class);
         point.setStudent(studentVo);
         return point;
     }
@@ -56,12 +56,12 @@ public class PointServiceImpl implements PointService {
 //        List<Integer> studentsId = classMgmtMapper.getStudentsId(classId);
 //        List<Student> students = studentMapper.selectBatchIds(studentsId);
         List<Integer> studentIds = students.stream().map(Student::getStudentId).toList();
-        List<StudentVo> studentVos = BeanUtil.copyToList(students, StudentVo.class);
+        List<StudentVO> studentVOS = BeanUtil.copyToList(students, StudentVO.class);
         LambdaQueryWrapper<Point> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(Point::getStudentId,studentIds);
         wrapper.orderByDesc(Point::getPoint);
         List<Point> points = pointMapper.selectList(wrapper);
-        Map<Integer, StudentVo> studentVoMap = studentVos.stream().collect(Collectors.toMap(StudentVo::getStudentId, studentVo -> studentVo));
+        Map<Integer, StudentVO> studentVoMap = studentVOS.stream().collect(Collectors.toMap(StudentVO::getStudentId, studentVo -> studentVo));
         points.forEach(point -> point.setStudent(studentVoMap.get(point.getStudentId())));
         return points;
     }

@@ -4,10 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.entity.user.User;
-import com.chuanglian.mingpin.entity.user.vo.StudentVo;
+import com.chuanglian.mingpin.entity.user.dto.StudentDTO;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.StudentService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -56,34 +57,19 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
-    public void add(StudentVo studentVo) {
+    public void add(StudentDTO studentDTO) {
         User user = new User();
         Student student = new Student();
-        user.setBoundPhone(studentVo.getParentPhone());
+        user.setBoundPhone(studentDTO.getParentPhone());
         user.setPassword(passwordEncoder.encode("123456"));
-        user.setNickname(studentVo.getStudentName());
+        user.setNickname(studentDTO.getStudentName());
         user.setStatus("enable");
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         userMapper.insert(user);
 
+        BeanUtils.copyProperties(studentDTO, student);
         student.setUserId(user.getId());
-        student.setGender(studentVo.getGender());
-        student.setBirthDate(studentVo.getBirthDate());
-        student.setCalendarType(studentVo.getCalendarType());
-        student.setSchoolName(studentVo.getSchoolName());
-        student.setGradeName(studentVo.getGradeName());
-        student.setClassName(studentVo.getClassName());
-        student.setParentName(studentVo.getParentName());
-        student.setParentPhone(studentVo.getParentPhone());
-        student.setAddress(studentVo.getAddress());
-        student.setEmergencyContactPhone(studentVo.getEmergencyContactPhone());
-        student.setSpecialCondition(studentVo.getSpecialCondition());
-        student.setServiceItem(studentVo.getServiceItem());
-        student.setParentSuggestions(studentVo.getParentSuggestions());
-        student.setStudentSummary(studentVo.getStudentSummary());
-        student.setAdmissionDate(studentVo.getAdmissionDate());
-        student.setTeacherName(studentVo.getTeacherName());
         student.setCreatedAt(LocalDateTime.now());
         student.setUpdatedAt(LocalDateTime.now());
         studentMapper.insert(student);
