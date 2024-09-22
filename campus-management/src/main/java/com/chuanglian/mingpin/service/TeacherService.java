@@ -1,11 +1,8 @@
 package com.chuanglian.mingpin.service;
 
 
-import com.chuanglian.mingpin.entity.user.Teacher;
-import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
+import com.chuanglian.mingpin.pojo.TeacherVO;
 import com.chuanglian.mingpin.pojo.Result;
-
-import java.util.List;
 
 public interface TeacherService {
     Result add(TeacherVO teacher) ;
