@@ -1,24 +1,19 @@
 package com.chuanglian.mingpin.controller;
 
-import com.chuanglian.mingpin.entity.user.Teacher;
-import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
+import com.chuanglian.mingpin.pojo.TeacherVO;
 import com.chuanglian.mingpin.pojo.Result;
+import com.chuanglian.mingpin.pojo.TeacherVoForUpdate;
 import com.chuanglian.mingpin.service.TeacherService;
-import com.chuanglian.mingpin.utils.AliOSSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/teacher")
 public class TeacherController {
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
 
     @Autowired
     private TeacherService teacherService;
@@ -30,7 +25,7 @@ public class TeacherController {
     @GetMapping("/showTeacherMessage")
     public Result show(){
         log.info("展示所有教师信息");
-        return teacherService.list();
+        return Result.success(teacherService.getAllTeacherUsers());
     }
 
     /**
@@ -42,10 +37,6 @@ public class TeacherController {
     @PostMapping("/addTeacher")
     public Result add( @ModelAttribute TeacherVO teacherVO) throws IOException {
         log.info("新增教师: {}" , teacherVO);
-//        调用阿里云OSS工具类进行文件上传
-//        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
-//        log.info("文件上传完成,文件访问的url: {}", url);
-//        teacherVO.setAvatarAddress(url);
         return teacherService.add(teacherVO);
     }
 
@@ -62,20 +53,16 @@ public class TeacherController {
     }
 
     /**
-     *
-     * @param teacherVO
+     * 更新教师信息
+     * @param teacherVoForUpdate
      * @return
      * @throws IOException
      */
     @PostMapping(value = "/update")
-    public Result update(@ModelAttribute TeacherVO teacherVO) throws IOException {
+    public Result update(@ModelAttribute TeacherVoForUpdate teacherVoForUpdate) throws IOException {
         log.info("更新教师信息");
-//        调用阿里云OSS工具类进行文件上传
-//        String url = aliOSSUtils.upload(teacherVO.getAvatarImg());
-//        log.info("文件上传完成,文件访问的url: {}", url);
-//        teacherVO.setAvatarAddress(url);
 
-        return teacherService.update(teacherVO);
+        return teacherService.update(teacherVoForUpdate);
     }
 
     /**

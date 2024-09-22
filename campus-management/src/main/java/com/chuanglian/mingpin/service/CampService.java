@@ -18,5 +18,7 @@ public interface CampService {
 
     Result delete(Integer ids);
 
-    void update(Campus campus);
+    Result update(Campus campus);
+
+    Result getAllCampus();
 }

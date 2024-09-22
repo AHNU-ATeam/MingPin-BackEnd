@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chuanglian.mingpin.entity.campus.Campus;
 import com.chuanglian.mingpin.mapper.campus.CampMapper;
 import com.chuanglian.mingpin.pojo.PageBean;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,9 +54,25 @@ public class CampServiceImpl implements CampService {
     }
 
     @Override
-    public void update(Campus campus) {
+    public Result update(Campus campus) {
         campus.setUpdatedAt(LocalDate.now());
+        campus.setIsDeleted(1);
+        if(campMapper.updateById(campus) == 0){
+            return Result.error("更新失败");
+        }
+        return Result.success("更新成功");
 
-        campMapper.update(campus);
+    }
+
+    @Override
+    public Result getAllCampus() {
+        QueryWrapper<Campus> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("is_deleted", 1);
+        // 执行查询
+        List<Campus> campusList = new ArrayList<>();
+        if((campusList = campMapper.selectList(queryWrapper))  == null){
+            return Result.error("查询失败");
+        }
+        return Result.success(campusList);
     }
 }

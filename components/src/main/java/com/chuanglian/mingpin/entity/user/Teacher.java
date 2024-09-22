@@ -3,7 +3,6 @@ package com.chuanglian.mingpin.entity.user;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.chuanglian.mingpin.entity.user.vo.TeacherVO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,30 +15,17 @@ import java.time.LocalDateTime;
 public class Teacher {
     @TableId(value = "teacher_id", type = IdType.AUTO)
     private Integer teacherId;
-    private String name;
     @NonNull
-    private String phone;
-    @NonNull
-    private String permissionStatus;
-
-    //新增
-    private String avatarAddress;
-    private String sex;
-    private String IdentificationNumber;
-
-
+    private Integer userId;
+//    private String nickname;
+//    private String boundPhone;
     private String position;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Integer campusId ;  //校区id
-
-    public Teacher(TeacherVO teacherVO) {
-        this.name = teacherVO.getName();
-        this.phone = teacherVO.getPhone();
-        this.permissionStatus =teacherVO.getPermissionStatus();
-        this.avatarAddress = teacherVO.getAvatarAddress();
-        this.sex = teacherVO.getSex();
-        IdentificationNumber = teacherVO.getIdentificationNumber();
-        this.position = teacherVO.getPosition();
-    }
+    private Integer campusId;
+    private String sex;
+    private String identificationNumber;
+    private int status; //0:禁用 1：删除
+//    private String permissionStatus;
+//    private String avatarAddress;
 }
