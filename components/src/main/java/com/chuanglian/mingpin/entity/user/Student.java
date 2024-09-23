@@ -50,13 +50,9 @@ public class Student {
 
     private LocalDate admissionDate;
 
-    private String teacherName;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    private int classId;
 
     private int campusId;
 

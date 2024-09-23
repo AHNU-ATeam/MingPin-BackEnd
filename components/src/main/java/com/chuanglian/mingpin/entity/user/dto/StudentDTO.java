@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class StudentDTO {
     private String studentName;
+
     private String gender;
 
     private LocalDate birthDate;
