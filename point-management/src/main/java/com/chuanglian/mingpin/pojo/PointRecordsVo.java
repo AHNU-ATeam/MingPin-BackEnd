@@ -1,7 +1,6 @@
 package com.chuanglian.mingpin.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
-import com.chuanglian.mingpin.entity.user.vo.StudentVo;
+import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +15,6 @@ public class PointRecordsVo {
     private Integer studentId;
     private Integer pointChange;
     private String type;
-    private StudentVo student;
+    private StudentVO student;
     private LocalDateTime createdAt;
 }

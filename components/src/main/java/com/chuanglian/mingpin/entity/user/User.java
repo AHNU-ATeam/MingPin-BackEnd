@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @TableName("userManagement.[user]")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;

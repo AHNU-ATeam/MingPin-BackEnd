@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentVo {
+public class StudentVO {
     private Integer studentId;
     private String studentName;
 }
