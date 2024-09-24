@@ -2,9 +2,11 @@ package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.chuanglian.mingpin.entity.campus.ClassStudent;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.entity.user.dto.StudentDTO;
+import com.chuanglian.mingpin.mapper.campus.ClassStudentMapper;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.StudentService;
@@ -16,19 +18,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper;
     private final UserMapper userMapper;
-
+    private final ClassStudentMapper classStudentMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, ClassStudentMapper classStudentMapper, PasswordEncoder passwordEncoder) {
         this.studentMapper = studentMapper;
         this.userMapper = userMapper;
+        this.classStudentMapper = classStudentMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -42,10 +46,15 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> classList(Integer classId) {
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getClassId, classId)
-                .ne(Student::getStatus, 1);
-        return studentMapper.selectList(queryWrapper);
+        LambdaQueryWrapper<ClassStudent> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ClassStudent::getClassId, classId);
+        List<ClassStudent> classStudents = classStudentMapper.selectList(queryWrapper);
+        // 提取出所有学生的 ID
+        List<Integer> studentIds = classStudents.stream()
+                .map(ClassStudent::getStudentId)
+                .toList();
+        // 根据学生 ID 批量查询学生信息
+        return studentMapper.selectBatchIds(studentIds);
     }
     @Override
     public Student findById(Integer studentId) {
