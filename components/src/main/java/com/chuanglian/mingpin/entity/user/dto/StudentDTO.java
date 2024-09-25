@@ -1,24 +1,16 @@
-package com.chuanglian.mingpin.entity.user;
+package com.chuanglian.mingpin.entity.user.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
-@Builder
-@TableName("[userManagement].[student]")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
-
-    @TableId(value = "student_id", type = IdType.AUTO)
-    private Integer studentId;
-
-    private Integer userId;
+public class StudentDTO {
+    private String studentName;
 
     private String gender;
 
@@ -50,11 +42,5 @@ public class Student {
 
     private LocalDate admissionDate;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    private int campusId;
-
-    private int status;
+    private String teacherName;
 }

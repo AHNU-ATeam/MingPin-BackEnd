@@ -1,50 +1,75 @@
 package com.chuanglian.mingpin.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.chuanglian.mingpin.entity.user.Student;
+import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.entity.user.dto.StudentDTO;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
+import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.StudentService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class StudentServiceImpl implements StudentService {
+    private final StudentMapper studentMapper;
+    private final UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    StudentMapper studentMapper;
+    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+        this.studentMapper = studentMapper;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public List<Student> campusList(Integer campusId) {
-        List<Student> studentList = studentMapper.selectCampusList(campusId);
-        return studentList.stream()
-                .filter(student -> student.getStatus() !=1)
-                .collect(Collectors.toList());
+        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Student::getCampusId, campusId)
+                .ne(Student::getStatus, 1);
+        return studentMapper.selectList(queryWrapper);
     }
 
     @Override
     public List<Student> classList(Integer classId) {
-        List<Student> studentList = studentMapper.selectClassList(classId);
-        return studentList.stream()
-                .filter(student -> student.getStatus() !=1)
-                .collect(Collectors.toList());
+        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Student::getClassId, classId)
+                .ne(Student::getStatus, 1);
+        return studentMapper.selectList(queryWrapper);
     }
     @Override
     public Student findById(Integer studentId) {
-        // 查询学生信息
-        Student student = studentMapper.selectById(studentId);
-
-        // 检查status字段
-        if (student != null && student.getStatus() == 1) return null;
-
-        // 返回查询结果
-        return student;
+        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Student::getStudentId, studentId)
+                .ne(Student::getStatus, 1);
+        return studentMapper.selectOne(queryWrapper);
     }
 
     @Override
-    public void add(Student student) {
+    @Transactional
+    public void add(StudentDTO studentDTO) {
+        User user = new User();
+        Student student = new Student();
+        user.setBoundPhone(studentDTO.getParentPhone());
+        user.setPassword(passwordEncoder.encode("123456"));
+        user.setNickname(studentDTO.getStudentName());
+        user.setStatus("enable");
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        userMapper.insert(user);
+
+        BeanUtils.copyProperties(studentDTO, student);
+        student.setUserId(user.getId());
         student.setCreatedAt(LocalDateTime.now());
         student.setUpdatedAt(LocalDateTime.now());
         studentMapper.insert(student);
@@ -55,11 +80,10 @@ public class StudentServiceImpl implements StudentService {
         // 设置更新时间
         student.setUpdatedAt(LocalDateTime.now());
 
-        // 创建 UpdateWrapper 实例
-        UpdateWrapper<Student> wrapper = new UpdateWrapper<>();
+        LambdaUpdateWrapper<Student> wrapper = new LambdaUpdateWrapper<>();
 
         // 可以根据需要添加更多条件
-        wrapper.eq("student_id", student.getStudentId()); // 假设使用 id 作为唯一标识符
+        wrapper.eq(Student::getStudentId, student.getStudentId()); // 假设使用 id 作为唯一标识符
 
         // 使用 UpdateWrapper 进行更新
         studentMapper.update(student, wrapper);
@@ -67,9 +91,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteById(Integer studentId) {
-        UpdateWrapper<Student> wrapper = new UpdateWrapper<>();
-        wrapper.eq("student_id", studentId);
-        wrapper.set("status", 1);
+        LambdaUpdateWrapper<Student> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Student::getStudentId, studentId);
+        wrapper.set(Student::getStatus, 1);
         studentMapper.update(null, wrapper);
 
     }

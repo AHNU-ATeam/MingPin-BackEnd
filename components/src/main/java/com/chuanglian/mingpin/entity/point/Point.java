@@ -1,8 +1,7 @@
 package com.chuanglian.mingpin.entity.point;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.chuanglian.mingpin.entity.user.Student;
-import com.chuanglian.mingpin.entity.user.vo.StudentVo;
+import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +22,5 @@ public class Point {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
     @TableField(exist = false)
-    private StudentVo student;
+    private StudentVO student;
 }

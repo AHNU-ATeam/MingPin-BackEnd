@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.point.PointRecords;
 import com.chuanglian.mingpin.pojo.PointRecordsVo;
 import com.chuanglian.mingpin.entity.user.Student;
-import com.chuanglian.mingpin.entity.user.vo.StudentVo;
+import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
 import com.chuanglian.mingpin.mapper.point.PointRecordsMapper;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
@@ -38,14 +38,14 @@ public class PointRecordsServiceImpl implements PointRecordsService {
         List<Student> students = studentMapper.selectList(wrapper1);
         List<Integer> studentsId = students.stream().map(Student::getStudentId).toList();
 //        List<Student> students = studentMapper.selectBatchIds(studentsId);
-        List<StudentVo> studentVos = BeanUtil.copyToList(students, StudentVo.class);
+        List<StudentVO> studentVOS = BeanUtil.copyToList(students, StudentVO.class);
         LambdaQueryWrapper<PointRecords> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(PointRecords::getStudentId,studentsId);
         List<PointRecords> pointRecords = pointRecordsMapper.selectList(wrapper);
         List<PointRecordsVo> pointRecordsVos = BeanUtil.copyToList(pointRecords, PointRecordsVo.class);
 
 
-        Map<Integer, StudentVo> studentVoMap = studentVos.stream().collect(Collectors.toMap(StudentVo::getStudentId, studentVo -> studentVo));
+        Map<Integer, StudentVO> studentVoMap = studentVOS.stream().collect(Collectors.toMap(StudentVO::getStudentId, studentVo -> studentVo));
         pointRecordsVos.forEach(pointRecord->pointRecord.setStudent(studentVoMap.get(pointRecord.getStudentId())));
         return pointRecordsVos;
     }
@@ -53,7 +53,7 @@ public class PointRecordsServiceImpl implements PointRecordsService {
     @Override
     public List<PointRecordsVo> selectPointRecords(Integer studentId) {
         Student student = studentMapper.selectById(studentId);
-        StudentVo studentVo = BeanUtil.copyProperties(student, StudentVo.class);
+        StudentVO studentVo = BeanUtil.copyProperties(student, StudentVO.class);
         LambdaQueryWrapper<PointRecords> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PointRecords::getStudentId,studentId);
         List<PointRecords> pointRecords = pointRecordsMapper.selectList(wrapper);
