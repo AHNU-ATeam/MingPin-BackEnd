@@ -65,9 +65,14 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<TeacherVoForShow> getAllTeacherUsers() {
-        // 查询所有教师信息
-        List<Teacher> teacherList = teacherMapper.selectList(new QueryWrapper<>());
+    public List<TeacherVoForShow> getAllTeacherUsers(Integer campusId) {
+        // 查询status为1且campus_id为指定值的所有教师信息
+        List<Teacher> teacherList = teacherMapper.selectList(
+                new QueryWrapper<Teacher>()
+                        .eq("status", 1)
+                        .eq("campus_id", campusId)
+        );
+
 
         // 遍历每个教师信息，获取对应的用户信息并合并到 DTO 中
         return teacherList.stream().map(teacher -> {

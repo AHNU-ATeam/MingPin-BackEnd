@@ -22,10 +22,10 @@ public class TeacherController {
      * 展示所有教师信息
      * @return
      */
-    @GetMapping("/showTeacherMessage")
-    public Result show(){
+    @RequestMapping(value = "/showTeacherMessage/{campusId}", method = RequestMethod.POST)
+    public Result show(@PathVariable Integer campusId){
         log.info("展示所有教师信息");
-        return Result.success(teacherService.getAllTeacherUsers());
+        return Result.success(teacherService.getAllTeacherUsers(campusId));
     }
 
     /**
