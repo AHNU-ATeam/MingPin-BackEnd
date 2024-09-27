@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("userManagement.[user]")
 public class User {
     @TableId(value = "id", type = IdType.AUTO)
