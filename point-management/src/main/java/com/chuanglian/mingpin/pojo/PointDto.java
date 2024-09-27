@@ -1,25 +1,25 @@
-package com.chuanglian.mingpin.entity.point;
+package com.chuanglian.mingpin.pojo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@TableName("[pointManagement].[Point]")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Point {
+public class PointDto {
     @TableId(value = "point_id",type = IdType.AUTO)
     private Integer pointId;
     //userId
     private Integer studentId;
     private Integer point;
-    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
-
+    private StudentInPointVo student;
 }

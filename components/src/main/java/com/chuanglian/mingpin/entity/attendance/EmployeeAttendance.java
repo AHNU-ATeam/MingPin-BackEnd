@@ -33,48 +33,13 @@ public class EmployeeAttendance {
     @JsonProperty("attendance_id")
     private int attendanceId;  // 签到信息ID
 
-    private int campus_id;
-
     private LocalDate date;  // 签到日期
 
     private LocalTime time;  // 签到时间
 
-    private LocalTime time2;  // 签到时间
-
-    private LocalTime time3;  // 签到时间
-
-    private LocalTime time4;  // 签到时间
-
     private String location;  // 签到位置
 
-    private String location2;  // 签到位置
-
-    private String location3;  // 签到位置
-
-    private String location4;  // 签到位置
-
-
     private String photo;  // 照片链接
-    private String photo2;  // 照片链接
-    private String photo3;  // 照片链接
-    private String photo4;  // 照片链接
 
-    @JsonProperty("on_time")
-    private int onTime;  // 第一次是否按时签到
-
-    @JsonProperty("on_time2")
-    private int onTime2;  // 第一次是否按时签退
-
-    @JsonProperty("on_time3")
-    private int onTime3;  // 第二次是否按时签到
-
-    @JsonProperty("on_time4")
-    private int onTime4;  // 第二次是否按时签退
-
-    private LocalDateTime createdAt;  // 记录创建时间
-
-    private LocalDateTime updatedAt;  // 记录更新时间
-
-    @TableField(exist = false)
-    private Teacher teacher;
+    private Integer type; //签到类型
 }
