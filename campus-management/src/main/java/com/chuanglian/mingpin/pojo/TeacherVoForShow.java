@@ -18,4 +18,5 @@ public class TeacherVoForShow {
     private String identificationNumber;
     private Integer campusId;
     private Integer teacherId;
+    private String boundPhone;
 }
