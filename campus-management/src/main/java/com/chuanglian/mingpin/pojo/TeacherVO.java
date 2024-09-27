@@ -3,12 +3,13 @@ package com.chuanglian.mingpin.pojo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeacherVO {
-    private int teacherId;
     @JsonProperty("avatarAddress")
     private String avatar;
     private String sex;  //男 ？ 女
@@ -17,8 +18,9 @@ public class TeacherVO {
     private String identificationNumber;
     @JsonProperty("phone")
     private String boundPhone;
-    private String permissionStatus;
     private String position;
     private String password;
     private Integer campusId ;  //校区id
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

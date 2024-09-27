@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,73 +31,45 @@ public class CampusController {
 
 
     /**
-     * 创建新校区
-     * @param campusLogo
-     * @param name
-     * @param address
-     * @param principalId
-     * @param renewalStart
-     * @param renewalEnd
-     * @param info
-     * @param population
+     *
+     * @param campus
      * @return
      * @throws IOException
      */
     @PostMapping("/camp")
-    public Result addCampus(MultipartFile campusLogo,
-                            String name,String principalName,String region,
-                            String address,String info,
-                            ArrayList<MultipartFile> campusPics,ArrayList<MultipartFile> teacherPics,
-                            @RequestParam(defaultValue = "0") Integer principalId,
-                            @DateTimeFormat(pattern = "yyyy-mm-dd") @RequestParam(defaultValue = "1999-01-01") LocalDate renewalStart,
-                            @DateTimeFormat(pattern = "yyyy-mm-dd") @RequestParam(defaultValue = "2000-01-01")LocalDate renewalEnd,
-                             Integer population) throws IOException {
+    @PreAuthorize("hasAuthority('sys:campus:create')")
+    public Result addCampus(@RequestBody Campus campus) throws IOException {
 
-        Campus campus = new Campus();
-        campus.setName(name);
-        campus.setAddress(address);
-        campus.setPrincipalId(principalId);
-        campus.setRenewalStart(renewalStart);
-        campus.setRenewalEnd(renewalEnd);
-        campus.setInfo(info);
-        campus.setPopulation(population);
+//        Campus campus = new Campus();
+//        campus.setName(name);
+//        campus.setRegion(region);
+//        campus.setPrincipalName(principalName);
+//        campus.setAddress(address);
+//        campus.setPrincipalId(principalId);
+//        campus.setRenewalStart(renewalStart);
+//        campus.setRenewalEnd(renewalEnd);
+//        campus.setInfo(info);
+//        campus.setPopulation(population);
         campus.setCreatedAt(LocalDate.now());
         campus.setUpdatedAt(LocalDate.now());
+        campus.setIsDeleted(1);
+//
+//        campus.setLogoUrl(campusLogo);
 
 
-        //调用阿里云OSS工具类进行文件上传
-
-
-        String url = aliOSSUtils.upload(campusLogo);
-        log.info("文件上传完成,文件访问的url: {}", url);
-
-        campus.setLogo(url);
-
-
-        //存照片
-        ArrayList<String> campusPicsUrls = new ArrayList<>();
-        ArrayList<String> teacherPicsUrls = new ArrayList<>();
-
-        for (MultipartFile file : campusPics) {
-            String campusPicsUrl = aliOSSUtils.upload(file);
-            campusPicsUrls.add(campusPicsUrl);
-        }
-        for (MultipartFile file : teacherPics) {
-            String teacherPicsUrl = aliOSSUtils.upload(file);
-            teacherPicsUrls.add(teacherPicsUrl);
-        }
-
-
+        //存照片数组
 
        // 使用 Jackson 将 ArrayList 转换为 JSON 字符串
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String campusPicsUrlsJson = objectMapper.writeValueAsString(campusPicsUrls);
+            String campusPicsUrlsJson = objectMapper.writeValueAsString(campus.getCampusPics());
             log.info("将list转成json");
+            //System.out.println(campusPicsUrlsJson);
             campus.setCampusPicsUrls(campusPicsUrlsJson);
 
-            String teacherPicsUrlsJson = objectMapper.writeValueAsString(teacherPicsUrls);
+            String teacherPicsUrlsJson = objectMapper.writeValueAsString(campus.getTeacherPics());
             log.info("将list转成json");
+            //System.out.println(teacherPicsUrlsJson);
             campus.setTeacherPicsUrls(teacherPicsUrlsJson);
 
         } catch (JsonProcessingException e) {
@@ -110,7 +83,7 @@ public class CampusController {
             return Result.error("添加校区失败");
         }
 
-        return Result.success(campus.getLogo());
+        return Result.success(campus.getCampusLogo());
     }
 
     /**
@@ -135,6 +108,12 @@ public class CampusController {
         return Result.success(pageBean);
     }
 
+    @GetMapping("/searchAllCampus")
+    public Result searchAllCampus(){
+        log.info("展示所有校区");
+        return campService.getAllCampus();
+    }
+
     /**
      * 删除校区
      * @param id
@@ -154,12 +133,28 @@ public class CampusController {
      * @param campus
      * @return
      */
-    @PutMapping("/updateCampus")
+    @PostMapping("/updateCampus")
     public Result update(@RequestBody Campus campus){
         log.info("更新校区信息 : {}", campus);
-        campService.update(campus);
-        return Result.success();
-    }
+
+        // 使用 Jackson 将 ArrayList 转换为 JSON 字符串
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String campusPicsUrlsJson = objectMapper.writeValueAsString(campus.getCampusPics());
+            log.info("将list转成json");
+            //System.out.println(campusPicsUrlsJson);
+            campus.setCampusPicsUrls(campusPicsUrlsJson);
+
+            String teacherPicsUrlsJson = objectMapper.writeValueAsString(campus.getTeacherPics());
+            log.info("将list转成json");
+            //System.out.println(teacherPicsUrlsJson);
+            campus.setTeacherPicsUrls(teacherPicsUrlsJson);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return campService.update(campus);  }
 
 
 

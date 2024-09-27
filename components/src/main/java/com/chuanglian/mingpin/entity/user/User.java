@@ -3,6 +3,7 @@ package com.chuanglian.mingpin.entity.user;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,13 +13,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @TableName("userManagement.[user]")
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     @NonNull
+    @JsonProperty("phone")
     private String boundPhone;
 
     @NonNull

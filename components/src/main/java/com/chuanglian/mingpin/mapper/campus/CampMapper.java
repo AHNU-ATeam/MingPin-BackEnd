@@ -28,4 +28,6 @@ public interface CampMapper extends BaseMapper<Campus> {
 
 
     void update(Campus campus);
+
+    void updateCampusById(Integer id);
 }
