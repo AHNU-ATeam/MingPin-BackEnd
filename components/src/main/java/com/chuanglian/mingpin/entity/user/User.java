@@ -8,8 +8,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @TableName("userManagement.[user]")
 @NoArgsConstructor

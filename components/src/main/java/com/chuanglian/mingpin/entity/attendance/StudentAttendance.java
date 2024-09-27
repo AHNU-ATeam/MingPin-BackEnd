@@ -28,28 +28,12 @@ public class StudentAttendance
 
     @JsonProperty("student_id")
     private int studentId;  // 学生ID
-    @JsonProperty("attendance_id")
-    private int attendanceId;  // 签到信息ID
+
     @JsonProperty("class_id")
     private int classId;
-    @JsonProperty("sign_out")
-    private int signOut;
     private LocalDate date;  // 签到日期
     private LocalTime time;  // 签到时间
-    private String location;  // 签到位置
-    private int type;  // 是否按时签到，"是" 或 "否"
     private String photo;  // 照片链接
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    @TableField(exist = false)
-    private StudentDTO student;
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class StudentDTO {
-        private int studentId;
-        private String studentName;
-
-    }
+    private int type;  // 打卡状态
 }

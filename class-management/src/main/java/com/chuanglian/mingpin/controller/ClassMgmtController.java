@@ -1,6 +1,7 @@
 package com.chuanglian.mingpin.controller;
 
 import com.chuanglian.mingpin.entity.campus.Class;
+import com.chuanglian.mingpin.pojo.ClassVo;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.ClassMgmtService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,9 @@ public class ClassMgmtController {
      * @return
      */
     @GetMapping("/{id}")
-    public Result<List<Class>> list(@PathVariable Integer id){
+    public Result<List<ClassVo>> list(@PathVariable Integer id){
         log.info("查询所有班级信息");
-        List<Class> classList = classMgmtService.list(id);
+        List<ClassVo> classList = classMgmtService.list(id);
         return Result.success(classList);
     }
 
@@ -34,7 +35,7 @@ public class ClassMgmtController {
      * @param cls
      * @return
      */
-    @PostMapping
+    @PostMapping("/add")
     private Result add(@RequestBody Class cls){
         log.info("添加班级信息{}",cls);
         classMgmtService.add(cls);
@@ -46,42 +47,38 @@ public class ClassMgmtController {
      * @param id
      * @return
      */
-    @DeleteMapping("/{id}")
+    @GetMapping("/delete/{id}")
     private Result delete(@PathVariable Integer id){
         log.info("删除班级{}",id);
         classMgmtService.delect(id);
         return Result.success();
     }
 
-    @GetMapping("/HeadTeacher")
-    private Result getHeadTeacher(@RequestBody Class cls){
-        log.info("获取班主任信息");
+//    @GetMapping("/HeadTeacher")
+//    private Result getHeadTeacher(@RequestBody Class cls){
+//        log.info("获取班主任信息");
+//
+//        return Result.success(classMgmtService.getHeadTeacher(cls.getHeadTeacherId()));
+//    }
 
-        return Result.success(classMgmtService.getHeadTeacher(cls.getHeadTeacherId()));
-    }
+//    @GetMapping("/students/{id}")
+//    private Result getStudents(@PathVariable Integer id){
+//        return Result.success(classMgmtService.getStudents(id));
+//    }
 
-    @GetMapping("/students/{id}")
-    private Result getStudents(@PathVariable Integer id){
-        return Result.success(classMgmtService.getStudents(id));
-    }
 
-    @GetMapping("/assistants")
-    private Result getAssistants(@RequestBody Class cls){
-        return Result.success(classMgmtService.getAssistants(cls));
-    }
-
-    @PutMapping("/changeClass")
+    @PostMapping("/changeClass")
     private Result changeClass(@RequestBody Class cls){
 
         return Result.success(classMgmtService.changeClass(cls));
     }
-    @GetMapping("/class/{id}")
-    private Result selectClass(@PathVariable Integer id){
-        return Result.success(classMgmtService.selectClass(id));
-    }
+//    @GetMapping("/class/{id}")
+//    private Result selectClass(@PathVariable Integer id){
+//        return Result.success(classMgmtService.selectClass(id));
+//    }
 
-    @GetMapping("/{id}/Teachers")
-    private Result getTeachers(@PathVariable Integer id){
-        return Result.success(classMgmtService.getTeachers(id));
-    }
+//    @GetMapping("/{id}/Teachers")
+//    private Result getTeachers(@PathVariable Integer id){
+//        return Result.success(classMgmtService.getTeachers(id));
+//    }
 }
