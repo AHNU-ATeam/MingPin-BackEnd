@@ -1,4 +1,4 @@
-package com.chuanglian.mingpin.entity.user.dto;
+package com.chuanglian.mingpin.entity.user.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,9 +9,11 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentDTO {
+public class StudentInfoVO {
 
-    private String studentName;
+    private Integer userId;
+
+    private String userName;
 
     private String gender;
 
@@ -46,4 +48,6 @@ public class StudentDTO {
     private Integer campusId;
 
     private Integer classId;
+
+    private String mingPinClassName;
 }

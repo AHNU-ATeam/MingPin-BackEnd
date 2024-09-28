@@ -9,7 +9,8 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentDTO {
+public class UpdateStudentDTO {
+    private Integer userId;
 
     private String studentName;
 
@@ -42,8 +43,4 @@ public class StudentDTO {
     private String studentSummary;
 
     private LocalDate admissionDate;
-
-    private Integer campusId;
-
-    private Integer classId;
 }

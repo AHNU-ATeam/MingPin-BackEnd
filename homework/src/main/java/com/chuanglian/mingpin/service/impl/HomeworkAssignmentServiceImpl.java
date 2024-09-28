@@ -55,7 +55,9 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
     @Transactional
     public void publish(HomeworkAssignment homeworkAssignment) {
         User user = userMapper.selectById(homeworkAssignment.getStudentUserId());
-        UserRole userRole = userRoleMapper.selectById(homeworkAssignment.getStudentUserId());
+        LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserRole::getUserId, homeworkAssignment.getStudentUserId());
+        UserRole userRole = userRoleMapper.selectOne(queryWrapper);
         Role role = roleMapper.selectById(userRole.getRoleId());
         if (role.getRole().equals(RoleEnum.STUDENT.getType())) {
             LambdaQueryWrapper<Student> studentLambdaQueryWrapper = new LambdaQueryWrapper<>();
