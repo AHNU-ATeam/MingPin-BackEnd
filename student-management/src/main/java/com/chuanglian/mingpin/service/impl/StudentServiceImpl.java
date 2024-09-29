@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,18 +118,15 @@ public class StudentServiceImpl implements StudentService {
         user.setPassword(passwordEncoder.encode("123456"));
         user.setNickname(studentDTO.getStudentName());
         user.setStatus("enable");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
         userMapper.insert(user);
 
         BeanUtils.copyProperties(studentDTO, student);
         student.setUserId(user.getId());
-        student.setCreatedAt(LocalDateTime.now());
-        student.setUpdatedAt(LocalDateTime.now());
         ClassStudent classStudent = new ClassStudent();
         classStudent.setStudentId(user.getId());
         classStudent.setClassId(studentDTO.getClassId());
         studentMapper.insert(student);
+        classStudentMapper.insert(classStudent);
 
         UserRole userRole = new UserRole();
         userRole.setUserId(user.getId());
