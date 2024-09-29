@@ -1,9 +1,6 @@
 package com.chuanglian.mingpin.entity.attendance;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -26,14 +23,18 @@ public class StudentAttendance
     @TableId(value = "id",type = IdType.AUTO)
     private int id;  // 主键ID
 
-    @JsonProperty("student_id")
     private int studentId;  // 学生ID
 
-    @JsonProperty("class_id")
-    private int classId;
     private LocalDate date;  // 签到日期
+
     private LocalTime time;  // 签到时间
+
+    private LocalTime checkOutTime;//签退时间
+
     private String photo;  // 照片链接
+
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
-    private int type;  // 打卡状态
+
+    private Integer type; //签到类型,默认为0没签到,1为签到，2为签退
 }

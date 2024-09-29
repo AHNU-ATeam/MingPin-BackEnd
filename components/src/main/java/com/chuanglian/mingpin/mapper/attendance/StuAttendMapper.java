@@ -5,6 +5,8 @@ import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
 import com.chuanglian.mingpin.entity.user.Student;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,12 @@ public interface StuAttendMapper extends BaseMapper<StudentAttendance> {
 
 
     Integer insertStuAttend(StudentAttendance attendance);
+
+    @Update("update attendanceManagement.student_attendance set time=#{time} ,photo=#{photo},type = 1 where student_id=#{id} and date=#{now}")
+    Integer stuAttendance(Integer id, LocalDate now, LocalTime time, String photo);
+
+    @Update("update attendanceManagement.student_attendance set time=#{time} ,type = 2 where student_id=#{id} and date=#{now}")
+    Integer stuCheckOut(Integer id, LocalDate now, LocalTime now1);
 
 
 //    Integer stuAttendance(StudentAttendance studentAttendance);
