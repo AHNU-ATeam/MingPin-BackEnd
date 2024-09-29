@@ -13,6 +13,7 @@ import com.chuanglian.mingpin.entity.user.vo.StudentInfoVO;
 import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
 import com.chuanglian.mingpin.mapper.campus.ClassStudentMapper;
+import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.StudentService;
@@ -33,14 +34,16 @@ public class StudentServiceImpl implements StudentService {
     private final ClassStudentMapper classStudentMapper;
     private final PasswordEncoder passwordEncoder;
     private final ClassMgmtMapper classMgmtMapper;
+    private final UserRoleMapper userRoleMapper;
 
     @Autowired
-    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, ClassStudentMapper classStudentMapper, PasswordEncoder passwordEncoder, ClassMgmtMapper classMgmtMapper) {
+    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, ClassStudentMapper classStudentMapper, PasswordEncoder passwordEncoder, ClassMgmtMapper classMgmtMapper, UserRoleMapper userRoleMapper) {
         this.studentMapper = studentMapper;
         this.userMapper = userMapper;
         this.classStudentMapper = classStudentMapper;
         this.passwordEncoder = passwordEncoder;
         this.classMgmtMapper = classMgmtMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -130,7 +133,8 @@ public class StudentServiceImpl implements StudentService {
 
         UserRole userRole = new UserRole();
         userRole.setUserId(user.getId());
-        userRole.setRoleId(student.getStudentId());
+        userRole.setRoleId(3);
+        userRoleMapper.insert(userRole);
     }
 
     @Override
