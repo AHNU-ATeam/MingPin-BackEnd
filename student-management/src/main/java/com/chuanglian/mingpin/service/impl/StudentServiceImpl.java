@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.chuanglian.mingpin.entity.campus.Class;
 import com.chuanglian.mingpin.entity.campus.ClassStudent;
+import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.entity.user.dto.StudentDTO;
@@ -130,6 +131,10 @@ public class StudentServiceImpl implements StudentService {
         classStudent.setStudentId(user.getId());
         classStudent.setClassId(studentDTO.getClassId());
         studentMapper.insert(student);
+
+        UserRole userRole = new UserRole();
+        userRole.setUserId(user.getId());
+        userRole.setRoleId(student.getStudentId());
     }
 
     @Override
