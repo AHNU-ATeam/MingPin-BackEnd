@@ -13,6 +13,7 @@ import com.chuanglian.mingpin.entity.user.vo.StudentInfoVO;
 import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
 import com.chuanglian.mingpin.mapper.campus.ClassStudentMapper;
+import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.StudentService;
@@ -22,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,14 +34,16 @@ public class StudentServiceImpl implements StudentService {
     private final ClassStudentMapper classStudentMapper;
     private final PasswordEncoder passwordEncoder;
     private final ClassMgmtMapper classMgmtMapper;
+    private final UserRoleMapper userRoleMapper;
 
     @Autowired
-    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, ClassStudentMapper classStudentMapper, PasswordEncoder passwordEncoder, ClassMgmtMapper classMgmtMapper) {
+    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, ClassStudentMapper classStudentMapper, PasswordEncoder passwordEncoder, ClassMgmtMapper classMgmtMapper, UserRoleMapper userRoleMapper) {
         this.studentMapper = studentMapper;
         this.userMapper = userMapper;
         this.classStudentMapper = classStudentMapper;
         this.passwordEncoder = passwordEncoder;
         this.classMgmtMapper = classMgmtMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -119,22 +121,20 @@ public class StudentServiceImpl implements StudentService {
         user.setPassword(passwordEncoder.encode("123456"));
         user.setNickname(studentDTO.getStudentName());
         user.setStatus("enable");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
         userMapper.insert(user);
 
         BeanUtils.copyProperties(studentDTO, student);
         student.setUserId(user.getId());
-        student.setCreatedAt(LocalDateTime.now());
-        student.setUpdatedAt(LocalDateTime.now());
         ClassStudent classStudent = new ClassStudent();
         classStudent.setStudentId(user.getId());
         classStudent.setClassId(studentDTO.getClassId());
         studentMapper.insert(student);
+        classStudentMapper.insert(classStudent);
 
         UserRole userRole = new UserRole();
         userRole.setUserId(user.getId());
-        userRole.setRoleId(student.getStudentId());
+        userRole.setRoleId(3);
+        userRoleMapper.insert(userRole);
     }
 
     @Override

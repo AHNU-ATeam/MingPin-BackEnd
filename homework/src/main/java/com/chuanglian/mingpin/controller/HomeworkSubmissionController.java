@@ -1,6 +1,8 @@
 package com.chuanglian.mingpin.controller;
 
-import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
+import com.chuanglian.mingpin.entity.homework.DTO.SubmissionDTO;
+import com.chuanglian.mingpin.entity.homework.DTO.UpdateSubmissionDTO;
+import com.chuanglian.mingpin.entity.homework.VO.SubmissionVO;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.HomeworkSubmissionService;
 import io.swagger.annotations.Api;
@@ -22,8 +24,8 @@ public class HomeworkSubmissionController {
     @PostMapping("/submit")
     @PreAuthorize("hasAuthority('sys:homeworkSubmission:submit')")
     @ApiOperation(value = "提交作业", notes = "该接口用于老师提交作业")
-    public Result submit(@RequestBody @Validated HomeworkSubmission homeworkSubmission) {
-        homeworkSubmissionService.submit(homeworkSubmission);
+    public Result submit(@RequestBody @Validated SubmissionDTO submissionDTO) {
+        homeworkSubmissionService.submit(submissionDTO);
         return Result.success();
     }
 
@@ -38,15 +40,15 @@ public class HomeworkSubmissionController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:update')")
     @ApiOperation(value = "修改作业", notes = "该接口用于老师修改作业")
-    public Result update(@RequestBody @Validated HomeworkSubmission homeworkSubmission) {
-        homeworkSubmissionService.update(homeworkSubmission);
+    public Result update(@RequestBody @Validated UpdateSubmissionDTO updateSubmissionDTO) {
+        homeworkSubmissionService.update(updateSubmissionDTO);
         return Result.success();
     }
 
     @GetMapping("/select/{assignmentId}")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "通过id查询作业", notes = "该接口用于查询单个作业")
-    public Result<HomeworkSubmission> selectById(@PathVariable Integer assignmentId) {
+    public Result<SubmissionVO> selectById(@PathVariable Integer assignmentId) {
         return Result.success(homeworkSubmissionService.selectById(assignmentId));
     }
 

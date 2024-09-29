@@ -1,15 +1,17 @@
 package com.chuanglian.mingpin.service;
 
-import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
+import com.chuanglian.mingpin.entity.homework.DTO.SubmissionDTO;
+import com.chuanglian.mingpin.entity.homework.DTO.UpdateSubmissionDTO;
+import com.chuanglian.mingpin.entity.homework.VO.SubmissionVO;
 
 
 public interface HomeworkSubmissionService {
-    void submit(HomeworkSubmission homeworkSubmission);
+    void submit(SubmissionDTO submissionDTO);
 
     void delete(Integer submissionId);
 
-    void update(HomeworkSubmission homeworkSubmission);
+    void update(UpdateSubmissionDTO updateSubmissionDTO);
 
-    HomeworkSubmission selectById(Integer assignmentId);
+    SubmissionVO selectById(Integer assignmentId);
 
 }

@@ -24,4 +24,5 @@ public class HomeworkSubmission {
     private LocalDateTime createdAt;           // 提交创建时间
     private LocalDateTime updatedAt;           // 提交更新时间
     private Integer status;           // 删除状态 (0 表示未删除, 1 表示已删除)
+    private String comments;
 }
