@@ -2,11 +2,15 @@ package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.chuanglian.mingpin.entity.homework.DTO.SubmissionDTO;
+import com.chuanglian.mingpin.entity.homework.DTO.UpdateSubmissionDTO;
 import com.chuanglian.mingpin.entity.homework.HomeworkAssignment;
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
+import com.chuanglian.mingpin.entity.homework.VO.SubmissionVO;
 import com.chuanglian.mingpin.mapper.homework.HomeworkAssignmentMapper;
 import com.chuanglian.mingpin.mapper.homework.HomeworkSubmissionMapper;
 import com.chuanglian.mingpin.service.HomeworkSubmissionService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +32,11 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
 
     @Override
     @Transactional
-    public void submit(HomeworkSubmission homeworkSubmission) {
-        HomeworkAssignment homeworkAssignment = homeworkAssignmentMapper.selectById(homeworkSubmission.getAssignmentId());
+    public void submit(SubmissionDTO submissionDTO) {
+        HomeworkAssignment homeworkAssignment = homeworkAssignmentMapper.selectById(submissionDTO.getAssignmentId());
         homeworkAssignment.setCorrectStatus(1);
-        homeworkSubmission.setCreatedAt(LocalDateTime.now());
-        homeworkSubmission.setUpdatedAt(LocalDateTime.now());
+        HomeworkSubmission homeworkSubmission = new HomeworkSubmission();
+        BeanUtils.copyProperties(submissionDTO, homeworkSubmission);
         homeworkSubmissionMapper.insert(homeworkSubmission);
     }
 
@@ -45,7 +49,9 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     }
 
     @Override
-    public void update(HomeworkSubmission homeworkSubmission) {
+    public void update(UpdateSubmissionDTO updateSubmissionDTO) {
+        HomeworkSubmission homeworkSubmission = homeworkSubmissionMapper.selectById(updateSubmissionDTO.getSubmissionId());
+        BeanUtils.copyProperties(updateSubmissionDTO, homeworkSubmission);
         homeworkSubmission.setUpdatedAt(LocalDateTime.now());
 
         LambdaUpdateWrapper<HomeworkSubmission> wrapper = new LambdaUpdateWrapper<>();
@@ -55,10 +61,13 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     }
 
     @Override
-    public HomeworkSubmission selectById(Integer assignmentId) {
+    public SubmissionVO selectById(Integer assignmentId) {
         LambdaQueryWrapper<HomeworkSubmission> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkSubmission::getAssignmentId, assignmentId)
                 .ne(HomeworkSubmission::getStatus, 1);
-        return homeworkSubmissionMapper.selectOne(queryWrapper);
+        HomeworkSubmission homeworkSubmission = homeworkSubmissionMapper.selectOne(queryWrapper);
+        SubmissionVO submissionVO = new SubmissionVO();
+        BeanUtils.copyProperties(homeworkSubmission, submissionVO);
+        return submissionVO;
     }
 }

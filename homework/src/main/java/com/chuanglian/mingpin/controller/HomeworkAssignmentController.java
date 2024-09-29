@@ -1,6 +1,8 @@
 package com.chuanglian.mingpin.controller;
 
-import com.chuanglian.mingpin.entity.homework.HomeworkAssignment;
+import com.chuanglian.mingpin.entity.homework.DTO.AssignmentDTO;
+import com.chuanglian.mingpin.entity.homework.DTO.UpdateAssignmentDTO;
+import com.chuanglian.mingpin.entity.homework.VO.AssignmentVO;
 import com.chuanglian.mingpin.service.HomeworkAssignmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,22 +25,22 @@ public class HomeworkAssignmentController {
     @PostMapping("/publish")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:publish')")
     @ApiOperation(value = "发布作业", notes = "该接口用于学生发布作业")
-    public Result publish(@RequestBody @Validated HomeworkAssignment homeworkAssignment){
-        homeworkAssignmentService.publish(homeworkAssignment);
+    public Result publish(@RequestBody @Validated AssignmentDTO AssignmentDTO){
+        homeworkAssignmentService.publish(AssignmentDTO);
         return Result.success();
     }
 
     @GetMapping("/select/{assignmentId}")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "获取作业信息", notes = "该接口用于获取发布的作业详情")
-    public Result<HomeworkAssignment> detail(@PathVariable Integer assignmentId) {
+    public Result<AssignmentVO> detail(@PathVariable Integer assignmentId) {
         return Result.success(homeworkAssignmentService.findById(assignmentId));
     }
 
     @GetMapping("/select/student/{studentUserId}")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:select')")
     @ApiOperation(value = "通过学生id获取作业列表", notes = "该接口用于通过学生id获取所有的作业")
-    public Result<List<HomeworkAssignment>> findByStudent(@PathVariable Integer studentUserId) {
+    public Result<List<AssignmentVO>> findByStudent(@PathVariable Integer studentUserId) {
         return Result.success(homeworkAssignmentService.findByStudent(studentUserId));
     }
 
@@ -54,8 +56,8 @@ public class HomeworkAssignmentController {
     @PostMapping("/update")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:update')")
     @ApiOperation(value = "修改作业", notes = "该接口用于通过id修改作业信息")
-    public Result update(@RequestBody @Validated HomeworkAssignment homeworkAssignment) {
-        homeworkAssignmentService.update(homeworkAssignment);
+    public Result update(@RequestBody @Validated UpdateAssignmentDTO updateAssignmentDTO) {
+        homeworkAssignmentService.update(updateAssignmentDTO);
         return Result.success();
     }
 

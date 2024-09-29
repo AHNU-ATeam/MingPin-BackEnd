@@ -3,8 +3,11 @@ package com.chuanglian.mingpin.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.chuanglian.mingpin.entity.campus.ClassStudent;
+import com.chuanglian.mingpin.entity.homework.DTO.AssignmentDTO;
+import com.chuanglian.mingpin.entity.homework.DTO.UpdateAssignmentDTO;
 import com.chuanglian.mingpin.entity.homework.HomeworkAssignment;
 import com.chuanglian.mingpin.entity.homework.HomeworkSubmission;
+import com.chuanglian.mingpin.entity.homework.VO.AssignmentVO;
 import com.chuanglian.mingpin.entity.permission.Role;
 import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.Student;
@@ -18,11 +21,13 @@ import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.HomeworkAssignmentService;
 import com.chuanglian.mingpin.utils.RoleEnum;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -53,43 +58,52 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
 
     @Override
     @Transactional
-    public void publish(HomeworkAssignment homeworkAssignment) {
-        User user = userMapper.selectById(homeworkAssignment.getStudentUserId());
+    public void publish(AssignmentDTO assignmentDTO) {
+        User user = userMapper.selectById(assignmentDTO.getStudentUserId());
         LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserRole::getUserId, homeworkAssignment.getStudentUserId());
+        queryWrapper.eq(UserRole::getUserId, assignmentDTO.getStudentUserId());
         UserRole userRole = userRoleMapper.selectOne(queryWrapper);
         Role role = roleMapper.selectById(userRole.getRoleId());
         if (role.getRole().equals(RoleEnum.STUDENT.getType())) {
+            HomeworkAssignment homeworkAssignment = new HomeworkAssignment();
             LambdaQueryWrapper<Student> studentLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            studentLambdaQueryWrapper.eq(Student::getUserId, user.getId());
+            studentLambdaQueryWrapper.eq(Student::getUserId, user.getId())
+                    .eq(Student::getStatus, 0);
             Student student = studentMapper.selectOne(studentLambdaQueryWrapper);
             LambdaQueryWrapper<ClassStudent> classStudentLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            classStudentLambdaQueryWrapper.eq(ClassStudent::getStudentId, student.getStudentId());
+            classStudentLambdaQueryWrapper.eq(ClassStudent::getStudentId, student.getUserId());
             ClassStudent classStudent = classStudentMapper.selectOne(classStudentLambdaQueryWrapper);
+            BeanUtils.copyProperties(assignmentDTO, homeworkAssignment);
             homeworkAssignment.setClassId(classStudent.getClassId());
-            homeworkAssignment.setCorrectStatus(0);
-            homeworkAssignment.setCreatedAt(LocalDateTime.now());
-            homeworkAssignment.setUpdatedAt(LocalDateTime.now());
             homeworkAssignmentMapper.insert(homeworkAssignment);
         }
     }
 
     @Override
-    public HomeworkAssignment findById(Integer assignmentId) {
+    public AssignmentVO findById(Integer assignmentId) {
         // 使用QueryWrapper直接排除已删除的记录
         LambdaQueryWrapper<HomeworkAssignment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkAssignment::getAssignmentId, assignmentId)
                 .ne(HomeworkAssignment::getStatus, 1);
-
-        return homeworkAssignmentMapper.selectOne(queryWrapper);
+        HomeworkAssignment homeworkAssignment = homeworkAssignmentMapper.selectOne(queryWrapper);
+        AssignmentVO assignmentVO = new AssignmentVO();
+        BeanUtils.copyProperties(homeworkAssignment, assignmentVO);
+        return assignmentVO;
     }
 
     @Override
-    public List<HomeworkAssignment> findByStudent(Integer studentUserId) {
+    public List<AssignmentVO> findByStudent(Integer studentUserId) {
         LambdaQueryWrapper<HomeworkAssignment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkAssignment::getStudentUserId, studentUserId)
                 .ne(HomeworkAssignment::getStatus, 1); // 不等于 1，即未被删除的作业
-        return homeworkAssignmentMapper.selectList(queryWrapper);
+        List<HomeworkAssignment> homeworkAssignmentS = homeworkAssignmentMapper.selectList(queryWrapper);
+        List<AssignmentVO> assignmentVOS = new ArrayList<>();
+        for (HomeworkAssignment homeworkAssignment : homeworkAssignmentS) {
+            AssignmentVO assignmentVO = new AssignmentVO();
+            BeanUtils.copyProperties(homeworkAssignment, assignmentVO);
+            assignmentVOS.add(assignmentVO);
+        }
+        return assignmentVOS;
     }
 
     @Override
@@ -107,7 +121,9 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
     }
 
     @Override
-    public void update(HomeworkAssignment homeworkAssignment) {
+    public void update(UpdateAssignmentDTO updateAssignmentDTO) {
+        HomeworkAssignment homeworkAssignment = homeworkAssignmentMapper.selectById(updateAssignmentDTO.getAssignmentId());
+        BeanUtils.copyProperties(updateAssignmentDTO, homeworkAssignment);
         homeworkAssignment.setUpdatedAt(LocalDateTime.now());
         LambdaUpdateWrapper<HomeworkAssignment> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(HomeworkAssignment::getAssignmentId, homeworkAssignment.getAssignmentId())
