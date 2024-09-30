@@ -29,4 +29,12 @@
                 #{campus_id}
             )
     </insert>
+
+    <insert id="insertBatch" parameterType="list">
+        INSERT INTO attendanceManagement.employee_attendance (employee_id, date)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.employeeId}, #{item.date})
+        </foreach>
+    </insert>
 </mapper>
