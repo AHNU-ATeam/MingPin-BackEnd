@@ -35,6 +35,7 @@ public class HomeworkSubmissionServiceImpl implements HomeworkSubmissionService 
     public void submit(SubmissionDTO submissionDTO) {
         HomeworkAssignment homeworkAssignment = homeworkAssignmentMapper.selectById(submissionDTO.getAssignmentId());
         homeworkAssignment.setCorrectStatus(1);
+        homeworkAssignmentMapper.updateById(homeworkAssignment);
         HomeworkSubmission homeworkSubmission = new HomeworkSubmission();
         BeanUtils.copyProperties(submissionDTO, homeworkSubmission);
         homeworkSubmissionMapper.insert(homeworkSubmission);
