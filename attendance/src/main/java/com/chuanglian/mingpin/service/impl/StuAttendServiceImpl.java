@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,16 +30,34 @@ public class StuAttendServiceImpl extends ServiceImpl<StuAttendMapper, StudentAt
     /**
      * 定时插入打卡信息
      */
+//    @Scheduled(cron = "0 0 5 * * ?")
+//    public void createDailyAttendanceRecords(){
+//        LocalDate today = LocalDate.now();
+//
+//        List<Student> students = studentMapper.selectList(null);
+//        for(Student student:students){
+//            StudentAttendance studentAttendance = new StudentAttendance();
+//            studentAttendance.setDate(today);
+//            studentAttendance.setStudentId(student.getUserId());
+//            stuAttendMapper.insert(studentAttendance);
+//        }
+//    }
     @Scheduled(cron = "0 0 5 * * ?")
-    public void createDailyAttendanceRecords(){
+    public void createDailyAttendanceRecords() {
         LocalDate today = LocalDate.now();
-
         List<Student> students = studentMapper.selectList(null);
-        for(Student student:students){
+
+        List<StudentAttendance> attendanceList = new ArrayList<>();
+
+        for (Student student : students) {
             StudentAttendance studentAttendance = new StudentAttendance();
             studentAttendance.setDate(today);
             studentAttendance.setStudentId(student.getUserId());
-            stuAttendMapper.insert(studentAttendance);
+            attendanceList.add(studentAttendance);
+        }
+
+        if (!attendanceList.isEmpty()) {
+            stuAttendMapper.batchInsert(attendanceList);  // Call XML batch insert
         }
     }
 

@@ -19,15 +19,15 @@ import java.time.LocalTime;
 public class EmployeeAttendanceInfo {
 
     @TableId(value = "attendance_id", type = IdType.AUTO)
-    private int attendanceId;  // 主键ID
+    private Integer attendanceId;  // 主键ID
 
-    private int campusId;  // 校区ID
+    private Integer campusId;  // 校区ID
 
     private String location;  // 签到位置
 
-    private double centerLatitude; // 中心点纬度
+    private Double centerLatitude; // 中心点纬度
 
-    private double centerLongitude; // 中心点经度
+    private Double centerLongitude; // 中心点经度
 
     private Integer radius; // 打卡半径
 

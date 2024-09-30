@@ -23,13 +23,13 @@ public interface StuAttendMapper extends BaseMapper<StudentAttendance> {
     Map<Integer, Student> getStudentsByIds(List<Integer> allStudentIds);
 
 
-    Integer insertStuAttend(StudentAttendance attendance);
-
     @Update("update attendanceManagement.student_attendance set time=#{time} ,photo=#{photo},type = 1 where student_id=#{id} and date=#{now}")
     Integer stuAttendance(Integer id, LocalDate now, LocalTime time, String photo);
 
-    @Update("update attendanceManagement.student_attendance set time=#{time} ,type = 2 where student_id=#{id} and date=#{now}")
-    Integer stuCheckOut(Integer id, LocalDate now, LocalTime now1);
+    @Update("update attendanceManagement.student_attendance set check_out_time=#{time} ,type = 2 where student_id=#{id} and date=#{now}")
+    Integer stuCheckOut(Integer id, LocalDate now, LocalTime time);
+
+    void batchInsert(List<StudentAttendance> attendanceList);
 
 
 //    Integer stuAttendance(StudentAttendance studentAttendance);

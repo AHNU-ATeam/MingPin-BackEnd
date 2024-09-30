@@ -23,7 +23,7 @@ public class AttendanceInfoController {
 //    @PreAuthorize("hasAuthority('sys:attendance:clock_in')")
     public Result getEmpInfo(@PathParam("id") Integer id){
 //    public Result getEmpInfo(){
-        return Result.success(attendanceInfoService.getEmpInfo(1));
+        return Result.success(attendanceInfoService.getEmpInfo(id));
     }
 
     @PostMapping("/emp/update")

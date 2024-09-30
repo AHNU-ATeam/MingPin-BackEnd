@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,23 +32,51 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
     /**
      * 定时插入打卡信息
      */
+//    @Scheduled(cron = "0 0 5 * * ?")
+//    public void createDailyAttendanceRecords(){
+//        LocalDate today = LocalDate.now();
+//        List<EmployeeAttendanceInfo> campusList = empAttendInfoMapper.selectList(null);
+//
+//
+//        for (EmployeeAttendanceInfo campus : campusList) {
+//            // 获取该校区的所有员工
+//            LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
+//            wrapper.eq(Teacher::getCampusId,campus.getCampusId());
+//            List<Teacher> teachers = teacherMapper.selectList(wrapper);
+//            for(Teacher teacher : teachers){
+//                EmployeeAttendance employeeAttendance = new EmployeeAttendance();
+//                employeeAttendance.setEmployeeId(teacher.getUserId());
+//                employeeAttendance.setDate(today);
+//                empAttendMapper.insert(employeeAttendance);
+//            }
+//        }
+//    }
     @Scheduled(cron = "0 0 5 * * ?")
-    public void createDailyAttendanceRecords(){
+    public void createDailyAttendanceRecords() {
         LocalDate today = LocalDate.now();
         List<EmployeeAttendanceInfo> campusList = empAttendInfoMapper.selectList(null);
 
+        // 定义一个列表来存储所有要插入的考勤记录
+        List<EmployeeAttendance> attendanceList = new ArrayList<>();
 
         for (EmployeeAttendanceInfo campus : campusList) {
             // 获取该校区的所有员工
             LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(Teacher::getCampusId,campus.getCampusId());
+            wrapper.eq(Teacher::getCampusId, campus.getCampusId());
             List<Teacher> teachers = teacherMapper.selectList(wrapper);
-            for(Teacher teacher : teachers){
+
+            // 将每个员工的考勤记录添加到列表中
+            for (Teacher teacher : teachers) {
                 EmployeeAttendance employeeAttendance = new EmployeeAttendance();
                 employeeAttendance.setEmployeeId(teacher.getUserId());
                 employeeAttendance.setDate(today);
-                empAttendMapper.insert(employeeAttendance);
+                attendanceList.add(employeeAttendance);
             }
+        }
+
+        // 批量插入考勤记录
+        if (!attendanceList.isEmpty()) {
+            empAttendMapper.insertBatch(attendanceList);
         }
     }
 

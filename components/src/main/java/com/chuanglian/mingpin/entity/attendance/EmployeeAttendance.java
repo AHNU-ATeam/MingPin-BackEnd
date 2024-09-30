@@ -22,10 +22,10 @@ import java.time.LocalTime;
 public class EmployeeAttendance {
 
     @TableId(value = "id", type = IdType.AUTO)
-    private int id;  // 主键ID
+    private Integer id;  // 主键ID
 
     @JsonProperty("employee_id")
-    private int employeeId;  // 员工ID
+    private Integer employeeId;  // 员工ID
 
     private LocalDate date;  // 签到日期
 
@@ -35,9 +35,9 @@ public class EmployeeAttendance {
 
     private String location;  // 签到位置
 
-    private double centerLatitude; // 中心点纬度
+    private Double centerLatitude; // 中心点纬度
 
-    private double centerLongitude; // 中心点经度
+    private Double centerLongitude; // 中心点经度
 
     private String photo;  // 照片链接
 

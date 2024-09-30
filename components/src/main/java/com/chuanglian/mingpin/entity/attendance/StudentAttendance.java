@@ -21,9 +21,9 @@ import java.time.LocalTime;
 public class StudentAttendance
 {
     @TableId(value = "id",type = IdType.AUTO)
-    private int id;  // 主键ID
+    private Integer id;  // 主键ID
 
-    private int studentId;  // 学生ID
+    private Integer studentId;  // 学生ID
 
     private LocalDate date;  // 签到日期
 
