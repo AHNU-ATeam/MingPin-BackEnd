@@ -31,6 +31,8 @@ public class EmployeeAttendanceInfo {
 
     private Integer radius; // 打卡半径
 
+    private String title;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createdAt;  // 创建时间
 
