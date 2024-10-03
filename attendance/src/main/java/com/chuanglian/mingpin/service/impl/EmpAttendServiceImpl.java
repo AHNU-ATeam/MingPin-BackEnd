@@ -1,15 +1,17 @@
 package com.chuanglian.mingpin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendanceInfo;
 import com.chuanglian.mingpin.entity.user.Teacher;
+import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.entity.vo.EmployeeAttendanceVo;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendInfoMapper;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendMapper;
-import com.chuanglian.mingpin.mapper.attendance.StuAttendMapper;
-import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
+import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.EmpAttendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,6 +30,8 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
     private TeacherMapper teacherMapper;
     @Autowired
     private EmpAttendMapper empAttendMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 定时插入打卡信息
@@ -106,11 +110,16 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
     }
 
     @Override
-    public List<EmployeeAttendance> selectEmpAttendance(Integer id) {
+    public List<EmployeeAttendanceVo> selectEmpAttendance(Integer id) {
         LambdaQueryWrapper<EmployeeAttendance> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(EmployeeAttendance::getEmployeeId,id);
         List<EmployeeAttendance> employeeAttendances = empAttendMapper.selectList(wrapper);
-        return employeeAttendances;
+        User user = userMapper.selectById(id);
+        List<EmployeeAttendanceVo> employeeAttendanceVos = BeanUtil.copyToList(employeeAttendances, EmployeeAttendanceVo.class);
+        for(EmployeeAttendanceVo employeeAttendanceVo:employeeAttendanceVos){
+            employeeAttendanceVo.setName(user.getNickname());
+        }
+        return employeeAttendanceVos;
     }
 
     @Override

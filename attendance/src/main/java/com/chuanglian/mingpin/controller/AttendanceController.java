@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @Slf4j
 @RestController
@@ -25,11 +27,18 @@ public class AttendanceController {
      * @param photo
      * @return
      */
+//    @PostMapping("/stu")
+//    public Result stuAttendance(@RequestParam("id") Integer id,
+//                                @RequestParam("photo")String photo){
+//        return Result.success(stuAttendService.stuAttendance(id,photo));
+//    }
     @PostMapping("/stu")
-    public Result stuAttendance(@RequestParam("id") Integer id,
-                                @RequestParam("photo")String photo){
-        return Result.success(stuAttendService.stuAttendance(id,photo));
+    public Result stuAttendance(@RequestBody Map<String, Object> requestBody) {
+        Integer id = (Integer) requestBody.get("id");
+        String photo = (String) requestBody.get("photo");
+        return Result.success(stuAttendService.stuAttendance(id, photo));
     }
+
 
     /**
      * 学生签退
