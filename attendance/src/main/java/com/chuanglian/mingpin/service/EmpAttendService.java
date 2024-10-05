@@ -13,5 +13,5 @@ public interface EmpAttendService extends IService<EmployeeAttendance> {
 
     List<EmployeeAttendanceVo> selectEmpAttendance(Integer id);
 
-    List<EmployeeAttendance> selectAllEmpAttendance(Integer id);
+    List<EmployeeAttendanceVo> selectAllEmpAttendance(Integer id);
 }

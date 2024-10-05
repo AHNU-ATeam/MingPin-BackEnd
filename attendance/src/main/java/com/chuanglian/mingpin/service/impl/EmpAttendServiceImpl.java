@@ -21,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeAttendance> implements EmpAttendService {
@@ -112,7 +114,8 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
     @Override
     public List<EmployeeAttendanceVo> selectEmpAttendance(Integer id) {
         LambdaQueryWrapper<EmployeeAttendance> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(EmployeeAttendance::getEmployeeId,id);
+        wrapper.eq(EmployeeAttendance::getEmployeeId,id)
+                .orderByDesc(EmployeeAttendance::getDate);
         List<EmployeeAttendance> employeeAttendances = empAttendMapper.selectList(wrapper);
         User user = userMapper.selectById(id);
         List<EmployeeAttendanceVo> employeeAttendanceVos = BeanUtil.copyToList(employeeAttendances, EmployeeAttendanceVo.class);
@@ -123,7 +126,7 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
     }
 
     @Override
-    public List<EmployeeAttendance> selectAllEmpAttendance(Integer id) {
+    public List<EmployeeAttendanceVo> selectAllEmpAttendance(Integer id) {
         LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Teacher::getCampusId,id);
         List<Teacher> teachers = teacherMapper.selectList(wrapper);
@@ -131,7 +134,16 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
         LambdaQueryWrapper<EmployeeAttendance> wrapper1 = new LambdaQueryWrapper<>();
         wrapper1.in(EmployeeAttendance::getEmployeeId,list);
         List<EmployeeAttendance> employeeAttendances = empAttendMapper.selectList(wrapper1);
-        return employeeAttendances;
+        List<EmployeeAttendanceVo> employeeAttendanceVos = BeanUtil.copyToList(employeeAttendances, EmployeeAttendanceVo.class);
+        List<User> users = userMapper.selectBatchIds(list);
+        Map<Integer, String> userMap = users.stream().collect(Collectors.toMap(User::getId, User::getNickname));
+        for (EmployeeAttendanceVo vo : employeeAttendanceVos) {
+            String userName = userMap.get(vo.getEmployeeId()); // 从 Map 中获取对应的 userName
+            if (userName != null) {
+                vo.setName(userName); // 设置 vo 的 name
+            }
+        }
+        return employeeAttendanceVos;
     }
 
 }

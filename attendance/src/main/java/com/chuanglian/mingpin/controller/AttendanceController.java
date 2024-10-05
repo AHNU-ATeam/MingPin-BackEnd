@@ -65,6 +65,15 @@ public class AttendanceController {
         return Result.success(stuAttendService.selectAllStuAttendance(id));
     }
 
+    @GetMapping("/class/all/stu/{id}")
+    public Result selectClassAllStuAttend(@PathVariable Integer id){
+        return Result.success(stuAttendService.selectClassAllStuAttend(id));
+    }
+
+    @GetMapping("/class/all/stu/today/{id}")
+    public Result selectClassTodayAttend(@PathVariable Integer id){
+        return Result.success(stuAttendService.selectClassTodayAttend(id));
+    }
 
     /**
      * 员工签到
@@ -95,4 +104,5 @@ public class AttendanceController {
     public Result selectAllEmpAttendance(@PathVariable Integer id){
         return Result.success(empAttendService.selectAllEmpAttendance(id));
     }
+
 }
