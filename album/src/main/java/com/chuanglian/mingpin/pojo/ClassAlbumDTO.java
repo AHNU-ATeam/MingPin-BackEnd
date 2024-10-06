@@ -15,7 +15,7 @@ public class ClassAlbumDTO {
 
     private Long classId;
 
-    private String className;
+    private String title;
 
     private ClassAlbumImageVO[] imageVOS;
 

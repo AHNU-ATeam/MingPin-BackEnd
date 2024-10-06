@@ -74,8 +74,8 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         // 在images和video表中存储图片url和顺序
         Long albumId = classAlbum.getId();
 
-        if (video != null) {
-            for (ClassAlbumImageVO i : classAlbumDTO.getImageVOS()) {
+        if (images != null) {
+            for (ClassAlbumImageVO i : images) {
                 Image image = new Image();
                 BeanUtils.copyProperties(i, image);
                 image.setAlbumId(albumId);
@@ -86,9 +86,9 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         }
 
         if (video != null) {
-            for (ClassAlbumVideoVO v : classAlbumDTO.getVideoVOS()) {
+            for (ClassAlbumVideoVO v : video) {
                 Video videoSingle = new Video();
-                BeanUtils.copyProperties(v, video);
+                BeanUtils.copyProperties(v, videoSingle);
                 videoSingle.setAlbumId(albumId);
                 if (videoMapper.insert(videoSingle) == 0) {
                     throw new IllegalStateException("创建视频池失败");
@@ -234,6 +234,10 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
 
         for (ClassAlbum album : resultSet) {
             ClassAlbumInfoVO info = new ClassAlbumInfoVO();
+
+            if (album.getStatus() == 1) {
+                continue;
+            }
 
             Long publisherId = album.getPublisher();
             Long classId = album.getClassId();
