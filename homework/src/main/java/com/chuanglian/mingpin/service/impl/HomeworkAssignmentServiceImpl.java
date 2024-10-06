@@ -81,7 +81,6 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
 
     @Override
     public AssignmentVO findById(Integer assignmentId) {
-        // 使用QueryWrapper直接排除已删除的记录
         LambdaQueryWrapper<HomeworkAssignment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkAssignment::getAssignmentId, assignmentId)
                 .ne(HomeworkAssignment::getStatus, 1);

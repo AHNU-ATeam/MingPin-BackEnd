@@ -19,4 +19,6 @@ public interface StudentService {
     void update(UpdateStudentDTO updateStudentDTO);
 
     void deleteById(Integer studentId);
+
+    List<StudentVO> keyWordList(String keyWord);
 }
