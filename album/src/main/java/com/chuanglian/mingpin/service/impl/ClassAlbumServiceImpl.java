@@ -4,27 +4,27 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.album.ClassAlbum;
 import com.chuanglian.mingpin.entity.album.Image;
 import com.chuanglian.mingpin.entity.album.Video;
-import com.chuanglian.mingpin.entity.campus.Notification;
+import com.chuanglian.mingpin.entity.campus.Class;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.album.ClassAlbumMapper;
 import com.chuanglian.mingpin.mapper.album.ImagesMapper;
 import com.chuanglian.mingpin.mapper.album.VideoMapper;
+import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
+import com.chuanglian.mingpin.pojo.ClassInfoVO;
 import com.chuanglian.mingpin.service.ClassAlbumService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
 
 @Service
 public class ClassAlbumServiceImpl implements ClassAlbumService {
+    private final ClassMgmtMapper classMgmtMapper;
 
     private final ClassAlbumMapper classAlbumMapper;
 
@@ -35,11 +35,13 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
     private final UserMapper userMapper;
 
     public ClassAlbumServiceImpl(
+            ClassMgmtMapper classMgmtMapper,
             ClassAlbumMapper classAlbumMapper,
             ImagesMapper imagesMapper,
             VideoMapper videoMapper,
             UserMapper userMapper
     ) {
+        this.classMgmtMapper = classMgmtMapper;
         this.classAlbumMapper = classAlbumMapper;
         this.imagesMapper = imagesMapper;
         this.videoMapper = videoMapper;
@@ -99,7 +101,7 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
 
     @Override
     @Transactional
-    public Result<ClassAlbumVO> getClassAlbum(Long id) {
+    public Result<ClassAlbumVO> getAlbumByID(Long id) {
         // 创建VO对象
         ClassAlbumVO classAlbumVO = new ClassAlbumVO();
 
@@ -220,5 +222,38 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         }
 
         return Result.success("删除成功");
+    }
+
+    @Override
+    public Result<List<ClassAlbumInfoVO>> getAlbumByClass(Long id) {
+        List<ClassAlbumInfoVO> infoVOS = new ArrayList<>();
+
+        LambdaQueryWrapper<ClassAlbum> selectClassAlbumByClass = new LambdaQueryWrapper<>();
+        selectClassAlbumByClass.eq(ClassAlbum::getClassId, id);
+        List<ClassAlbum> resultSet = classAlbumMapper.selectList(selectClassAlbumByClass);
+
+        for (ClassAlbum album : resultSet) {
+            ClassAlbumInfoVO info = new ClassAlbumInfoVO();
+
+            Long publisherId = album.getPublisher();
+            Long classId = album.getClassId();
+
+            Class classInfo = classMgmtMapper.selectById(classId);
+            ClassInfoVO classInfoVO = new ClassInfoVO();
+            BeanUtils.copyProperties(classInfo, classInfoVO);
+
+            User publisher = userMapper.selectById(publisherId);
+            PublisherVO publisherVO = new PublisherVO();
+            BeanUtils.copyProperties(publisher, publisherVO);
+
+            info.setId(album.getId());
+            info.setTitle(album.getTitle());
+            info.setClassInfo(classInfoVO);
+            info.setPublisher(publisherVO);
+
+            infoVOS.add(info);
+        }
+
+        return Result.success(infoVOS);
     }
 }
