@@ -43,6 +43,13 @@ public class StudentController {
         return Result.success(studentService.findById(studentId));
     }
 
+    @GetMapping("/keyWordList")
+    @PreAuthorize("hasAuthority('sys:student:select')")
+    @ApiOperation(value = "关键字查询学生", notes = "该接口主要用于通过关键字模糊查询学生")
+    public Result<List<StudentVO>> keyWordList(@RequestParam String keyWord) {
+        return Result.success(studentService.keyWordList(keyWord));
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('sys:student:add')")
     @ApiOperation(value = "添加学生", notes = "该接口主要用于添加学生信息")
