@@ -206,19 +206,27 @@ public class NotificationServiceImpl implements NotificationService {
                 .eq(Notification::getStatus, 0);
         List<Notification> resultSet = notificationMapper.selectList(getAllNotificationByPublisher);
 
-        // 将结果集包装成VO类集
+        // 使用 PageInfo 封装分页信息，基于原始查询结果
+        PageInfo<Notification> pageInfo = new PageInfo<>(resultSet);
+
+        // 将分页结果中的记录转换为 VO 对象
         List<NotificationVO> resultVO = resultSet.stream()
                 .map(Optional::ofNullable)  // 包装为 Optional 处理 null
-                // 检查 null 并抛出异常
                 .map(notice -> notice.orElseThrow(() -> new IllegalStateException("数据提取错误")))
                 .map(this::getNotificationMediaByNoticeID)  // 转换为 VO
                 .toList();
 
-        // 使用 PageInfo 封装分页信息
-        PageInfo<NotificationVO> pageInfo = new PageInfo<>(resultVO);
+        // 创建新的 PageInfo 对象，使用转换后的 VO 对象列表
+        PageInfo<NotificationVO> pageInfoVO = new PageInfo<>();
+        pageInfoVO.setList(resultVO);
+        pageInfoVO.setPageNum(pageInfo.getPageNum());
+        pageInfoVO.setPageSize(pageInfo.getPageSize());
+        pageInfoVO.setTotal(pageInfo.getTotal());
+        pageInfoVO.setPages(pageInfo.getPages());
 
-        return Result.success(pageInfo);
+        return Result.success(pageInfoVO);
     }
+
 
     @Override
     @Transactional

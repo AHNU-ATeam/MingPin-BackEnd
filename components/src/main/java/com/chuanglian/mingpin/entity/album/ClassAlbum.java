@@ -21,7 +21,7 @@ public class ClassAlbum {
     
     private Long classId;
     
-    private String className;
+    private String title;
     
     private Long publisher;
     
