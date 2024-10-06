@@ -18,7 +18,7 @@ public class Student {
     @TableId(value = "student_id", type = IdType.AUTO)
     private Integer studentId;
 
-    private String studentName;
+    private Integer userId;
 
     private String gender;
 
@@ -50,13 +50,9 @@ public class Student {
 
     private LocalDate admissionDate;
 
-    private String teacherName;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    private int classId;
 
     private int campusId;
 

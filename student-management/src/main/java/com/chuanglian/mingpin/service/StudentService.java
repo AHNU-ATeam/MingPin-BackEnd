@@ -1,19 +1,22 @@
 package com.chuanglian.mingpin.service;
 
-import com.chuanglian.mingpin.entity.user.Student;
+import com.chuanglian.mingpin.entity.user.dto.StudentDTO;
+import com.chuanglian.mingpin.entity.user.dto.UpdateStudentDTO;
+import com.chuanglian.mingpin.entity.user.vo.StudentInfoVO;
+import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 
 import java.util.List;
 
 public interface StudentService {
-    List<Student> campusList(Integer campusId);
+    List<StudentVO> campusList(Integer campusId);
 
-    List<Student> classList(Integer campusId);
+    List<StudentVO> classList(Integer campusId);
 
-    Student findById(Integer studentId);
+    StudentInfoVO findById(Integer studentId);
 
-    void add(Student student);
+    void add(StudentDTO studentDTO);
 
-    void update(Student student);
+    void update(UpdateStudentDTO updateStudentDTO);
 
     void deleteById(Integer studentId);
 }

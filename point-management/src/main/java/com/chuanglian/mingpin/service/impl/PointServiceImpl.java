@@ -4,12 +4,14 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.chuanglian.mingpin.entity.point.Point;
 import com.chuanglian.mingpin.entity.point.PointRecords;
-import com.chuanglian.mingpin.entity.user.Student;
-import com.chuanglian.mingpin.entity.user.vo.StudentVo;
+import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
 import com.chuanglian.mingpin.mapper.point.PointMapper;
 import com.chuanglian.mingpin.mapper.point.PointRecordsMapper;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
+import com.chuanglian.mingpin.mapper.user.UserMapper;
+import com.chuanglian.mingpin.pojo.PointDto;
+import com.chuanglian.mingpin.pojo.StudentInPointVo;
 import com.chuanglian.mingpin.service.PointService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,44 +34,51 @@ public class PointServiceImpl implements PointService {
     private StudentMapper studentMapper;
     @Autowired
     private PointRecordsMapper pointRecordsMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 查询学生成绩
+     *
      * @param studentId
      * @return
      */
     @Override
-    public Point selectPoint(Integer studentId) {
+    public PointDto selectPoint(Integer studentId) {
         LambdaQueryWrapper<Point> wrapper= new LambdaQueryWrapper<Point>().eq(Point::getStudentId,studentId);
         Point point = pointMapper.selectOne(wrapper);
-        Student student = studentMapper.selectById(studentId);
-        StudentVo studentVo = BeanUtil.copyProperties(student, StudentVo.class);
-        point.setStudent(studentVo);
-        return point;
+        PointDto pointDto = BeanUtil.copyProperties(point, PointDto.class);
+        User student = userMapper.selectById(studentId);
+        StudentInPointVo studentInPointVo = BeanUtil.copyProperties(student, StudentInPointVo.class);
+        pointDto.setStudent(studentInPointVo);
+        return pointDto;
     }
 
     @Override
-    public List<Point> selectPointByClass(Integer classId) {
-        LambdaQueryWrapper<Student> studentLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        studentLambdaQueryWrapper.eq(Student::getClassId,classId);
-        List<Student> students = studentMapper.selectList(studentLambdaQueryWrapper);
-//        List<Integer> studentsId = classMgmtMapper.getStudentsId(classId);
-//        List<Student> students = studentMapper.selectBatchIds(studentsId);
-        List<Integer> studentIds = students.stream().map(Student::getStudentId).toList();
-        List<StudentVo> studentVos = BeanUtil.copyToList(students, StudentVo.class);
+    public List<PointDto> selectPointByClass(Integer classId) {
+//        LambdaQueryWrapper<Student> studentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        studentLambdaQueryWrapper.eq(Student::getClassId,classId);
+//        List<Student> students = studentMapper.selectList(studentLambdaQueryWrapper);
+        List<Integer> studentsId = classMgmtMapper.getStudentsId(classId);
+        List<User> students = userMapper.selectBatchIds(studentsId);
+
+//        List<Integer> studentIds = students.stream().map(Student::getStudentId).toList();
+        List<StudentInPointVo> studentVOS = BeanUtil.copyToList(students, StudentInPointVo.class);
         LambdaQueryWrapper<Point> wrapper = new LambdaQueryWrapper<>();
-        wrapper.in(Point::getStudentId,studentIds);
+        wrapper.in(Point::getStudentId,studentsId);
         wrapper.orderByDesc(Point::getPoint);
         List<Point> points = pointMapper.selectList(wrapper);
-        Map<Integer, StudentVo> studentVoMap = studentVos.stream().collect(Collectors.toMap(StudentVo::getStudentId, studentVo -> studentVo));
-        points.forEach(point -> point.setStudent(studentVoMap.get(point.getStudentId())));
-        return points;
+        List<PointDto> pointDtos = BeanUtil.copyToList(points, PointDto.class);
+        Map<Integer, StudentInPointVo> studentVoMap = studentVOS.stream().collect(Collectors.toMap(StudentInPointVo::getId, studentVo -> studentVo));
+        pointDtos.forEach(point -> point.setStudent(studentVoMap.get(point.getStudentId())));
+        return pointDtos;
     }
 
     @Override
     @Transactional  // 添加事务管理
     public String clearPointByClassId(Integer classId) {
-        List<Point> points = selectPointByClass(classId);
+        List<PointDto> pointDtos = selectPointByClass(classId);
+        List<Point> points = BeanUtil.copyToList(pointDtos, Point.class);
 //        System.out.println(points);
         List<Integer> studentIds = points.stream().map(Point::getStudentId).toList();
         List<PointRecords> records = new ArrayList<>();
@@ -94,7 +103,7 @@ public class PointServiceImpl implements PointService {
 
     @Override
     public String adjustPoints(Integer studentId, Integer pointsToAdd,String type) {
-        Point point = selectPoint(studentId);
+        PointDto point = selectPoint(studentId);
         int currentPoints = point.getPoint();  // 获取当前积分
 
         // 如果是减分操作（pointsToAdd 为负数），检查是否有足够积分
@@ -106,7 +115,8 @@ public class PointServiceImpl implements PointService {
         int newPoints = currentPoints + pointsToAdd;
         point.setPoint(newPoints);
         point.setUpdatedAt(LocalDateTime.now());
-        pointMapper.updateById(point);
+        Point point1 = BeanUtil.copyProperties(point, Point.class);
+        pointMapper.updateById(point1);
         PointRecords record = new PointRecords();
         record.setStudentId(studentId);
         record.setPointChange(pointsToAdd);  // 记录加减分数

@@ -17,11 +17,15 @@ public class Teacher {
     private Integer teacherId;
     @NonNull
     private Integer userId;
+//    private String nickname;
+//    private String boundPhone;
     private String position;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer campusId;
     private String sex;
     private String identificationNumber;
-    private String status;
+    private int status; //0:禁用 1：删除
+//    private String permissionStatus;
+//    private String avatarAddress;
 }

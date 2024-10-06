@@ -1,17 +1,15 @@
 package com.chuanglian.mingpin.service;
 
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.chuanglian.mingpin.entity.point.Point;
-import com.chuanglian.mingpin.pojo.PointRecordsVo;
+import com.chuanglian.mingpin.pojo.PointDto;
 
 import java.util.List;
 
 public interface PointService  {
 
-    Point selectPoint(Integer studentId);
+    PointDto selectPoint(Integer studentId);
 
-    List<Point> selectPointByClass(Integer classId);
+    List<PointDto> selectPointByClass(Integer classId);
 
     String clearPointByClassId(Integer classId);
 
