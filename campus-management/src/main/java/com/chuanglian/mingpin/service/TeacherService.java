@@ -8,7 +8,7 @@ import java.util.List;
 public interface TeacherService {
     Result add(TeacherVO teacher) ;
 
-    List<TeacherVoForShow> getAllTeacherUsers();
+    List<TeacherVoForShow> getAllTeacherUsers(Integer campusId);
 
     Result delete(Integer teacherId);
 
