@@ -64,7 +64,10 @@ public class StudentServiceImpl implements StudentService {
                 .map(ClassStudent::getStudentId)
                 .toList();
         // 根据学生 ID 批量查询学生信息
-        List<Student> students = studentMapper.selectBatchIds(studentIds);
+        LambdaQueryWrapper<Student> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.in(Student::getUserId, studentIds)
+                .eq(Student::getStatus, 0);
+        List<Student> students = studentMapper.selectList(queryWrapper1);
         List<StudentVO> studentVOS = new ArrayList<>();
         for (Student student : students ) {
             StudentVO studentVO = new StudentVO();
@@ -153,7 +156,7 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentVO> keyWordList(String keyWord) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(User::getNickname, keyWord)
-                .ne(User::getStatus, 1);
+                .eq(User::getStatus, "enable");
         List<User> users = userMapper.selectList(queryWrapper);
         List<Integer> userIds = users.stream()
                 .map(User::getId)
