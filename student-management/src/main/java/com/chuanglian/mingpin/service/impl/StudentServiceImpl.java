@@ -144,10 +144,13 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteById(Integer studentId) {
-        Student student = studentMapper.selectById(studentId);
+        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Student::getUserId, studentId)
+                .eq(Student::getStatus, 0);
+        Student student = studentMapper.selectOne(queryWrapper);
         student.setStatus(1);
         studentMapper.updateById(student);
-        User user = userMapper.selectById(student.getUserId());
+        User user = userMapper.selectById(studentId);
         user.setStatus("disable");
         userMapper.updateById(user);
     }
