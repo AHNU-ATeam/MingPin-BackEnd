@@ -2,9 +2,11 @@ package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chuanglian.mingpin.entity.campus.Campus;
+import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.Teacher;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.campus.CampMapper;
+import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
@@ -30,15 +32,20 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final CampMapper campMapper;
 
+    private final UserRoleMapper userRoleMapper;
+
     public TeacherServiceImpl(
             TeacherMapper teacherMapper,
             UserMapper userMapper,
-            PasswordEncoder passwordEncoder, CampMapper campMapper
+            PasswordEncoder passwordEncoder,
+            CampMapper campMapper,
+            UserRoleMapper userRoleMapper
     ) {
         this.teacherMapper = teacherMapper;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.campMapper = campMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -86,8 +93,15 @@ public class TeacherServiceImpl implements TeacherService {
             return Result.error("创建失败");
         }
 
-        return Result.success(id);
+        //赋老师权限
+        UserRole userRole = new UserRole();
+        userRole.setUserId(id);
+        userRole.setRoleId(2);
 
+        userRoleMapper.insert(userRole);
+
+
+        return Result.success(id);
 
     }
     public boolean isValidPhoneNumber(String phoneNumber) {
@@ -161,14 +175,14 @@ public class TeacherServiceImpl implements TeacherService {
         user.setUpdatedAt(LocalDateTime.now());
 
         if(teacherMapper.updateById(teacher) == 0){
-            return Result.error("创建失败");
+            return Result.error("更新失败");
         }
 
         if(userMapper.updateById(user) == 0){
-            return Result.error("创建失败");
+            return Result.error("更新失败");
         }
 
-        return Result.success("创建成功");
+        return Result.success("更新成功");
 
     }
 
