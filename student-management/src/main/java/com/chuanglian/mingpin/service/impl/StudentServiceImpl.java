@@ -2,7 +2,6 @@ package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.chuanglian.mingpin.entity.campus.Class;
 import com.chuanglian.mingpin.entity.campus.ClassStudent;
 import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.Student;
@@ -29,6 +28,7 @@ import java.util.List;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+
     private final StudentMapper studentMapper;
     private final UserMapper userMapper;
     private final ClassStudentMapper classStudentMapper;
@@ -48,144 +48,177 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentVO> campusList(Integer campusId) {
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getCampusId, campusId)
-                .ne(Student::getStatus, 1);
-        return getStudentVOS(queryWrapper);
+        return getStudentVOSByCondition(new LambdaQueryWrapper<Student>()
+                .eq(Student::getCampusId, campusId)
+                .ne(Student::getStatus, 1));
     }
 
     @Override
     public List<StudentVO> classList(Integer classId) {
-        LambdaQueryWrapper<ClassStudent> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ClassStudent::getClassId, classId);
-        List<ClassStudent> classStudents = classStudentMapper.selectList(queryWrapper);
-        // 提取出所有学生的 ID
-        List<Integer> studentIds = classStudents.stream()
+        List<Integer> studentIds = classStudentMapper.selectList(new LambdaQueryWrapper<ClassStudent>()
+                        .eq(ClassStudent::getClassId, classId))
+                .stream()
                 .map(ClassStudent::getStudentId)
                 .toList();
-        // 根据学生 ID 批量查询学生信息
-        LambdaQueryWrapper<Student> queryWrapper1 = new LambdaQueryWrapper<>();
-        queryWrapper1.in(Student::getUserId, studentIds)
-                .eq(Student::getStatus, 0);
-        List<Student> students = studentMapper.selectList(queryWrapper1);
-        List<StudentVO> studentVOS = new ArrayList<>();
-        for (Student student : students ) {
-            StudentVO studentVO = new StudentVO();
-            BeanUtils.copyProperties(student, studentVO);
-            User user = userMapper.selectById(student.getUserId());
-            studentVO.setUserName(user.getNickname());
-            studentVO.setClassId(classId);
-            Class c = classMgmtMapper.selectById(classId);
-            studentVO.setMingPinClassName(c.getName());
-            studentVOS.add(studentVO);
-        }
-        return studentVOS;
+
+        return getStudentVOSByCondition(new LambdaQueryWrapper<Student>()
+                .in(Student::getUserId, studentIds)
+                .eq(Student::getStatus, 0), classId);
     }
+
     @Override
     public StudentInfoVO findById(Integer studentId) {
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getUserId, studentId)
-                .ne(Student::getStatus, 1);
-        StudentInfoVO studentInfoVO = new StudentInfoVO();
-        Student student = studentMapper.selectOne(queryWrapper);
-        BeanUtils.copyProperties(student, studentInfoVO);
-        User user = userMapper.selectById(studentId);
-        studentInfoVO.setUserName(user.getNickname());
-        LambdaQueryWrapper<ClassStudent> queryWrapper1 = new LambdaQueryWrapper<>();
-        queryWrapper1.eq(ClassStudent::getStudentId, studentId);
-        ClassStudent classStudent = classStudentMapper.selectOne(queryWrapper1);
-        studentInfoVO.setClassId(classStudent.getClassId());
-        Class c = classMgmtMapper.selectById(classStudent.getClassId());
-        studentInfoVO.setMingPinClassName(c.getName());
-        return studentInfoVO;
+        Student student = getStudentById(studentId);
+        User user = getUserById(studentId);
+        ClassStudent classStudent = getClassStudentByStudentId(studentId);
+
+        return buildStudentInfoVO(student, user, classStudent);
     }
 
     @Override
     @Transactional
     public void add(StudentDTO studentDTO) {
-        User user = new User();
-        Student student = new Student();
-        user.setBoundPhone(studentDTO.getParentPhone());
-        user.setPassword(passwordEncoder.encode("123456"));
-        user.setNickname(studentDTO.getStudentName());
-        user.setStatus("enable");
-        userMapper.insert(user);
-
-        BeanUtils.copyProperties(studentDTO, student);
-        student.setUserId(user.getId());
-        ClassStudent classStudent = new ClassStudent();
-        classStudent.setStudentId(user.getId());
-        classStudent.setClassId(studentDTO.getClassId());
-        studentMapper.insert(student);
-        classStudentMapper.insert(classStudent);
-
-        UserRole userRole = new UserRole();
-        userRole.setUserId(user.getId());
-        userRole.setRoleId(3);
-        userRoleMapper.insert(userRole);
+        User user = createUser(studentDTO);
+        studentMapper.insert(createStudent(studentDTO, user.getId()));
+        classStudentMapper.insert(createClassStudent(user.getId(), studentDTO.getClassId()));
+        userRoleMapper.insert(createUserRole(user.getId(), 3));
     }
 
     @Override
     public void update(UpdateStudentDTO updateStudentDTO) {
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getUserId, updateStudentDTO.getUserId());
-        Student student = studentMapper.selectOne(queryWrapper);
-        BeanUtils.copyProperties(updateStudentDTO, student);
-        LambdaUpdateWrapper<Student> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.eq(Student::getUserId, student.getUserId());
-        studentMapper.update(student, updateWrapper);
+        updateStudentInfo(updateStudentDTO);
         if (updateStudentDTO.getClassId() != null) {
-            LambdaUpdateWrapper<ClassStudent> updateWrapper1 = new LambdaUpdateWrapper<>();
-            updateWrapper1.eq(ClassStudent::getStudentId, updateStudentDTO.getUserId())
-                    .set(ClassStudent::getClassId, updateStudentDTO.getClassId());
-            classStudentMapper.update(null, updateWrapper1);
+            updateClassStudent(updateStudentDTO.getUserId(), updateStudentDTO.getClassId());
         }
     }
 
     @Override
     public void deleteById(Integer studentId) {
-        LambdaQueryWrapper<Student> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Student::getUserId, studentId)
-                .eq(Student::getStatus, 0);
-        Student student = studentMapper.selectOne(queryWrapper);
-        student.setStatus(1);
-        studentMapper.updateById(student);
-        User user = userMapper.selectById(studentId);
-        user.setStatus("disable");
-        userMapper.updateById(user);
+        updateStudentStatus(studentId, 1);
+        updateUserStatus(studentId, "disable");
     }
 
     @Override
     public List<StudentVO> keyWordList(String keyWord) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(User::getNickname, keyWord)
-                .eq(User::getStatus, "enable");
-        List<User> users = userMapper.selectList(queryWrapper);
-        List<Integer> userIds = users.stream()
+        List<Integer> userIds = userMapper.selectList(new LambdaQueryWrapper<User>()
+                        .like(User::getNickname, keyWord)
+                        .eq(User::getStatus, "enable"))
+                .stream()
                 .map(User::getId)
                 .toList();
-        LambdaQueryWrapper<Student> studentLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        studentLambdaQueryWrapper.in(Student::getUserId, userIds)
-                .ne(Student::getStatus, 1);
-        return getStudentVOS(studentLambdaQueryWrapper);
+
+        return getStudentVOSByCondition(new LambdaQueryWrapper<Student>()
+                .in(Student::getUserId, userIds)
+                .ne(Student::getStatus, 1));
     }
 
-    private List<StudentVO> getStudentVOS(LambdaQueryWrapper<Student> studentLambdaQueryWrapper) {
-        List<Student> students = studentMapper.selectList(studentLambdaQueryWrapper);
+    private List<StudentVO> getStudentVOSByCondition(LambdaQueryWrapper<Student> queryWrapper) {
+        return getStudentVOSByCondition(queryWrapper, null);
+    }
+
+    private List<StudentVO> getStudentVOSByCondition(LambdaQueryWrapper<Student> queryWrapper, Integer classId) {
+        List<Student> students = studentMapper.selectList(queryWrapper);
         List<StudentVO> studentVOS = new ArrayList<>();
-        for ( Student student : students ) {
+
+        for (Student student : students) {
             StudentVO studentVO = new StudentVO();
             BeanUtils.copyProperties(student, studentVO);
-            User user = userMapper.selectById(student.getUserId());
+            User user = getUserById(student.getUserId());
             studentVO.setUserName(user.getNickname());
-            LambdaQueryWrapper<ClassStudent> queryWrapper1 = new LambdaQueryWrapper<>();
-            queryWrapper1.eq(ClassStudent::getStudentId, student.getUserId());
-            ClassStudent classStudent = classStudentMapper.selectOne(queryWrapper1);
-            studentVO.setClassId(classStudent.getClassId());
-            Class c = classMgmtMapper.selectById(classStudent.getClassId());
-            studentVO.setMingPinClassName(c.getName());
+
+            ClassStudent classStudent = getClassStudentByStudentId(student.getUserId());
+            studentVO.setClassId(classId != null ? classId : classStudent.getClassId());
+            studentVO.setMingPinClassName(getClassNameById(classStudent.getClassId()));
+
             studentVOS.add(studentVO);
         }
+
         return studentVOS;
+    }
+
+    private Student getStudentById(Integer studentId) {
+        return studentMapper.selectOne(new LambdaQueryWrapper<Student>()
+                .eq(Student::getUserId, studentId)
+                .ne(Student::getStatus, 1));
+    }
+
+    private User getUserById(Integer userId) {
+        return userMapper.selectById(userId);
+    }
+
+    private ClassStudent getClassStudentByStudentId(Integer studentId) {
+        return classStudentMapper.selectOne(new LambdaQueryWrapper<ClassStudent>()
+                .eq(ClassStudent::getStudentId, studentId));
+    }
+
+    private String getClassNameById(Integer classId) {
+        return classMgmtMapper.selectById(classId).getName();
+    }
+
+    private StudentInfoVO buildStudentInfoVO(Student student, User user, ClassStudent classStudent) {
+        StudentInfoVO studentInfoVO = new StudentInfoVO();
+        BeanUtils.copyProperties(student, studentInfoVO);
+        studentInfoVO.setUserName(user.getNickname());
+        studentInfoVO.setClassId(classStudent.getClassId());
+        studentInfoVO.setMingPinClassName(getClassNameById(classStudent.getClassId()));
+        return studentInfoVO;
+    }
+
+    private User createUser(StudentDTO studentDTO) {
+        User user = new User();
+        user.setBoundPhone(studentDTO.getParentPhone());
+        user.setPassword(passwordEncoder.encode("123456"));
+        user.setNickname(studentDTO.getStudentName());
+        user.setStatus("enable");
+        userMapper.insert(user);
+        return user;
+    }
+
+    private Student createStudent(StudentDTO studentDTO, Integer userId) {
+        Student student = new Student();
+        BeanUtils.copyProperties(studentDTO, student);
+        student.setUserId(userId);
+        return student;
+    }
+
+    private ClassStudent createClassStudent(Integer studentId, Integer classId) {
+        ClassStudent classStudent = new ClassStudent();
+        classStudent.setStudentId(studentId);
+        classStudent.setClassId(classId);
+        return classStudent;
+    }
+
+    private UserRole createUserRole(Integer userId, Integer roleId) {
+        UserRole userRole = new UserRole();
+        userRole.setUserId(userId);
+        userRole.setRoleId(roleId);
+        return userRole;
+    }
+
+    private void updateStudentInfo(UpdateStudentDTO updateStudentDTO) {
+        Student student = studentMapper.selectOne(new LambdaQueryWrapper<Student>()
+                .eq(Student::getUserId, updateStudentDTO.getUserId()));
+        BeanUtils.copyProperties(updateStudentDTO, student);
+        studentMapper.updateById(student);
+    }
+
+    private void updateClassStudent(Integer studentId, Integer classId) {
+        classStudentMapper.update(null, new LambdaUpdateWrapper<ClassStudent>()
+                .eq(ClassStudent::getStudentId, studentId)
+                .set(ClassStudent::getClassId, classId));
+    }
+
+    private void updateStudentStatus(Integer studentId, Integer status) {
+        Student student = studentMapper.selectOne(new LambdaQueryWrapper<Student>()
+                .eq(Student::getUserId, studentId)
+                .eq(Student::getStatus, 0));
+        student.setStatus(status);
+        studentMapper.updateById(student);
+    }
+
+    private void updateUserStatus(Integer userId, String status) {
+        User user = userMapper.selectById(userId);
+        user.setStatus(status);
+        userMapper.updateById(user);
     }
 }
