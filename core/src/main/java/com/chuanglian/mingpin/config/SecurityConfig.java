@@ -68,7 +68,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // 对于登录接口允许匿名访问
-                        .requestMatchers("/login", "/register").anonymous()
+                        .requestMatchers("/login", "/register").permitAll()
                         // TODO 开放了swagger-ui
                         .requestMatchers("/api/v2/api-docs").anonymous()
                         .requestMatchers("/swagger-ui/index.html").anonymous()

@@ -18,8 +18,7 @@ public class ClassAlbumVO {
     @JsonProperty("class_id")
     private Long classId;
 
-    @JsonProperty("class_name")
-    private String className;
+    private String title;
 
     @JsonProperty("images")
     private ClassAlbumImageVO[] imageVOS;

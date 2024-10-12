@@ -1,12 +1,15 @@
 package com.chuanglian.mingpin.controller;
 
 import com.chuanglian.mingpin.pojo.ClassAlbumDTO;
+import com.chuanglian.mingpin.pojo.ClassAlbumInfoVO;
 import com.chuanglian.mingpin.pojo.ClassAlbumVO;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.service.ClassAlbumService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/class/album")
@@ -28,10 +31,16 @@ public class ClassAlbumController {
         return classAlbumService.createNewAlbum(classAlbumDTO);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     @PreAuthorize("hasAuthority('sys:classAlbum:select')")
-    public Result<ClassAlbumVO> getClassAlbum(@PathVariable("id") Long id) {
-        return classAlbumService.getClassAlbum(id);
+    public Result<List<ClassAlbumInfoVO>> getClassAlbum(@PathVariable("id") Long id) {
+        return classAlbumService.getAlbumByClass(id);
+    }
+
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasAuthority('sys:classAlbum:select')")
+    public Result<ClassAlbumVO> getSpecificAlbum(@PathVariable("id") Long id) {
+        return classAlbumService.getAlbumByID(id);
     }
 
     @PostMapping("/update")

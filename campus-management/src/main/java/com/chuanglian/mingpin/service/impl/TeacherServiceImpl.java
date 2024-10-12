@@ -1,8 +1,12 @@
 package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.chuanglian.mingpin.entity.campus.Campus;
+import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.Teacher;
 import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.mapper.campus.CampMapper;
+import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
@@ -26,14 +30,22 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final CampMapper campMapper;
+
+    private final UserRoleMapper userRoleMapper;
+
     public TeacherServiceImpl(
             TeacherMapper teacherMapper,
             UserMapper userMapper,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            CampMapper campMapper,
+            UserRoleMapper userRoleMapper
     ) {
         this.teacherMapper = teacherMapper;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.campMapper = campMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
@@ -43,6 +55,26 @@ public class TeacherServiceImpl implements TeacherService {
         User user = new User();
         BeanUtils.copyProperties(teacherVo, teacher);
         BeanUtils.copyProperties(teacherVo, user);
+
+        if (!isValidPhoneNumber(teacherVo.getBoundPhone())) {
+            return Result.error("手机号格式不正确");
+        }
+
+        if (!isValidIdentificationNumber(teacherVo.getIdentificationNumber())) {
+            return Result.error("身份证号码格式不正确");
+        }
+
+        // 校验 campusId 是否存在
+        int campusCount = Math.toIntExact(campMapper.selectCount(new QueryWrapper<Campus>().lambda().eq(Campus::getCampusId, teacherVo.getCampusId())));
+        if (campusCount == 0) {
+            return Result.error("校园ID不存在，无法添加该教师信息");
+        }
+
+        int count = Math.toIntExact(userMapper.selectCount(new QueryWrapper<User>().lambda().eq(User::getBoundPhone, teacherVo.getBoundPhone())));
+        if (count > 0) {
+            return Result.error("该手机号已被绑定，无法重复添加用户");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         teacher.setCreatedAt(LocalDateTime.now());
         teacher.setUpdatedAt(LocalDateTime.now());
@@ -61,13 +93,37 @@ public class TeacherServiceImpl implements TeacherService {
             return Result.error("创建失败");
         }
 
-        return Result.success("创建成功");
+        //赋老师权限
+        UserRole userRole = new UserRole();
+        userRole.setUserId(id);
+        userRole.setRoleId(2);
+
+        userRoleMapper.insert(userRole);
+
+
+        return Result.success(id);
+
+    }
+    public boolean isValidPhoneNumber(String phoneNumber) {
+        String regex = "^[1][3-9]\\d{9}$";
+        return phoneNumber != null && phoneNumber.matches(regex);
     }
 
+    public boolean isValidIdentificationNumber(String identificationNumber) {
+        String regex = "^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}[0-9Xx]$";
+        return identificationNumber != null && identificationNumber.matches(regex);
+    }
+
+
     @Override
-    public List<TeacherVoForShow> getAllTeacherUsers() {
-        // 查询所有教师信息
-        List<Teacher> teacherList = teacherMapper.selectList(new QueryWrapper<>());
+    public List<TeacherVoForShow> getAllTeacherUsers(Integer campusId) {
+        // 查询status为1且campus_id为指定值的所有教师信息
+        List<Teacher> teacherList = teacherMapper.selectList(
+                new QueryWrapper<Teacher>()
+                        .eq("status", 1)
+                        .eq("campus_id", campusId)
+        );
+
 
         // 遍历每个教师信息，获取对应的用户信息并合并到 DTO 中
         return teacherList.stream().map(teacher -> {
@@ -119,14 +175,14 @@ public class TeacherServiceImpl implements TeacherService {
         user.setUpdatedAt(LocalDateTime.now());
 
         if(teacherMapper.updateById(teacher) == 0){
-            return Result.error("创建失败");
+            return Result.error("更新失败");
         }
 
         if(userMapper.updateById(user) == 0){
-            return Result.error("创建失败");
+            return Result.error("更新失败");
         }
 
-        return Result.success("创建成功");
+        return Result.success("更新成功");
 
     }
 

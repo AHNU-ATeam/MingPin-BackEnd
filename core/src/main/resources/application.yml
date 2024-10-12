@@ -19,6 +19,11 @@ spring:
   config:
     import: classpath:oss.properties
 
+mybatis:
+  configuration: 
+    default-fetch-size: 9999
+    map-underscore-to-camel-case: true
+
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

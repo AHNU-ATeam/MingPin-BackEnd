@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Update;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Mapper
 public interface EmpAttendMapper extends BaseMapper<EmployeeAttendance> {
@@ -25,4 +26,6 @@ public interface EmpAttendMapper extends BaseMapper<EmployeeAttendance> {
     Integer setTeaAttendance4(Integer id, LocalDate localDate, LocalTime localTime, LocalDateTime localDateTime, String location, String photo);
 
     Integer insertempAttend(EmployeeAttendance attendance);
+
+    void insertBatch(List<EmployeeAttendance> attendanceList);
 }
