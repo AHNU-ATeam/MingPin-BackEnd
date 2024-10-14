@@ -167,6 +167,13 @@ public class StudentServiceImpl implements StudentService {
                 .ne(Student::getStatus, 1));
     }
 
+    @Override
+    public List<StudentVO> teacherList(Integer teacherId) {
+        Integer classId = classMgmtMapper.findClassIdsByUserId(teacherId);
+        List<StudentVO> studentVOS = this.classList(classId);
+        return studentVOS;
+    }
+
     // 获取学生 VO 列表
     private List<StudentVO> getStudentVOSByCondition(LambdaQueryWrapper<Student> queryWrapper) {
         return getStudentVOSByCondition(queryWrapper, null);
