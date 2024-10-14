@@ -21,11 +21,11 @@ public interface ClassMgmtMapper extends BaseMapper<Class> {
     List<Student> getStudents(List<Integer> stuIds);
 
     // 给 num 字段加1
-    @Update("UPDATE class SET num = num + 1 WHERE class_id = #{classId}")
+    @Update("UPDATE [campusManagement].[class] SET num = num + 1 WHERE class_id = #{classId}")
     void incrementClassNumById(int classId);
 
     // 给 num 字段减1
-    @Update("UPDATE class SET num = num - 1 WHERE class_id = #{classId}")
+    @Update("UPDATE [campusManagement].[class] SET num = num - 1 WHERE class_id = #{classId}")
     void decrementClassNumById(int classId);
     List<Teacher> getAssistants(List<Integer> assistantIds);
 
