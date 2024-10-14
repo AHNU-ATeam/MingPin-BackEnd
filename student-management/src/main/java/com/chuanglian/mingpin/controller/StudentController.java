@@ -50,6 +50,13 @@ public class StudentController {
         return Result.success(studentService.keyWordList(keyWord));
     }
 
+    @GetMapping("/teacherList/{teacherId}")
+    @PreAuthorize("hasAuthority('sys:student:select')")
+    @ApiOperation(value = "通过教师id查询学生", notes = "该接口主要用于通过教师id查询学生")
+    public Result<List<StudentVO>> teacherList(@PathVariable Integer teacherId) {
+        return Result.success(studentService.teacherList(teacherId));
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('sys:student:add')")
     @ApiOperation(value = "添加学生", notes = "该接口主要用于添加学生信息")

@@ -13,6 +13,8 @@ import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
 import com.chuanglian.mingpin.mapper.campus.ClassStudentMapper;
 import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
+import com.chuanglian.mingpin.mapper.point.PointMapper;
+import com.chuanglian.mingpin.mapper.point.PointRecordsMapper;
 import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.StudentService;
@@ -34,15 +36,19 @@ public class StudentServiceImpl implements StudentService {
     private final PasswordEncoder passwordEncoder;
     private final ClassMgmtMapper classMgmtMapper;
     private final UserRoleMapper userRoleMapper;
+    private final PointMapper pointMapper;
+    private final PointRecordsMapper pointRecordsMapper;
 
     @Autowired
-    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, ClassStudentMapper classStudentMapper, PasswordEncoder passwordEncoder, ClassMgmtMapper classMgmtMapper, UserRoleMapper userRoleMapper) {
+    public StudentServiceImpl(StudentMapper studentMapper, UserMapper userMapper, ClassStudentMapper classStudentMapper, PasswordEncoder passwordEncoder, ClassMgmtMapper classMgmtMapper, UserRoleMapper userRoleMapper, PointMapper pointMapper, PointRecordsMapper pointRecordsMapper) {
         this.studentMapper = studentMapper;
         this.userMapper = userMapper;
         this.classStudentMapper = classStudentMapper;
         this.passwordEncoder = passwordEncoder;
         this.classMgmtMapper = classMgmtMapper;
         this.userRoleMapper = userRoleMapper;
+        this.pointMapper = pointMapper;
+        this.pointRecordsMapper = pointRecordsMapper;
     }
 
     /**
@@ -106,6 +112,8 @@ public class StudentServiceImpl implements StudentService {
         userRoleMapper.insert(createUserRole(user.getId(), 3));
         // 班级人数加1
         classMgmtMapper.incrementClassNumById(studentDTO.getClassId());
+        // 初始化积分
+        pointMapper.createStudentPoint(user.getId(), 0);
     }
 
     /**
@@ -126,6 +134,9 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void deleteById(Integer studentId) {
+        //删除学生积分
+        pointMapper.deleteStudentPoint(studentId);
+        pointRecordsMapper.deleteStudentPointRecords(studentId);
         // 更新学生状态为删除
         updateStudentStatus(studentId, 1);
         // 禁用用户
@@ -154,6 +165,13 @@ public class StudentServiceImpl implements StudentService {
         return getStudentVOSByCondition(new LambdaQueryWrapper<Student>()
                 .in(Student::getUserId, userIds)
                 .ne(Student::getStatus, 1));
+    }
+
+    @Override
+    public List<StudentVO> teacherList(Integer teacherId) {
+        Integer classId = classMgmtMapper.findClassIdsByUserId(teacherId);
+        List<StudentVO> studentVOS = this.classList(classId);
+        return studentVOS;
     }
 
     // 获取学生 VO 列表

@@ -28,4 +28,8 @@ public interface ClassMgmtMapper extends BaseMapper<Class> {
     @Update("UPDATE class SET num = num - 1 WHERE class_id = #{classId}")
     void decrementClassNumById(int classId);
     List<Teacher> getAssistants(List<Integer> assistantIds);
+
+    // 自定义SQL查询，根据userId查询classId
+    @Select("SELECT class_id FROM [campusManagement].[class] WHERE user_id = #{userId}")
+    Integer findClassIdsByUserId(Integer userId);
 }

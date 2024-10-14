@@ -21,4 +21,6 @@ public interface StudentService {
     void deleteById(Integer studentId);
 
     List<StudentVO> keyWordList(String keyWord);
+
+    List<StudentVO> teacherList(Integer teacherId);
 }
