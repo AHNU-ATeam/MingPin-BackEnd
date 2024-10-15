@@ -1,7 +1,7 @@
 package com.chuanglian.mingpin.expression;
 
-import com.chuanglian.mingpin.domain.LoginForm;
-import com.chuanglian.mingpin.domain.UserForm;
+
+import com.chuanglian.mingpin.pojo.UserForm;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

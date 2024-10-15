@@ -1,6 +1,6 @@
 package com.chuanglian.mingpin.utils;
 
-import com.chuanglian.mingpin.domain.UserForm;
+import com.chuanglian.mingpin.pojo.UserForm;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

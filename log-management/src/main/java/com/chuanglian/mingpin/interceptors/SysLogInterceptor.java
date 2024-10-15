@@ -5,10 +5,10 @@ import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
-import com.chuanglian.mingpin.domain.LoginForm;
-import com.chuanglian.mingpin.entity.sysLog.SysLog;
-import com.chuanglian.mingpin.entity.user.User;
-import com.chuanglian.mingpin.mapper.user.UserMapper;
+import com.chuanglian.mingpin.pojo.LoginForm;
+import com.chuanglian.mingpin.entity.SysLog;
+import com.chuanglian.mingpin.entity.User;
+import com.chuanglian.mingpin.mapper.UserMapper;
 import com.chuanglian.mingpin.service.SysLogService;
 import com.chuanglian.mingpin.utils.IPUtils;
 import com.chuanglian.mingpin.utils.UserUtils;
@@ -19,17 +19,24 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class SysLogInterceptor {
-
     private final SysLogService sysLogService;
     private final HttpServletRequest request;
+    @Qualifier("logUserMapper")
     private final UserMapper userMapper;
+
+    public SysLogInterceptor(SysLogService sysLogService, HttpServletRequest request, UserMapper userMapper) {
+        this.sysLogService = sysLogService;
+        this.request = request;
+        this.userMapper = userMapper;
+    }
 
     @Pointcut("@annotation(com.chuanglian.mingpin.security.Log)")
     public void logPointcut() {

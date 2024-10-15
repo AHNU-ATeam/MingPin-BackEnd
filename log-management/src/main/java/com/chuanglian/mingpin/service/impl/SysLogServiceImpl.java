@@ -1,7 +1,7 @@
 package com.chuanglian.mingpin.service.impl;
 
-import com.chuanglian.mingpin.entity.sysLog.SysLog;
-import com.chuanglian.mingpin.mapper.sysLog.SysLogMapper;
+import com.chuanglian.mingpin.entity.SysLog;
+import com.chuanglian.mingpin.mapper.SysLogMapper;
 import com.chuanglian.mingpin.service.SysLogService;
 import org.springframework.stereotype.Service;
 
