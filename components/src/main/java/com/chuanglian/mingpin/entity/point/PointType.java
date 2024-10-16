@@ -1,12 +1,12 @@
 package com.chuanglian.mingpin.entity.point;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -20,4 +20,8 @@ public class PointType {
     @JsonProperty("value")
     private Integer change;
     private Integer campusId;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createdAt;
+    @TableField(fill = FieldFill.UPDATE)
+    private LocalDateTime updatedAt;
 }
