@@ -3,9 +3,11 @@ package com.chuanglian.mingpin.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chuanglian.mingpin.entity.attendance.StuAttendDownload;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.entity.campus.Class;
 import com.chuanglian.mingpin.entity.vo.StudentAttendanceVo;
 import com.chuanglian.mingpin.mapper.attendance.StuAttendMapper;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
@@ -160,6 +162,38 @@ public class StuAttendServiceImpl extends ServiceImpl<StuAttendMapper, StudentAt
             }
         }
         return studentAttendanceVos;
+    }
+
+    @Override
+    public List<StuAttendDownload> downloadAllStuAttend(Integer campusId, Integer classId, String name, LocalDate startDate, LocalDate endDate) {
+        // 第一步：根据校区ID查询所有班级ID
+        LambdaQueryWrapper<Class> classWrapper = new LambdaQueryWrapper<>();
+        classWrapper.eq(Class::getCampusId, campusId);
+        if (classId != null) {
+            classWrapper.eq(Class::getId, classId);
+        }
+        List<Class> classes = classMgmtMapper.selectList(classWrapper);
+        List<Integer> classIds = classes.stream().map(Class::getId).toList();
+
+        // 第二步：根据班级ID查询学生的 user_id 和班级名
+        List<StuAttendDownload> studentInfo = stuAttendMapper.findStudentInfoByClassIds(classIds);
+
+        // 使用 Map 存储学生ID和班级名称的对应关系
+        Map<Integer, String> studentClassMap = studentInfo.stream()
+                .collect(Collectors.toMap(StuAttendDownload::getStudentId, StuAttendDownload::getClassName));
+        /// 提取学生ID
+        List<Integer> userIds = studentInfo.stream().map(StuAttendDownload::getStudentId).collect(Collectors.toList());
+
+        // 第三步：根据过滤条件（姓名，日期范围）查询考勤记录
+        List<StuAttendDownload> attendanceByFilters = stuAttendMapper.findAttendanceByFilters(userIds, name, startDate, endDate);
+
+        // 第四步：将班级名称添加到考勤记录中
+        for (StuAttendDownload attendance : attendanceByFilters) {
+            // 使用 Map 快速获取班级名称
+            String className = studentClassMap.get(attendance.getStudentId());
+            attendance.setClassName(className); // 设置班级名称
+        }
+        return attendanceByFilters;
     }
 
 }
