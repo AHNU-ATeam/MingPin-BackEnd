@@ -19,4 +19,41 @@
             #{id}
         </foreach>
     </select>
+    <!-- 根据班级ID查询学生的 user_id 和班级名称 -->
+    <select id="findStudentInfoByClassIds" resultType="com.chuanglian.mingpin.entity.attendance.StuAttendDownload">
+        SELECT u.id as studentId, u.nickname as name, u.bound_phone as phone, c.name as className
+        FROM userManagement.[user] u
+        JOIN campusManagement.class_student cs ON u.id = cs.student_id  -- 这里直接用 user_id
+        JOIN campusManagement.class c ON cs.class_id = c.class_id
+        WHERE c.class_id IN
+        <foreach collection="classIds" item="classId" open="(" separator="," close=")">
+            #{classId}
+        </foreach>
+    </select>
+    <!-- 根据过滤条件查询学生考勤记录 -->
+    <select id="findAttendanceByFilters" resultType="com.chuanglian.mingpin.entity.attendance.StuAttendDownload">
+        SELECT e.id, u.id AS studentId, u.nickname AS name, u.bound_phone AS phone,
+        e.date, e.time, e.check_out_time AS checkOutTime,
+        CASE e.type
+        WHEN 1 THEN '签到'
+        WHEN 2 THEN '签退'
+        ELSE '未签到'
+        END AS type
+        FROM attendanceManagement.student_attendance e
+        JOIN userManagement.[user] u ON e.student_id = u.id
+        WHERE u.id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        <if test="name != null and name != ''">
+            AND u.nickname LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="startDate != null">
+            AND e.date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND e.date &lt;= #{endDate}
+        </if>
+    </select>
+
 </mapper>

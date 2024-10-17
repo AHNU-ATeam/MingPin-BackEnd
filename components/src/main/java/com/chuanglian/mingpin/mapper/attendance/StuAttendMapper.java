@@ -1,9 +1,11 @@
 package com.chuanglian.mingpin.mapper.attendance;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.chuanglian.mingpin.entity.attendance.StuAttendDownload;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
 import com.chuanglian.mingpin.entity.user.Student;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -30,6 +32,10 @@ public interface StuAttendMapper extends BaseMapper<StudentAttendance> {
     Integer stuCheckOut(Integer id, LocalDate now, LocalTime time);
 
     void batchInsert(List<StudentAttendance> attendanceList);
+
+    List<StuAttendDownload> findStudentInfoByClassIds(List<Integer> classIds);
+
+    List<StuAttendDownload> findAttendanceByFilters(List<Integer> userIds, String name, LocalDate startDate, LocalDate endDate);
 
 
 //    Integer stuAttendance(StudentAttendance studentAttendance);

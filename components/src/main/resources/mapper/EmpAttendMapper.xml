@@ -37,4 +37,32 @@
             (#{item.employeeId}, #{item.date})
         </foreach>
     </insert>
+    <!-- 查询员工考勤记录，支持动态过滤 -->
+    <select id="findAttendanceByFilters" resultType="com.chuanglian.mingpin.entity.attendance.EmpAttendDownload">
+        SELECT e.id, u.id as employeeId, u.nickname as name, u.bound_phone as phone,
+        e.date, e.time, e.check_out_time as checkOutTime, e.location,
+        CASE e.type
+        WHEN 1 THEN '签到'
+        WHEN 2 THEN '签退'
+        ELSE '未签到'
+        END as type
+        FROM attendanceManagement.employee_attendance e
+        JOIN userManagement.[user] u ON e.employee_id = u.id
+        WHERE u.id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+
+        <if test="name != null and name != ''">
+            AND u.nickname LIKE CONCAT('%', #{name}, '%')
+        </if>
+
+        <if test="startDate != null">
+            AND e.date &gt;= #{startDate}
+        </if>
+
+        <if test="endDate != null">
+            AND e.date &lt;= #{endDate}
+        </if>
+    </select>
 </mapper>
