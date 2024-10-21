@@ -5,6 +5,7 @@ import com.chuanglian.mingpin.entity.user.dto.UpdateStudentDTO;
 import com.chuanglian.mingpin.entity.user.vo.StudentInfoVO;
 import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import com.chuanglian.mingpin.pojo.Result;
+import com.chuanglian.mingpin.security.Log;
 import com.chuanglian.mingpin.service.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,7 @@ public class StudentController {
         return Result.success(studentService.campusList(campusId));
     }
 
+    @Log("获取班级里学生信息")
     @GetMapping("/classList/{classId}")
     @PreAuthorize("hasAuthority('sys:student:select')")
     @ApiOperation(value = "通过班级id查询学生", notes = "该接口主要用于通过班级id查询所有学生")

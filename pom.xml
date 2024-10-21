@@ -25,6 +25,8 @@
         <module>homework</module>
         <module>student-management</module>
         <module>album</module>
+        <module>log-management</module>
+        <module>leave-management</module>
     </modules>
 
     <properties>
