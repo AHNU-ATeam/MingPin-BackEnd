@@ -131,6 +131,9 @@ public class LoginServiceImpl implements LoginService {
                     .nickname(user.getNickname())
                     .token(jwt)
                     .campusId(campusIdList)
+                    .balance(campMapper.selectById(campusIdList.get(0)).getBalance())
+                    .teacherNum(teacherMapper.selectCount(new LambdaQueryWrapper<Teacher>().eq(Teacher::getCampusId, campusIdList.get(0))))
+                    .studentNum(studentMapper.selectCount(new LambdaQueryWrapper<Student>().eq(Student::getCampusId, campusIdList.get(0))))
                     .build();
 
             userVO = principalVO;

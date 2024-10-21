@@ -185,6 +185,14 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         if (images != null) {
             for (ClassAlbumImageVO i : images) {
                 Image image = new Image();
+                if (i.getId() == null) {
+                    BeanUtils.copyProperties(i, image);
+                    image.setAlbumId(id);
+                    if (imagesMapper.insert(image) == 0) {
+                        throw new IllegalStateException("创建照片池失败");
+                    }
+                    continue;
+                }
                 if (i.getOrderId() == -1) {
                     image.setStatus(1);
                 }
@@ -200,6 +208,14 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         if (video != null) {
             for (ClassAlbumVideoVO v : video) {
                 Video videoSingle = new Video();
+                if (v.getId() == null) {
+                    BeanUtils.copyProperties(v, videoSingle);
+                    videoSingle.setAlbumId(id);
+                    if (videoMapper.insert(videoSingle) == 0) {
+                        throw new IllegalStateException("创建视频池失败");
+                    }
+                    continue;
+                }
                 if (v.getOrderId() == -1) {
                     videoSingle.setStatus(1);
                 }

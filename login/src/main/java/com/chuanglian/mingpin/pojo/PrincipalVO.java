@@ -19,4 +19,8 @@ public class PrincipalVO extends UserVO {
     private List<Integer> campusId;
     @JsonProperty("balance")
     private BigDecimal balance;
+    @JsonProperty("teacher_num")
+    private Long teacherNum;
+    @JsonProperty("student_num")
+    private Long studentNum;
 }
