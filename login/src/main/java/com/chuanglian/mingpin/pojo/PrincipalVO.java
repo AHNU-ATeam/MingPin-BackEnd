@@ -7,19 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserVO {
-    private Integer id;
-    private String role;
-    @JsonProperty("phone")
-    private String boundPhone;
-    private String avatar;
-    private String nickname;
-    private Object token;
+public class PrincipalVO extends UserVO {
+    @JsonProperty("campus")
+    private List<Integer> campusId;
+    @JsonProperty("balance")
+    private BigDecimal balance;
 }
