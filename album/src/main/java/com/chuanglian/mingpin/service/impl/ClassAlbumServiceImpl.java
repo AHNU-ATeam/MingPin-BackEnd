@@ -126,11 +126,11 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
 
         // 获取对应的图片和视频url
         LambdaQueryWrapper<Image> imageLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        imageLambdaQueryWrapper.eq(Image::getAlbumId, id);
+        imageLambdaQueryWrapper.eq(Image::getAlbumId, id).ne(Image::getStatus, 1);
         List<Image> selectImages = imagesMapper.selectList(imageLambdaQueryWrapper);
 
         LambdaQueryWrapper<Video> videoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        videoLambdaQueryWrapper.eq(Video::getAlbumId, id);
+        videoLambdaQueryWrapper.eq(Video::getAlbumId, id).ne(Video::getStatus, 1);
         List<Video> selectVideo = videoMapper.selectList(videoLambdaQueryWrapper);
 
         // 将查询的到实体类转换成VO
@@ -185,6 +185,17 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         if (images != null) {
             for (ClassAlbumImageVO i : images) {
                 Image image = new Image();
+                if (i.getId() == null) {
+                    BeanUtils.copyProperties(i, image);
+                    image.setAlbumId(id);
+                    if (imagesMapper.insert(image) == 0) {
+                        throw new IllegalStateException("创建照片池失败");
+                    }
+                    continue;
+                }
+                if (i.getOrderId() == -1) {
+                    image.setStatus(1);
+                }
                 BeanUtils.copyProperties(i, image);
                 image.setUpdatedAt(LocalDateTime.now());
                 if (imagesMapper.updateById(image) == 0) {
@@ -197,6 +208,17 @@ public class ClassAlbumServiceImpl implements ClassAlbumService {
         if (video != null) {
             for (ClassAlbumVideoVO v : video) {
                 Video videoSingle = new Video();
+                if (v.getId() == null) {
+                    BeanUtils.copyProperties(v, videoSingle);
+                    videoSingle.setAlbumId(id);
+                    if (videoMapper.insert(videoSingle) == 0) {
+                        throw new IllegalStateException("创建视频池失败");
+                    }
+                    continue;
+                }
+                if (v.getOrderId() == -1) {
+                    videoSingle.setStatus(1);
+                }
                 BeanUtils.copyProperties(v, videoSingle);
                 videoSingle.setUpdatedAt(LocalDateTime.now());
                 if (videoMapper.updateById(videoSingle) == 0) {
