@@ -1,5 +1,9 @@
 # SQL Server数据库配置
 spring:
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://119.45.239.3:1433;DatabaseName=mingpin;encrypt=false
