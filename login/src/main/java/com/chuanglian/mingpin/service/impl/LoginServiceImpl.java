@@ -109,6 +109,10 @@ public class LoginServiceImpl implements LoginService {
         Integer roleId = userRole.getRoleId();
         Role role = roleMapper.selectById(roleId);
 
+        if (!role.getRole().equals(loginForm.getRole())) {
+            throw new RuntimeException("用户角色错误");
+        }
+
         // 创建用于返回前端的VO类
         UserVO userVO = null;
 
@@ -118,6 +122,10 @@ public class LoginServiceImpl implements LoginService {
             LambdaQueryWrapper<Campus> getCampusId = new LambdaQueryWrapper<>();
             getCampusId.select(Campus::getCampusId).eq(Campus::getPrincipalId, id);
             List<Object> list = campMapper.selectObjs(getCampusId);
+
+            if (list == null || list.size() == 0) {
+                throw new RuntimeException("校长暂无任何管理校区");
+            }
 
             campusIdList = list.stream()
                     .map(obj -> (Integer) obj)
@@ -144,6 +152,10 @@ public class LoginServiceImpl implements LoginService {
             Class classInfo = classMgmtMapper.selectOne(getClassId);
             Campus campusInfo = campMapper.selectById(teacher.getCampusId());
 
+            if (campusInfo == null) {
+                throw new RuntimeException("教师暂时不属于任何校区");
+            }
+
             TeacherVO teacherVO = TeacherVO.builder()
                     .id(user.getId())
                     .role(role.getName())
@@ -168,8 +180,13 @@ public class LoginServiceImpl implements LoginService {
                 throw new RuntimeException("用户积分错误");
             }
             Class classInfo = classMgmtMapper.selectById(classIdList.get(0));
+            if (classInfo == null) {
+                throw new RuntimeException("学生暂时不属于任何班级");
+            }
             Campus campusInfo = campMapper.selectById(classInfo.getCampusId());
-
+            if (campusInfo == null) {
+                throw new RuntimeException("学生暂时不属于任何校区");
+            }
             StudentVO studentVO = StudentVO.builder()
                     .id(user.getId())
                     .role(role.getName())
