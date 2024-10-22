@@ -109,6 +109,10 @@ public class LoginServiceImpl implements LoginService {
         Integer roleId = userRole.getRoleId();
         Role role = roleMapper.selectById(roleId);
 
+        if (!role.getRole().equals(loginForm.getRole())) {
+            throw new RuntimeException("用户角色错误");
+        }
+
         // 创建用于返回前端的VO类
         UserVO userVO = null;
 
@@ -118,6 +122,10 @@ public class LoginServiceImpl implements LoginService {
             LambdaQueryWrapper<Campus> getCampusId = new LambdaQueryWrapper<>();
             getCampusId.select(Campus::getCampusId).eq(Campus::getPrincipalId, id);
             List<Object> list = campMapper.selectObjs(getCampusId);
+
+            if (list == null || list.size() == 0) {
+                throw new RuntimeException("校长暂无任何管理校区");
+            }
 
             campusIdList = list.stream()
                     .map(obj -> (Integer) obj)
