@@ -152,6 +152,10 @@ public class LoginServiceImpl implements LoginService {
             Class classInfo = classMgmtMapper.selectOne(getClassId);
             Campus campusInfo = campMapper.selectById(teacher.getCampusId());
 
+            if (campusInfo == null) {
+                throw new RuntimeException("教师暂时不属于任何校区");
+            }
+
             TeacherVO teacherVO = TeacherVO.builder()
                     .id(user.getId())
                     .role(role.getName())
@@ -176,8 +180,13 @@ public class LoginServiceImpl implements LoginService {
                 throw new RuntimeException("用户积分错误");
             }
             Class classInfo = classMgmtMapper.selectById(classIdList.get(0));
+            if (classInfo == null) {
+                throw new RuntimeException("学生暂时不属于任何班级");
+            }
             Campus campusInfo = campMapper.selectById(classInfo.getCampusId());
-
+            if (campusInfo == null) {
+                throw new RuntimeException("学生暂时不属于任何校区");
+            }
             StudentVO studentVO = StudentVO.builder()
                     .id(user.getId())
                     .role(role.getName())
