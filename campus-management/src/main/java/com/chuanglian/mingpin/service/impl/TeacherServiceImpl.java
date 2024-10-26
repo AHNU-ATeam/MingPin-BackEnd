@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherMapper teacherMapper;
@@ -145,6 +146,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public Result delete(Integer teacherId) {
         Teacher teacher = new Teacher();
         teacher.setTeacherId(teacherId);
