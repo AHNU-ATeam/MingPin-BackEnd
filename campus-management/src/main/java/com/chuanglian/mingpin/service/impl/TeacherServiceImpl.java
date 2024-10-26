@@ -8,7 +8,6 @@ import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
 import com.chuanglian.mingpin.service.TeacherService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,11 +37,11 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional
-    public Result add(TeacherVO teacherVo) {
+    public Result add(CampusTeacherVO campusTeacherVo) {
         Teacher teacher = new Teacher();
         User user = new User();
-        BeanUtils.copyProperties(teacherVo, teacher);
-        BeanUtils.copyProperties(teacherVo, user);
+        BeanUtils.copyProperties(campusTeacherVo, teacher);
+        BeanUtils.copyProperties(campusTeacherVo, user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         teacher.setCreatedAt(LocalDateTime.now());
         teacher.setUpdatedAt(LocalDateTime.now());
