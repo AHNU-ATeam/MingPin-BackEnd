@@ -6,7 +6,7 @@ import com.chuanglian.mingpin.pojo.*;
 import java.util.List;
 
 public interface TeacherService {
-    Result add(TeacherVO teacher) ;
+    Result add(CampusTeacherVO teacher) ;
 
     List<TeacherVoForShow> getAllTeacherUsers(Integer campusId);
 

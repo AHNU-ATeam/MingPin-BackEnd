@@ -1,6 +1,6 @@
 package com.chuanglian.mingpin.controller;
 
-import com.chuanglian.mingpin.pojo.TeacherVO;
+import com.chuanglian.mingpin.pojo.CampusTeacherVO;
 import com.chuanglian.mingpin.pojo.Result;
 import com.chuanglian.mingpin.pojo.TeacherVoForUpdate;
 import com.chuanglian.mingpin.service.TeacherService;
@@ -30,14 +30,14 @@ public class TeacherController {
 
     /**
      * 新增教师
-     * @param teacherVO
+     * @param campusTeacherVO
      * @return
      * @throws IOException
      */
     @PostMapping("/addTeacher")
-    public Result add( @ModelAttribute TeacherVO teacherVO) throws IOException {
-        log.info("新增教师: {}" , teacherVO);
-        return teacherService.add(teacherVO);
+    public Result add( @ModelAttribute CampusTeacherVO campusTeacherVO) throws IOException {
+        log.info("新增教师: {}" , campusTeacherVO);
+        return teacherService.add(campusTeacherVO);
     }
 
     /**
