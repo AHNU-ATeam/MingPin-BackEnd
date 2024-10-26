@@ -1,8 +1,10 @@
 package com.chuanglian.mingpin.mapper.attendance;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.chuanglian.mingpin.entity.attendance.EmpAttendDownload;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -28,4 +30,10 @@ public interface EmpAttendMapper extends BaseMapper<EmployeeAttendance> {
     Integer insertempAttend(EmployeeAttendance attendance);
 
     void insertBatch(List<EmployeeAttendance> attendanceList);
+
+
+    List<EmpAttendDownload> findAttendanceByFilters(@Param("userIds") List<Integer> userIds,
+                                                    @Param("name") String name,
+                                                    @Param("startDate") LocalDate startDate,
+                                                    @Param("endDate") LocalDate endDate);
 }

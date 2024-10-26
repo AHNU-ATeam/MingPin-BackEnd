@@ -56,6 +56,13 @@ public class PointController {
         return Result.success(pointService.adjustPoints(studentId,change,type));
     }
 
+    @PostMapping("change/stu")
+    public Result adjustPointsStu(@RequestParam("student_id")Integer studentId,
+                               @RequestParam("change")Integer change,
+                               @RequestParam("type")String type){
+        return Result.success(pointService.adjustPoints(studentId,change,type));
+    }
+
 //    /**
 //     * 查找学生的积分变化
 //     * @param studentId
