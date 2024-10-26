@@ -53,24 +53,24 @@ public class TeacherServiceImpl implements TeacherService {
     public Result add(CampusTeacherVO campusTeacherVo) {
         Teacher teacher = new Teacher();
         User user = new User();
-        BeanUtils.copyProperties(teacherVo, teacher);
-        BeanUtils.copyProperties(teacherVo, user);
+        BeanUtils.copyProperties(campusTeacherVo, teacher);
+        BeanUtils.copyProperties(campusTeacherVo, user);
 
-        if (!isValidPhoneNumber(teacherVo.getBoundPhone())) {
+        if (!isValidPhoneNumber(campusTeacherVo.getBoundPhone())) {
             return Result.error("手机号格式不正确");
         }
 
-        if (!isValidIdentificationNumber(teacherVo.getIdentificationNumber())) {
+        if (!isValidIdentificationNumber(campusTeacherVo.getIdentificationNumber())) {
             return Result.error("身份证号码格式不正确");
         }
 
         // 校验 campusId 是否存在
-        int campusCount = Math.toIntExact(campMapper.selectCount(new QueryWrapper<Campus>().lambda().eq(Campus::getCampusId, teacherVo.getCampusId())));
+        int campusCount = Math.toIntExact(campMapper.selectCount(new QueryWrapper<Campus>().lambda().eq(Campus::getCampusId, campusTeacherVo.getCampusId())));
         if (campusCount == 0) {
             return Result.error("校园ID不存在，无法添加该教师信息");
         }
 
-        int count = Math.toIntExact(userMapper.selectCount(new QueryWrapper<User>().lambda().eq(User::getBoundPhone, teacherVo.getBoundPhone())));
+        int count = Math.toIntExact(userMapper.selectCount(new QueryWrapper<User>().lambda().eq(User::getBoundPhone, campusTeacherVo.getBoundPhone())));
         if (count > 0) {
             return Result.error("该手机号已被绑定，无法重复添加用户");
         }
