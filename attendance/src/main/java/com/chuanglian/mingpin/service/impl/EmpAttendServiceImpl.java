@@ -1,15 +1,18 @@
 package com.chuanglian.mingpin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chuanglian.mingpin.entity.attendance.EmpAttendDownload;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendanceInfo;
 import com.chuanglian.mingpin.entity.user.Teacher;
+import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.entity.vo.EmployeeAttendanceVo;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendInfoMapper;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendMapper;
-import com.chuanglian.mingpin.mapper.attendance.StuAttendMapper;
-import com.chuanglian.mingpin.mapper.user.StudentMapper;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
+import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.service.EmpAttendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,6 +22,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeAttendance> implements EmpAttendService {
@@ -28,6 +33,8 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
     private TeacherMapper teacherMapper;
     @Autowired
     private EmpAttendMapper empAttendMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 定时插入打卡信息
@@ -106,15 +113,21 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
     }
 
     @Override
-    public List<EmployeeAttendance> selectEmpAttendance(Integer id) {
+    public List<EmployeeAttendanceVo> selectEmpAttendance(Integer id) {
         LambdaQueryWrapper<EmployeeAttendance> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(EmployeeAttendance::getEmployeeId,id);
+        wrapper.eq(EmployeeAttendance::getEmployeeId,id)
+                .orderByDesc(EmployeeAttendance::getDate);
         List<EmployeeAttendance> employeeAttendances = empAttendMapper.selectList(wrapper);
-        return employeeAttendances;
+        User user = userMapper.selectById(id);
+        List<EmployeeAttendanceVo> employeeAttendanceVos = BeanUtil.copyToList(employeeAttendances, EmployeeAttendanceVo.class);
+        for(EmployeeAttendanceVo employeeAttendanceVo:employeeAttendanceVos){
+            employeeAttendanceVo.setName(user.getNickname());
+        }
+        return employeeAttendanceVos;
     }
 
     @Override
-    public List<EmployeeAttendance> selectAllEmpAttendance(Integer id) {
+    public List<EmployeeAttendanceVo> selectAllEmpAttendance(Integer id) {
         LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Teacher::getCampusId,id);
         List<Teacher> teachers = teacherMapper.selectList(wrapper);
@@ -122,7 +135,31 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
         LambdaQueryWrapper<EmployeeAttendance> wrapper1 = new LambdaQueryWrapper<>();
         wrapper1.in(EmployeeAttendance::getEmployeeId,list);
         List<EmployeeAttendance> employeeAttendances = empAttendMapper.selectList(wrapper1);
-        return employeeAttendances;
+        List<EmployeeAttendanceVo> employeeAttendanceVos = BeanUtil.copyToList(employeeAttendances, EmployeeAttendanceVo.class);
+        List<User> users = userMapper.selectBatchIds(list);
+        Map<Integer, String> userMap = users.stream().collect(Collectors.toMap(User::getId, User::getNickname));
+        for (EmployeeAttendanceVo vo : employeeAttendanceVos) {
+            String userName = userMap.get(vo.getEmployeeId()); // 从 Map 中获取对应的 userName
+            if (userName != null) {
+                vo.setName(userName); // 设置 vo 的 name
+            }
+        }
+        return employeeAttendanceVos;
     }
+
+    @Override
+    public List<EmpAttendDownload> downloadAllEmpAttend(Integer campusId, String name, LocalDate startDate, LocalDate endDate) {
+        // 第一步：根据校区 ID 查询教师的 userId
+//        List<Integer> userIds = empAttendMapper.findUserIdsByCampusId(campusId);
+        LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Teacher::getCampusId,campusId);
+        List<Teacher> teachers = teacherMapper.selectList(wrapper);
+        List<Integer> userIds = teachers.stream().map(Teacher::getUserId).toList();
+
+        // 第二步：根据过滤条件查询考勤记录
+        List<EmpAttendDownload> attendanceByFilters = empAttendMapper.findAttendanceByFilters(userIds, name, startDate, endDate);
+        return attendanceByFilters;
+    }
+
 
 }

@@ -43,4 +43,6 @@ public class UpdateStudentDTO {
     private String studentSummary;
 
     private LocalDate admissionDate;
+
+    private Integer classId;
 }

@@ -2,7 +2,10 @@ package com.chuanglian.mingpin;
 
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.permission.MenuMapper;
+import com.chuanglian.mingpin.mapper.point.PointMapper;
+import com.chuanglian.mingpin.mapper.point.PointRecordsMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
+import com.chuanglian.mingpin.service.PointService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,12 @@ public class MapperTest {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PointMapper pointMapper;
+
+    @Autowired
+    private PointRecordsMapper pointRecordsMapper;
+
 
     @Test
     public void TestPasswordEncoder() {
@@ -55,5 +64,32 @@ public class MapperTest {
 
         System.out.println(json);
 
+    }
+
+    @Test
+    public void testCreateStudentPoint() {
+        int studentId = 1001;  // 测试用学生ID
+        int initialPoint = 10;  // 初始化积分
+
+        // 调用创建学生积分
+        pointMapper.createStudentPoint(studentId, initialPoint);
+
+    }
+
+    @Test
+    public void testDeleteStudentPoint() {
+        int studentId = 1001;
+
+        // 删除学生积分
+        pointMapper.deleteStudentPoint(studentId);
+    }
+
+
+    @Test
+    public void testDeleteStudentPointRecords() {
+        int studentId = 1003;
+
+        // 删除积分记录
+        pointRecordsMapper.deleteStudentPointRecords(studentId);
     }
 }

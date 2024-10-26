@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeacherVoForShow {
+
+    private Integer id;
     private String avatar;
     private String nickname;
     private String sex;
@@ -18,4 +20,5 @@ public class TeacherVoForShow {
     private String identificationNumber;
     private Integer campusId;
     private Integer teacherId;
+    private String boundPhone;
 }

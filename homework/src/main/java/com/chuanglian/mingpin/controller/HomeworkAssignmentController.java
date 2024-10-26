@@ -44,7 +44,6 @@ public class HomeworkAssignmentController {
         return Result.success(homeworkAssignmentService.findByStudent(studentUserId));
     }
 
-
     @PostMapping("/delete/{assignmentId}")
     @PreAuthorize("hasAuthority('sys:homeworkAssignment:delete')")
     @ApiOperation(value = "删除作业", notes = "该接口用于通过id删除作业信息")

@@ -5,6 +5,7 @@ import com.chuanglian.mingpin.entity.user.dto.UpdateStudentDTO;
 import com.chuanglian.mingpin.entity.user.vo.StudentInfoVO;
 import com.chuanglian.mingpin.entity.user.vo.StudentVO;
 import com.chuanglian.mingpin.pojo.Result;
+import com.chuanglian.mingpin.security.Log;
 import com.chuanglian.mingpin.service.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +30,7 @@ public class StudentController {
         return Result.success(studentService.campusList(campusId));
     }
 
+    @Log("获取班级里学生信息")
     @GetMapping("/classList/{classId}")
     @PreAuthorize("hasAuthority('sys:student:select')")
     @ApiOperation(value = "通过班级id查询学生", notes = "该接口主要用于通过班级id查询所有学生")
@@ -41,6 +43,20 @@ public class StudentController {
     @ApiOperation(value = "通过id查询学生", notes = "该接口主要用于通过学生id查询该学生")
     public Result<StudentInfoVO> detail(@PathVariable Integer studentId) {
         return Result.success(studentService.findById(studentId));
+    }
+
+    @GetMapping("/keyWordList")
+    @PreAuthorize("hasAuthority('sys:student:select')")
+    @ApiOperation(value = "关键字查询学生", notes = "该接口主要用于通过关键字模糊查询学生")
+    public Result<List<StudentVO>> keyWordList(@RequestParam String keyWord) {
+        return Result.success(studentService.keyWordList(keyWord));
+    }
+
+    @GetMapping("/teacherList/{teacherId}")
+    @PreAuthorize("hasAuthority('sys:student:select')")
+    @ApiOperation(value = "通过教师id查询学生", notes = "该接口主要用于通过教师id查询学生")
+    public Result<List<StudentVO>> teacherList(@PathVariable Integer teacherId) {
+        return Result.success(studentService.teacherList(teacherId));
     }
 
     @PostMapping
