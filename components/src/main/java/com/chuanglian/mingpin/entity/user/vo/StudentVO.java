@@ -11,6 +11,7 @@ public class StudentVO {
     private Integer userId;
     private String userName;
     private String gender;
+    private String parentPhone;
     private Integer classId;
     private String mingPinClassName;
     private Integer campusId;
