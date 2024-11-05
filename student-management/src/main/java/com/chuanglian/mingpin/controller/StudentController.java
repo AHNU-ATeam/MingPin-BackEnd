@@ -82,4 +82,18 @@ public class StudentController {
         studentService.deleteById(studentId);
         return Result.success();
     }
+
+    @GetMapping("/campus/keyWord")
+    @PreAuthorize("hasAuthority('sys:student:select')")
+    @ApiOperation(value = "通过校区id和关键字查询学生", notes = "该接口主要用于通过校区id和关键字查询学生")
+    public Result<List<StudentVO>> campusKeyWordList(@RequestParam Integer campusId, @RequestParam String keyWord) {
+        return Result.success(studentService.campusKeyWordList(campusId, keyWord));
+    }
+
+    @GetMapping("/class/keyWord")
+    @PreAuthorize("hasAuthority('sys:student:select')")
+    @ApiOperation(value = "通过班级id和关键字查询学生", notes = "该接口主要用于通过班级id和关键字查询学生")
+    public Result<List<StudentVO>> classKeyWordList(@RequestParam Integer campusId, @RequestParam Integer classId, @RequestParam String keyWord) {
+        return Result.success(studentService.classKeyWordList(campusId, classId, keyWord));
+    }
 }

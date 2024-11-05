@@ -174,6 +174,34 @@ public class StudentServiceImpl implements StudentService {
         return studentVOS;
     }
 
+    @Override
+    public List<StudentVO> campusKeyWordList(Integer campusId, String keyWord) {
+        List<Integer> userIds = userMapper.selectList(new LambdaQueryWrapper<User>()
+                        .like(User::getNickname, keyWord)
+                        .eq(User::getStatus, "enable"))
+                .stream()
+                .map(User::getId)
+                .toList();
+        return getStudentVOSByCondition(new LambdaQueryWrapper<Student>()
+                .in(Student::getUserId, userIds)
+                .eq(Student::getCampusId, campusId)
+                .ne(Student::getStatus, 1));
+    }
+
+    @Override
+    public List<StudentVO> classKeyWordList(Integer campusId, Integer classId, String keyWord) {
+        List<Integer> userIds = userMapper.selectList(new LambdaQueryWrapper<User>()
+                        .like(User::getNickname, keyWord)
+                        .eq(User::getStatus, "enable"))
+                .stream()
+                .map(User::getId)
+                .toList();
+        return getStudentVOSByCondition(new LambdaQueryWrapper<Student>()
+                .in(Student::getUserId, userIds)
+                .eq(Student::getCampusId, campusId)
+                .ne(Student::getStatus, 1), classId);
+    }
+
     // 获取学生 VO 列表
     private List<StudentVO> getStudentVOSByCondition(LambdaQueryWrapper<Student> queryWrapper) {
         return getStudentVOSByCondition(queryWrapper, null);
@@ -181,6 +209,16 @@ public class StudentServiceImpl implements StudentService {
 
     // 根据条件和班级 ID 获取学生 VO 列表
     private List<StudentVO> getStudentVOSByCondition(LambdaQueryWrapper<Student> queryWrapper, Integer classId) {
+        // 如果班级 ID 不为空，则添加班级 ID 作为查询条件
+        if (classId != null) {
+            List<Integer> studentIds = classStudentMapper.selectList(new LambdaQueryWrapper<ClassStudent>()
+                            .eq(ClassStudent::getClassId, classId))
+                    .stream()
+                    .map(ClassStudent::getStudentId)
+                    .toList();
+            queryWrapper.in(Student::getUserId, studentIds);
+        }
+
         List<Student> students = studentMapper.selectList(queryWrapper);
         List<StudentVO> studentVOS = new ArrayList<>();
 
@@ -199,6 +237,7 @@ public class StudentServiceImpl implements StudentService {
 
         return studentVOS;
     }
+
 
     // 根据学生 ID 获取学生实体
     private Student getStudentById(Integer studentId) {
