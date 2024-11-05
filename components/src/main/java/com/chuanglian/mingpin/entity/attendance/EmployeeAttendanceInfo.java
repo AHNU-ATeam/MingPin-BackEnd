@@ -29,7 +29,7 @@ public class EmployeeAttendanceInfo {
 
     private Double centerLongitude; // 中心点经度
 
-    private Integer radius; // 打卡半径
+    private Double radius; // 打卡半径
 
     private String title;
 
