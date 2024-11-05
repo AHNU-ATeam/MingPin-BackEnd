@@ -23,4 +23,8 @@ public interface StudentService {
     List<StudentVO> keyWordList(String keyWord);
 
     List<StudentVO> teacherList(Integer teacherId);
+
+    List<StudentVO> campusKeyWordList(Integer campusId, String keyWord);
+
+    List<StudentVO> classKeyWordList(Integer campusId, Integer classId, String keyWord);
 }
