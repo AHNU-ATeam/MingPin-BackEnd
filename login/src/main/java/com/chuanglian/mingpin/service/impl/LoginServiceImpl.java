@@ -146,7 +146,8 @@ public class LoginServiceImpl implements LoginService {
 
             userVO = principalVO;
         } else if (role.getRole().equals(RoleEnum.TEACHER.getType())) {
-            Teacher teacher = teacherMapper.selectOne(new LambdaQueryWrapper<Teacher>().eq(Teacher::getUserId, user.getId()));
+            Teacher teacher = teacherMapper.selectOne(
+                    new LambdaQueryWrapper<Teacher>().eq(Teacher::getUserId, user.getId()));
             LambdaQueryWrapper<Class> getClassId = new LambdaQueryWrapper<>();
             getClassId.eq(Class::getUserId, user.getId());
             Class classInfo = classMgmtMapper.selectOne(getClassId);
