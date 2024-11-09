@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chuanglian.mingpin.entity.campus.File;
 import com.chuanglian.mingpin.entity.campus.Image;
 import com.chuanglian.mingpin.entity.campus.Notification;
+import com.chuanglian.mingpin.entity.permission.UserRole;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.campus.FilesMapper;
 import com.chuanglian.mingpin.mapper.campus.ImageMapper;
 import com.chuanglian.mingpin.mapper.campus.NotificationMapper;
+import com.chuanglian.mingpin.mapper.permission.UserRoleMapper;
 import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.service.NotificationService;
@@ -29,17 +31,19 @@ public class NotificationServiceImpl implements NotificationService {
     private final ImageMapper imageMapper;
     private final FilesMapper filesMapper;
     private final UserMapper userMapper;
+    private final UserRoleMapper roleUserMapper;
 
     public NotificationServiceImpl(
             NotificationMapper notificationMapper,
             ImageMapper imageMapper,
             FilesMapper filesMapper,
-            UserMapper userMapper
+            UserMapper userMapper, UserRoleMapper roleUserMapper
     ) {
         this.notificationMapper = notificationMapper;
         this.imageMapper = imageMapper;
         this.filesMapper = filesMapper;
         this.userMapper = userMapper;
+        this.roleUserMapper = roleUserMapper;
     }
 
     @Override
@@ -186,6 +190,9 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 通过user_id查询昵称
         User user = userMapper.selectById(notification.getPublisher());
+        if (user == null) {
+            throw new IllegalStateException("发布者不存在");
+        }
         notificationVO.setPublisher(user.getNickname());
         notificationVO.setRecipient(notification.getRecipient());
         notificationVO.setUpdatedAt(notification.getUpdatedAt());
@@ -206,6 +213,30 @@ public class NotificationServiceImpl implements NotificationService {
                 .eq(Notification::getStatus, 0);
         List<Notification> resultSet = notificationMapper.selectList(getAllNotificationByPublisher);
 
+        return Result.success(getNotificationVOPageInfo(resultSet));
+    }
+
+    public Result<PageInfo<NotificationVO>> getAllNotificationByRecipient(Integer pageNum, Integer pageSize, Long recipient) {
+        // 启动分页
+        PageHelper.startPage(pageNum, pageSize);
+
+        // 获取recipient对应的用户权限
+        UserRole userRole = roleUserMapper.selectOne(new QueryWrapper<UserRole>().lambda()
+                .eq(UserRole::getUserId, recipient)
+        );
+        int role = userRole.getRoleId();
+
+        // 获取查询结果，指定id，并排除已被删除的结果
+        LambdaQueryWrapper<Notification> getAllNotificationByPublisher = new LambdaQueryWrapper<>();
+        getAllNotificationByPublisher
+                .eq(Notification::getRecipient, role).or().eq(Notification::getRecipient, 1)
+                .eq(Notification::getStatus, 0);
+        List<Notification> resultSet = notificationMapper.selectList(getAllNotificationByPublisher);
+
+        return Result.success(getNotificationVOPageInfo(resultSet));
+    }
+
+    private PageInfo<NotificationVO> getNotificationVOPageInfo(List<Notification> resultSet) {
         // 使用 PageInfo 封装分页信息，基于原始查询结果
         PageInfo<Notification> pageInfo = new PageInfo<>(resultSet);
 
@@ -224,7 +255,7 @@ public class NotificationServiceImpl implements NotificationService {
         pageInfoVO.setTotal(pageInfo.getTotal());
         pageInfoVO.setPages(pageInfo.getPages());
 
-        return Result.success(pageInfoVO);
+        return pageInfoVO;
     }
 
 
