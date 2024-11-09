@@ -18,6 +18,7 @@ public interface NotificationService {
 
     Result<PageInfo<NotificationVO>> getAllNotification(Integer pageNum, Integer pageSize, Long publisher);
 
+    public Result<PageInfo<NotificationVO>> getAllNotificationByRecipient(Integer pageNum, Integer pageSize, Long recipient);
     Result deleteNotification(Integer id);
 
 }

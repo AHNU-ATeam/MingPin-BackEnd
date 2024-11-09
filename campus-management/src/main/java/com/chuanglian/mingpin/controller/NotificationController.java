@@ -63,6 +63,15 @@ public class NotificationController {
         return notificationService.getAllNotification(num, size, publisher);
     }
 
+    @PostMapping("/get/all-received")
+    @PreAuthorize("hasAuthority('sys:notice:select')")
+    public Result<PageInfo<NotificationVO>> getAllReceivedNotice(
+            @RequestParam(defaultValue = "1") Integer num,
+            @RequestParam(defaultValue = "9999") Integer size,
+            @RequestParam Long recipient) {
+        return notificationService.getAllNotificationByRecipient(num, size, recipient);
+    }
+
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('sys:notice:delete')")
     public Result deleteNotice(@PathVariable("id") Integer id) {
