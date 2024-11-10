@@ -21,4 +21,6 @@ public interface CampService {
     Result update(Campus campus);
 
     Result getAllCampus();
+
+    Result getCampusById(Integer campusId);
 }

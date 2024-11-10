@@ -23,8 +23,6 @@ import java.util.List;
 @RestController
 public class CampusController {
 
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
 
     @Autowired
     private CampService campService;
@@ -112,6 +110,13 @@ public class CampusController {
     public Result searchAllCampus(){
         log.info("展示所有校区");
         return campService.getAllCampus();
+    }
+
+
+    @GetMapping("/searchCampusById/{campusId}")
+    public Result getCampusById(@PathVariable Integer campusId) {
+        log.info("查询教师");
+        return campService.getCampusById(campusId);
     }
 
     /**
