@@ -75,4 +75,9 @@ public class CampServiceImpl implements CampService {
         }
         return Result.success(campusList);
     }
+
+    @Override
+    public Result getCampusById(Integer campusId) {
+        return Result.success(campMapper.selectById(campusId));
+    }
 }
