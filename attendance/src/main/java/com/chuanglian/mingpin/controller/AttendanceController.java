@@ -120,55 +120,114 @@ public class AttendanceController {
         return Result.success(empAttendService.selectAllEmpAttendance(id));
     }
 
-    @GetMapping("/download/emp")
-    public Result<String> downloadAllEmpAttend(
-            @RequestParam Integer campusId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
-    ) throws IOException {
-        String fileUrl;
-        List<EmpAttendDownload> empAttendDownloads = empAttendService.downloadAllEmpAttend(campusId, name, startDate, endDate);
-        try {
-            ByteArrayOutputStream outputStream = ExcelUtil.createExcel(empAttendDownloads, EmpAttendDownload.class, "员工签到");
+//    @GetMapping("/download/emp")
+//    public Result<String> downloadAllEmpAttend(
+//            @RequestParam Integer campusId,
+//            @RequestParam(required = false) String name,
+//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+//    ) throws IOException {
+//        String fileUrl;
+//        List<EmpAttendDownload> empAttendDownloads = empAttendService.downloadAllEmpAttend(campusId, name, startDate, endDate);
+//        try {
+//            ByteArrayOutputStream outputStream = ExcelUtil.createExcel(empAttendDownloads, EmpAttendDownload.class, "员工签到");
+//
+//            // 将 ByteArrayOutputStream 内容转换为自定义的 SimpleMultipartFile
+//            MultipartFile multipartFile = new SimpleMultipartFile(outputStream.toByteArray(), "file", "员工签到.xlsx");
+//
+//            // 上传文件并获取 URL
+//            fileUrl = aliOSSUtils.upload(multipartFile);
+//        }catch (Exception e){
+//            throw new RuntimeException("文件生成失败");
+//        }
+//        return Result.success("文件上传成功", fileUrl);
+//    }
+@PostMapping("/download/emp")
+public Result<String> downloadAllEmpAttend(@RequestBody Map<String, Object> params) throws IOException {
+    String fileUrl;
 
-            // 将 ByteArrayOutputStream 内容转换为自定义的 SimpleMultipartFile
-            MultipartFile multipartFile = new SimpleMultipartFile(outputStream.toByteArray(), "file", "员工签到.xlsx");
+    // 从 Map 中获取参数并转换类型
+    Integer campusId = (Integer) params.get("campusId");
+    String name = (String) params.get("name");
+    LocalDate startDate = params.containsKey("startDate") ? LocalDate.parse((String) params.get("startDate")) : null;
+    LocalDate endDate = params.containsKey("endDate") ? LocalDate.parse((String) params.get("endDate")) : null;
 
-            // 上传文件并获取 URL
-            fileUrl = aliOSSUtils.upload(multipartFile);
-        }catch (Exception e){
-            throw new RuntimeException("文件生成失败");
-        }
-        return Result.success("文件上传成功", fileUrl);
+    // 获取员工签到数据
+    List<EmpAttendDownload> empAttendDownloads = empAttendService.downloadAllEmpAttend(campusId, name, startDate, endDate);
+
+    try {
+        // 使用 Excel 工具类生成 Excel 文件，直接传入数据列表
+        ByteArrayOutputStream outputStream = ExcelUtil.createExcel(empAttendDownloads, EmpAttendDownload.class, "员工签到");
+
+        // 将 ByteArrayOutputStream 内容转换为自定义的 SimpleMultipartFile
+        MultipartFile multipartFile = new SimpleMultipartFile(outputStream.toByteArray(), "file", "员工签到.xlsx");
+
+        // 上传文件到 OSS 并获取文件 URL
+        fileUrl = aliOSSUtils.upload(multipartFile);
+    } catch (Exception e) {
+        throw new RuntimeException("文件生成失败");
     }
 
-    @GetMapping("/download/stu")
-    public Result<String> downloadAllStuAttend(
-            @RequestParam Integer campusId,
-            @RequestParam(required = false) Integer classId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
-    ) throws IOException {
-        String fileUrl;
-        // 获取学生签到数据
-        List<StuAttendDownload> stuAttendDownloads = stuAttendService.downloadAllStuAttend(campusId, classId, name, startDate, endDate);
-        try {
-            // 使用 Excel 工具类生成 Excel 文件，直接传入数据列表
-            ByteArrayOutputStream outputStream = ExcelUtil.createExcel(stuAttendDownloads, StuAttendDownload.class, "学生签到");
+    // 返回文件上传成功的消息和文件 URL
+    return Result.success("文件上传成功", fileUrl);
+}
 
-            // 将 ByteArrayOutputStream 内容转换为自定义的 SimpleMultipartFile
-            MultipartFile multipartFile = new SimpleMultipartFile(outputStream.toByteArray(), "file", "学生签到.xlsx");
+//    @GetMapping("/download/stu")
+//    public Result<String> downloadAllStuAttend(
+//            @RequestParam Integer campusId,
+//            @RequestParam(required = false) Integer classId,
+//            @RequestParam(required = false) String name,
+//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+//            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+//    ) throws IOException {
+//        String fileUrl;
+//        // 获取学生签到数据
+//        List<StuAttendDownload> stuAttendDownloads = stuAttendService.downloadAllStuAttend(campusId, classId, name, startDate, endDate);
+//        try {
+//            // 使用 Excel 工具类生成 Excel 文件，直接传入数据列表
+//            ByteArrayOutputStream outputStream = ExcelUtil.createExcel(stuAttendDownloads, StuAttendDownload.class, "学生签到");
+//
+//            // 将 ByteArrayOutputStream 内容转换为自定义的 SimpleMultipartFile
+//            MultipartFile multipartFile = new SimpleMultipartFile(outputStream.toByteArray(), "file", "学生签到.xlsx");
+//
+//            // 上传文件到 OSS 并获取文件 URL
+//
+//            fileUrl = aliOSSUtils.upload(multipartFile);
+//        } catch (Exception e){
+//            throw new RuntimeException("文件生成失败");
+//        }
+//        // 返回文件上传成功的消息和文件 URL
+//        return Result.success("文件上传成功", fileUrl);
+//    }
+@PostMapping("/download/stu")
+public Result<String> downloadAllStuAttend(@RequestBody Map<String, Object> params) throws IOException {
+    String fileUrl;
 
-            // 上传文件到 OSS 并获取文件 URL
+    // 从 Map 中获取参数并转换类型
+    Integer campusId = (Integer) params.get("campusId");
+    Integer classId = params.containsKey("classId") ? (Integer) params.get("classId") : null;
+    String name = (String) params.get("name");
+    LocalDate startDate = params.containsKey("startDate") ? LocalDate.parse((String) params.get("startDate")) : null;
+    LocalDate endDate = params.containsKey("endDate") ? LocalDate.parse((String) params.get("endDate")) : null;
 
-            fileUrl = aliOSSUtils.upload(multipartFile);
-        } catch (Exception e){
-            throw new RuntimeException("文件生成失败");
-        }
-        // 返回文件上传成功的消息和文件 URL
-        return Result.success("文件上传成功", fileUrl);
+    // 获取学生签到数据
+    List<StuAttendDownload> stuAttendDownloads = stuAttendService.downloadAllStuAttend(campusId, classId, name, startDate, endDate);
+
+    try {
+        // 使用 Excel 工具类生成 Excel 文件，直接传入数据列表
+        ByteArrayOutputStream outputStream = ExcelUtil.createExcel(stuAttendDownloads, StuAttendDownload.class, "学生签到");
+
+        // 将 ByteArrayOutputStream 内容转换为自定义的 SimpleMultipartFile
+        MultipartFile multipartFile = new SimpleMultipartFile(outputStream.toByteArray(), "file", "学生签到.xlsx");
+
+        // 上传文件到 OSS 并获取文件 URL
+        fileUrl = aliOSSUtils.upload(multipartFile);
+    } catch (Exception e) {
+        throw new RuntimeException("文件生成失败");
     }
+
+    // 返回文件上传成功的消息和文件 URL
+    return Result.success("文件上传成功", fileUrl);
+}
 
 }
