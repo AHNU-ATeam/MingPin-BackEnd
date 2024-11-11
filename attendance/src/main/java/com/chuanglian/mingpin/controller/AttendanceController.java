@@ -148,10 +148,31 @@ public Result<String> downloadAllEmpAttend(@RequestBody Map<String, Object> para
 
     // 从 Map 中获取参数并转换类型
     Integer campusId = (Integer) params.get("campusId");
+//    String name = (String) params.get("name");
+//    LocalDate startDate = params.containsKey("startDate") ? LocalDate.parse((String) params.get("startDate")) : null;
+//    LocalDate endDate = params.containsKey("endDate") ? LocalDate.parse((String) params.get("endDate")) : null;
+    // 如果传递的name为空字符串，则将其设置为null
     String name = (String) params.get("name");
-    LocalDate startDate = params.containsKey("startDate") ? LocalDate.parse((String) params.get("startDate")) : null;
-    LocalDate endDate = params.containsKey("endDate") ? LocalDate.parse((String) params.get("endDate")) : null;
+    if ("".equals(name)) {
+        name = null;
+    }
 
+    // startDate 和 endDate 处理为空字符串的情况
+    LocalDate startDate = null;
+    if (params.containsKey("startDate")) {
+        String startDateStr = (String) params.get("startDate");
+        if (!startDateStr.isEmpty()) {
+            startDate = LocalDate.parse(startDateStr);
+        }
+    }
+
+    LocalDate endDate = null;
+    if (params.containsKey("endDate")) {
+        String endDateStr = (String) params.get("endDate");
+        if (!endDateStr.isEmpty()) {
+            endDate = LocalDate.parse(endDateStr);
+        }
+    }
     // 获取员工签到数据
     List<EmpAttendDownload> empAttendDownloads = empAttendService.downloadAllEmpAttend(campusId, name, startDate, endDate);
 
@@ -205,11 +226,35 @@ public Result<String> downloadAllStuAttend(@RequestBody Map<String, Object> para
 
     // 从 Map 中获取参数并转换类型
     Integer campusId = (Integer) params.get("campusId");
+//    Integer classId = params.containsKey("classId") ? (Integer) params.get("classId") : null;
+//    String name = (String) params.get("name");
+//    LocalDate startDate = params.containsKey("startDate") ? LocalDate.parse((String) params.get("startDate")) : null;
+//    LocalDate endDate = params.containsKey("endDate") ? LocalDate.parse((String) params.get("endDate")) : null;
+    // 如果classId存在并且为空，则设置为null
     Integer classId = params.containsKey("classId") ? (Integer) params.get("classId") : null;
-    String name = (String) params.get("name");
-    LocalDate startDate = params.containsKey("startDate") ? LocalDate.parse((String) params.get("startDate")) : null;
-    LocalDate endDate = params.containsKey("endDate") ? LocalDate.parse((String) params.get("endDate")) : null;
 
+    // 如果name为空字符串，则设置为null
+    String name = (String) params.get("name");
+    if ("".equals(name)) {
+        name = null;
+    }
+
+    // startDate 和 endDate 处理为空字符串的情况
+    LocalDate startDate = null;
+    if (params.containsKey("startDate")) {
+        String startDateStr = (String) params.get("startDate");
+        if (!startDateStr.isEmpty()) {
+            startDate = LocalDate.parse(startDateStr);
+        }
+    }
+
+    LocalDate endDate = null;
+    if (params.containsKey("endDate")) {
+        String endDateStr = (String) params.get("endDate");
+        if (!endDateStr.isEmpty()) {
+            endDate = LocalDate.parse(endDateStr);
+        }
+    }
     // 获取学生签到数据
     List<StuAttendDownload> stuAttendDownloads = stuAttendService.downloadAllStuAttend(campusId, classId, name, startDate, endDate);
 
