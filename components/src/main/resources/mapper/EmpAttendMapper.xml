@@ -57,11 +57,11 @@
             AND u.nickname LIKE CONCAT('%', #{name}, '%')
         </if>
 
-        <if test="startDate != null and startDate != ''">
+        <if test="startDate != null">
             AND e.date &gt;= #{startDate}
         </if>
 
-        <if test="endDate != null and endDate != ''">
+        <if test="endDate != null">
             AND e.date &lt;= #{endDate}
         </if>
     </select>
