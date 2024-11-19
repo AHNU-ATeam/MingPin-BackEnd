@@ -75,4 +75,15 @@ public class TeacherController {
            log.info("查询教师");
            return teacherService.getTeacherById(teacherId);
     }
+
+    /**
+     * 根据userId查询教师信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/searchByUserId/{userId}")
+    public Result getTeacherByUserId(@PathVariable Integer userId) {
+        log.info("查询教师");
+        return teacherService.getTeacherByUserId(userId);
+    }
 }

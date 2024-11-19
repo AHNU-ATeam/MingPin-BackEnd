@@ -15,4 +15,5 @@ public interface TeacherService {
     Result update(TeacherVoForUpdate teacherVoForUpdate);
 
     Result getTeacherById(Integer teacherId);
+     Result getTeacherByUserId(Integer userId);
 }
