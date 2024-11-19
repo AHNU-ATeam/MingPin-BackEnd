@@ -115,7 +115,7 @@ public class CampusController {
 
     @GetMapping("/searchCampusById/{campusId}")
     public Result getCampusById(@PathVariable Integer campusId) {
-        log.info("查询教师");
+        log.info("查询校区");
         return campService.getCampusById(campusId);
     }
 

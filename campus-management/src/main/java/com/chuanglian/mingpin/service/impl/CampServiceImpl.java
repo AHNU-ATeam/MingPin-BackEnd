@@ -1,8 +1,13 @@
 package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.chuanglian.mingpin.entity.campus.Campus;
+import com.chuanglian.mingpin.entity.user.Principal;
+import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.mapper.campus.CampMapper;
+import com.chuanglian.mingpin.mapper.user.PrincipalMapper;
+import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.PageBean;
 import com.chuanglian.mingpin.pojo.Result;
 import com.github.pagehelper.Page;
@@ -13,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +26,10 @@ public class CampServiceImpl implements CampService {
 
     @Autowired
     private CampMapper campMapper;
+    @Autowired
+    UserMapper userMapper;
+    @Autowired
+    PrincipalMapper principalMapper;
     @Override
     public Result addCampus(Campus campus) {
         if(campMapper.insertCamp(campus) ==0){
@@ -57,6 +65,10 @@ public class CampServiceImpl implements CampService {
     public Result update(Campus campus) {
         campus.setUpdatedAt(LocalDate.now());
         campus.setIsDeleted(1);
+
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", campus.getPrincipalId()).set("nickname", campus.getPrincipalName());
+
         if(campMapper.updateById(campus) == 0){
             return Result.error("更新失败");
         }
@@ -78,6 +90,10 @@ public class CampServiceImpl implements CampService {
 
     @Override
     public Result getCampusById(Integer campusId) {
-        return Result.success(campMapper.selectById(campusId));
+        Campus campus = campMapper.selectById(campusId);
+        Principal principal = principalMapper.selectById(campus.getPrincipalId());
+        User user = userMapper.selectById(principal.getUserId());
+        campus.setPhone(user.getBoundPhone());
+        return Result.success(campus);
     }
 }

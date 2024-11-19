@@ -25,6 +25,8 @@ public class Campus {
     private String name;// 校区名称和校长姓名
     @TableField("principal_name")
     private String principalName;
+    @TableField(exist = false)
+    private String phone;
     private String region,address;
     private Integer principalId;
     private LocalDate renewalStart,renewalEnd;

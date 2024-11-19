@@ -11,6 +11,7 @@ import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
 import com.chuanglian.mingpin.service.TeacherService;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -195,6 +196,24 @@ public class TeacherServiceImpl implements TeacherService {
         user.setId(teacherMapper.getUserIdByTeacherId(teacherId));
         user = userMapper.selectById(user.getId());
         Teacher teacher =  teacherMapper.selectTeacherById(teacherId);
+        TeacherVoForShow teacherVoForShow = new TeacherVoForShow();
+        BeanUtils.copyProperties(teacher, teacherVoForShow);
+        BeanUtils.copyProperties(user, teacherVoForShow);
+
+        return Result.success(teacherVoForShow);
+    }
+
+    @Override
+    public Result getTeacherByUserId(Integer userId) {
+
+        User user = new User();
+        user.setId(userId);
+        user = userMapper.selectById(user.getId());
+                QueryWrapper<Teacher> queryWrapper = new QueryWrapper<>();
+        // 设置查询条件
+        queryWrapper.eq("user_id", userId);
+        // 执行查询
+        Teacher teacher =  teacherMapper.selectOne(queryWrapper);
         TeacherVoForShow teacherVoForShow = new TeacherVoForShow();
         BeanUtils.copyProperties(teacher, teacherVoForShow);
         BeanUtils.copyProperties(user, teacherVoForShow);
