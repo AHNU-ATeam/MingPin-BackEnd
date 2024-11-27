@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chuanglian.mingpin.entity.campus.Notification;
 import com.chuanglian.mingpin.pojo.NotificationDTO;
 import com.chuanglian.mingpin.pojo.NotificationVO;
@@ -18,7 +19,7 @@ public interface NotificationService {
 
     Result<PageInfo<NotificationVO>> getAllNotification(Integer pageNum, Integer pageSize, Long publisher);
 
-    public Result<PageInfo<NotificationVO>> getAllNotificationByRecipient(Integer pageNum, Integer pageSize, Long recipient);
+    Result<Page<NotificationVO>> getAllNotificationByRecipient(Integer pageNum, Integer pageSize, Long recipient);
     Result deleteNotification(Integer id);
 
 }

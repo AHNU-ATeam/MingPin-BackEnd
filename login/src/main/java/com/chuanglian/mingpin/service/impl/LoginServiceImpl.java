@@ -117,17 +117,29 @@ public class LoginServiceImpl implements LoginService {
         UserVO userVO = null;
 
         if (role.getRole().equals(RoleEnum.PRINCIPAL.getType())) {
-            List<Integer> campusIdList;
+            List<Integer> campusIdList, classIdList;
 
             LambdaQueryWrapper<Campus> getCampusId = new LambdaQueryWrapper<>();
             getCampusId.select(Campus::getCampusId).eq(Campus::getPrincipalId, id);
-            List<Object> list = campMapper.selectObjs(getCampusId);
+            List<Object> campusList = campMapper.selectObjs(getCampusId);
 
-            if (list == null || list.size() == 0) {
+            if (campusList == null || campusList.size() == 0) {
                 throw new RuntimeException("校长暂无任何管理校区");
             }
 
-            campusIdList = list.stream()
+            campusIdList = campusList.stream()
+                    .map(obj -> (Integer) obj)
+                    .collect(Collectors.toList());
+
+            LambdaQueryWrapper<Class> getClassId = new LambdaQueryWrapper<>();
+            getClassId.select(Class::getId).eq(Class::getCampusId, campusList.get(0));
+            List<Object> classList = classMgmtMapper.selectObjs(getClassId);
+
+            if (classList == null || classList.size() == 0) {
+                throw new RuntimeException("校长暂无任何管理班级");
+            }
+
+            classIdList = classList.stream()
                     .map(obj -> (Integer) obj)
                     .collect(Collectors.toList());
 
@@ -139,6 +151,7 @@ public class LoginServiceImpl implements LoginService {
                     .nickname(user.getNickname())
                     .token(jwt)
                     .campusId(campusIdList)
+                    .classId(classIdList)
                     .balance(campMapper.selectById(campusIdList.get(0)).getBalance())
                     .teacherNum(teacherMapper.selectCount(new LambdaQueryWrapper<Teacher>().eq(Teacher::getCampusId, campusIdList.get(0))))
                     .studentNum(studentMapper.selectCount(new LambdaQueryWrapper<Student>().eq(Student::getCampusId, campusIdList.get(0))))

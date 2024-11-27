@@ -2,6 +2,8 @@ package com.chuanglian.mingpin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chuanglian.mingpin.entity.campus.File;
 import com.chuanglian.mingpin.entity.campus.Image;
 import com.chuanglian.mingpin.entity.campus.Notification;
@@ -216,10 +218,7 @@ public class NotificationServiceImpl implements NotificationService {
         return Result.success(getNotificationVOPageInfo(resultSet));
     }
 
-    public Result<PageInfo<NotificationVO>> getAllNotificationByRecipient(Integer pageNum, Integer pageSize, Long recipient) {
-        // 启动分页
-        PageHelper.startPage(pageNum, pageSize);
-
+    public Result<Page<NotificationVO>> getAllNotificationByRecipient(Integer pageNum, Integer pageSize, Long recipient) {
         // 获取recipient对应的用户权限
         UserRole userRole = roleUserMapper.selectOne(new QueryWrapper<UserRole>().lambda()
                 .eq(UserRole::getUserId, recipient)
@@ -231,9 +230,29 @@ public class NotificationServiceImpl implements NotificationService {
         getAllNotificationByPublisher
                 .eq(Notification::getRecipient, role).or().eq(Notification::getRecipient, 1)
                 .eq(Notification::getStatus, 0);
-        List<Notification> resultSet = notificationMapper.selectList(getAllNotificationByPublisher);
 
-        return Result.success(getNotificationVOPageInfo(resultSet));
+        // 启动分页
+        Page<Notification> pageRequest = new Page<>(pageNum, pageSize);
+        // 按照时间降序排序，最新的数据排在前面
+        pageRequest.orders().add(OrderItem.desc("created_at"));
+
+        // 获取查询结果
+        // 使用 PageInfo 封装分页信息，基于原始查询结果
+        Page<Notification> resultPage = notificationMapper.selectPage(pageRequest, getAllNotificationByPublisher);
+
+        List<Notification> resultSet = resultPage.getRecords();
+
+        // 将分页结果中的记录转换为 VO 对象
+        List<NotificationVO> resultVO = resultSet.stream()
+                .map(Optional::ofNullable)  // 包装为 Optional 处理 null
+                .map(notice -> notice.orElseThrow(() -> new IllegalStateException("数据提取错误")))
+                .map(this::getNotificationMediaByNoticeID)  // 转换为 VO
+                .toList();
+
+        Page<NotificationVO> page = new Page<>(pageNum, pageSize, resultPage.getTotal());
+        page.setRecords(resultVO);
+
+        return Result.success(page);
     }
 
     private PageInfo<NotificationVO> getNotificationVOPageInfo(List<Notification> resultSet) {
