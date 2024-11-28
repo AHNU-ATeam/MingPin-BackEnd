@@ -2,6 +2,7 @@ package com.chuanglian.mingpin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chuanglian.mingpin.entity.attendance.StuAttendDownload;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -194,6 +196,22 @@ public class StuAttendServiceImpl extends ServiceImpl<StuAttendMapper, StudentAt
             attendance.setClassName(className); // 设置班级名称
         }
         return attendanceByFilters;
+    }
+
+    @Override
+    public List<Integer> getStudentsIsAttended(LocalDate date) {
+        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
+        QueryWrapper<StudentAttendance> studentsIsAttendedQueryWrapper = new QueryWrapper<>();
+        studentsIsAttendedQueryWrapper
+                .select("student_id")
+                .ge("time", start)
+                .le("time", end);
+
+        return stuAttendMapper.selectObjs(studentsIsAttendedQueryWrapper)
+                .stream()
+                .map(obj -> (Integer) obj)
+                .collect(Collectors.toList());
     }
 
 }

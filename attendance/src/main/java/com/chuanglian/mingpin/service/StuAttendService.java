@@ -23,4 +23,6 @@ public interface StuAttendService extends IService<StudentAttendance> {
     List<StudentAttendanceVo> selectClassTodayAttend(Integer id);
 
     List<StuAttendDownload> downloadAllStuAttend(Integer campusId, Integer classId, String name, LocalDate startDate, LocalDate endDate);
+
+    List<Integer> getStudentsIsAttended(LocalDate date);
 }

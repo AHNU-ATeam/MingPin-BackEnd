@@ -18,4 +18,6 @@ public interface EmpAttendService extends IService<EmployeeAttendance> {
     List<EmployeeAttendanceVo> selectAllEmpAttendance(Integer id);
 
     List<EmpAttendDownload> downloadAllEmpAttend(Integer campusId, String name, LocalDate startDate, LocalDate endDate);
+
+    List<Integer> getEmployeeIsAttended(LocalDate date);
 }

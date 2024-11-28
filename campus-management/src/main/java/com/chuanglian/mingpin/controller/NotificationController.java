@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chuanglian.mingpin.pojo.NotificationDTO;
 import com.chuanglian.mingpin.pojo.NotificationVO;
 import com.chuanglian.mingpin.pojo.Result;
@@ -65,7 +66,7 @@ public class NotificationController {
 
     @PostMapping("/get/all-received")
     @PreAuthorize("hasAuthority('sys:notice:select')")
-    public Result<PageInfo<NotificationVO>> getAllReceivedNotice(
+    public Result<Page<NotificationVO>> getAllReceivedNotice(
             @RequestParam(defaultValue = "1") Integer num,
             @RequestParam(defaultValue = "9999") Integer size,
             @RequestParam Long recipient) {

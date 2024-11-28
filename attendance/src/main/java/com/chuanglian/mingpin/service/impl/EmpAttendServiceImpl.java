@@ -2,10 +2,12 @@ package com.chuanglian.mingpin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chuanglian.mingpin.entity.attendance.EmpAttendDownload;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendanceInfo;
+import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
 import com.chuanglian.mingpin.entity.user.Teacher;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.entity.vo.EmployeeAttendanceVo;
@@ -19,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -161,5 +164,20 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
         return attendanceByFilters;
     }
 
+    @Override
+    public List<Integer> getEmployeeIsAttended(LocalDate date) {
+        LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
+        LocalDateTime end = LocalDateTime.of(date, LocalTime.MAX);
+        QueryWrapper<EmployeeAttendance> studentsIsAttendedQueryWrapper = new QueryWrapper<>();
+        studentsIsAttendedQueryWrapper
+                .select("student_id")
+                .ge("time", start)
+                .le("time", end);
+
+        return empAttendMapper.selectObjs(studentsIsAttendedQueryWrapper)
+                .stream()
+                .map(obj -> (Integer) obj)
+                .collect(Collectors.toList());
+    }
 
 }

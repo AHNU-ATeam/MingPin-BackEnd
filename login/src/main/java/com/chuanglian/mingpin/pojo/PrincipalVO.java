@@ -17,6 +17,8 @@ import java.util.List;
 public class PrincipalVO extends UserVO {
     @JsonProperty("campus")
     private List<Integer> campusId;
+    @JsonProperty("class")
+    private List<Integer> classId;
     @JsonProperty("balance")
     private BigDecimal balance;
     @JsonProperty("teacher_num")
