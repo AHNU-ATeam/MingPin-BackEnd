@@ -170,6 +170,10 @@ public class LoginServiceImpl implements LoginService {
                 throw new RuntimeException("教师暂时不属于任何校区");
             }
 
+            if (classInfo == null) {
+                throw new RuntimeException("教师暂时不管理任何班级");
+            }
+
             TeacherVO teacherVO = TeacherVO.builder()
                     .id(user.getId())
                     .role(role.getName())
