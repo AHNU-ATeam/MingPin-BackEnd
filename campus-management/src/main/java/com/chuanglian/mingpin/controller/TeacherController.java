@@ -61,7 +61,9 @@ public class TeacherController {
     @PostMapping(value = "/update")
     public Result update(@ModelAttribute TeacherVoForUpdate teacherVoForUpdate) throws IOException {
         log.info("更新教师信息");
-
+        //将userId先转换为teacherId，统一id
+        Integer teacherId = teacherService.getTeacherIdByUserId(teacherVoForUpdate.getTeacherId());
+        teacherVoForUpdate.setTeacherId(teacherId);
         return teacherService.update(teacherVoForUpdate);
     }
 
@@ -72,12 +74,16 @@ public class TeacherController {
      */
     @GetMapping("/searchById/{teacherId}")
     public Result getTeacherById(@PathVariable Integer teacherId) {
-           log.info("查询教师");
-           return teacherService.getTeacherById(teacherId);
+        log.info("查询教师");
+
+        //将userId先转换为teacherId，统一id
+        teacherId = teacherService.getTeacherIdByUserId(teacherId);
+
+        return teacherService.getTeacherById(teacherId);
     }
 
     /**
-     * 根据userId查询教师信息
+     * 根据userId查询教师信息,   尽量别用
      * @param userId
      * @return
      */

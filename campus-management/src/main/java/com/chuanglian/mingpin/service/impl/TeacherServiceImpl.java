@@ -1,5 +1,6 @@
 package com.chuanglian.mingpin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chuanglian.mingpin.entity.campus.Campus;
 import com.chuanglian.mingpin.entity.permission.UserRole;
@@ -11,7 +12,6 @@ import com.chuanglian.mingpin.mapper.user.UserMapper;
 import com.chuanglian.mingpin.pojo.*;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
 import com.chuanglian.mingpin.service.TeacherService;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -148,13 +148,14 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @Transactional
     public Result delete(Integer teacherId) {
-        Teacher teacher = new Teacher();
-        teacher.setTeacherId(teacherId);
-        teacher.setStatus(0);
-
         User user = new User();
-        user.setId(teacherMapper.getUserIdByTeacherId(teacherId));
+        user.setId(teacherId);
         user.setStatus("disable");
+        LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Teacher::getUserId,teacherId);
+        Teacher teacher = new Teacher();
+        teacher.setTeacherId(teacherMapper.selectOne(wrapper).getTeacherId());
+        teacher.setStatus(0);
 
         if(teacherMapper.updateById(teacher) == 0){
             return Result.error("删除失败");
@@ -218,5 +219,12 @@ public class TeacherServiceImpl implements TeacherService {
         BeanUtils.copyProperties(user, teacherVoForShow);
 
         return Result.success(teacherVoForShow);
+    }
+
+    @Override
+    public Integer getTeacherIdByUserId(Integer userId) {
+        LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Teacher::getUserId,userId);
+        return teacherMapper.selectOne(wrapper).getTeacherId();
     }
 }
