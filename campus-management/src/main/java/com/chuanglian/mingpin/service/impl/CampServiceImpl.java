@@ -28,8 +28,8 @@ public class CampServiceImpl implements CampService {
     private CampMapper campMapper;
     @Autowired
     UserMapper userMapper;
-    @Autowired
-    PrincipalMapper principalMapper;
+//    @Autowired
+//    PrincipalMapper principalMapper;
     @Override
     public Result addCampus(Campus campus) {
         if(campMapper.insertCamp(campus) ==0){
@@ -66,8 +66,8 @@ public class CampServiceImpl implements CampService {
         campus.setUpdatedAt(LocalDate.now());
         campus.setIsDeleted(1);
 
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", campus.getPrincipalId()).set("nickname", campus.getPrincipalName());
+//        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+//        updateWrapper.eq("id", campus.getPrincipalId()).set("nickname", campus.getPrincipalName());
 
         if(campMapper.updateById(campus) == 0){
             return Result.error("更新失败");
@@ -91,8 +91,9 @@ public class CampServiceImpl implements CampService {
     @Override
     public Result getCampusById(Integer campusId) {
         Campus campus = campMapper.selectById(campusId);
-        Principal principal = principalMapper.selectById(campus.getPrincipalId());
-        User user = userMapper.selectById(principal.getUserId());
+//        Principal principal = principalMapper.selectById(campus.getPrincipalId());
+//        User user = userMapper.selectById(principal.getUserId());
+        User user = userMapper.selectById(campus.getPrincipalId());
         campus.setPhone(user.getBoundPhone());
         return Result.success(campus);
     }

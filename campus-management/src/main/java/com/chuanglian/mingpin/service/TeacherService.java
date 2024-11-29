@@ -16,4 +16,6 @@ public interface TeacherService {
 
     Result getTeacherById(Integer teacherId);
      Result getTeacherByUserId(Integer userId);
+
+     Integer getTeacherIdByUserId(Integer userId);
 }
