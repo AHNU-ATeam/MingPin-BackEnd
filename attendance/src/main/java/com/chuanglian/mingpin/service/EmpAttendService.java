@@ -3,6 +3,7 @@ package com.chuanglian.mingpin.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chuanglian.mingpin.entity.attendance.EmpAttendDownload;
 import com.chuanglian.mingpin.entity.attendance.EmployeeAttendance;
+import com.chuanglian.mingpin.entity.vo.AttendanceStatisticsVo;
 import com.chuanglian.mingpin.entity.vo.EmployeeAttendanceVo;
 
 import java.time.LocalDate;
@@ -20,4 +21,8 @@ public interface EmpAttendService extends IService<EmployeeAttendance> {
     List<EmpAttendDownload> downloadAllEmpAttend(Integer campusId, String name, LocalDate startDate, LocalDate endDate);
 
     List<Integer> getEmployeeIsAttended(LocalDate date);
+
+    List<EmployeeAttendanceVo> selectAllEmpTodayAttendance(Integer id);
+
+    AttendanceStatisticsVo getTodayEmpAttendanceStatistics(Integer id);
 }

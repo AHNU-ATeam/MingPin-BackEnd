@@ -9,6 +9,7 @@ import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
 import com.chuanglian.mingpin.entity.user.Student;
 import com.chuanglian.mingpin.entity.user.User;
 import com.chuanglian.mingpin.entity.campus.Class;
+import com.chuanglian.mingpin.entity.vo.AttendanceStatisticsVo;
 import com.chuanglian.mingpin.entity.vo.StudentAttendanceVo;
 import com.chuanglian.mingpin.mapper.attendance.StuAttendMapper;
 import com.chuanglian.mingpin.mapper.campus.ClassMgmtMapper;
@@ -212,6 +213,54 @@ public class StuAttendServiceImpl extends ServiceImpl<StuAttendMapper, StudentAt
                 .stream()
                 .map(obj -> (Integer) obj)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentAttendanceVo> selectAllStuTodayAttendance(Integer id) {
+        LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Student::getCampusId,id);
+        List<Student> students = studentMapper.selectList(wrapper);
+        List<Integer> list = students.stream().map(Student::getUserId).toList();
+        LambdaQueryWrapper<StudentAttendance> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.in(StudentAttendance::getStudentId,list)
+                .eq(StudentAttendance::getDate,LocalDate.now());
+        List<StudentAttendance> studentAttendances = stuAttendMapper.selectList(wrapper1);
+        List<StudentAttendanceVo> studentAttendanceVos = BeanUtil.copyToList(studentAttendances, StudentAttendanceVo.class);
+        List<User> users = userMapper.selectBatchIds(list);
+        Map<Integer, String> userMap = users.stream().collect(Collectors.toMap(User::getId, User::getNickname));
+        for (StudentAttendanceVo vo : studentAttendanceVos) {
+            String userName = userMap.get(vo.getStudentId()); // 从 Map 中获取对应的 userName
+            if (userName != null) {
+                vo.setName(userName); // 设置 vo 的 name
+            }
+        }
+        return studentAttendanceVos;
+    }
+
+    public AttendanceStatisticsVo getTodayAttendanceStatistics(Integer campusId) {
+
+        // 调用原有方法获取所有学生的今日打卡记录
+        List<StudentAttendanceVo> studentAttendanceVos = selectAllStuTodayAttendance(campusId);
+
+        // 统计已签到、仅签到未签退、已签退和未签到的学生数量
+        long notCheckedInCount = studentAttendanceVos.stream()
+                .filter(vo -> vo.getType() == 0)
+                .count();
+        long checkedInCount = studentAttendanceVos.stream()
+                .filter(vo -> vo.getType() == 1)
+                .count();
+        long checkedOutCount = studentAttendanceVos.stream()
+                .filter(vo -> vo.getType() == 2)
+                .count();
+
+
+        // 创建并填充 AttendanceStatisticsVo
+        AttendanceStatisticsVo statisticsVo = new AttendanceStatisticsVo();
+        statisticsVo.setNotCheckedInCount((int) notCheckedInCount);
+        statisticsVo.setCheckedInCount((int) checkedInCount);
+        statisticsVo.setCheckedOutCount((int) checkedOutCount);
+
+        return statisticsVo;
     }
 
 }
