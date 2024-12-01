@@ -298,4 +298,44 @@ public class AttendanceController {
         return Result.success(empAttendService.getEmployeeIsAttended(requestDate.getDate()));
     }
 
+    /**
+     * 查询当日所有学生的打卡详细信息
+     * @param id 校区id
+     * @return
+     */
+    @GetMapping("/all/stu/today/{id}")
+    public Result selectAllStuTodayAttendance(@PathVariable Integer id) {
+        return Result.success(stuAttendService.selectAllStuTodayAttendance(id));
+    }
+
+    /**
+     * 查询当日所有教师的打卡详细信息
+     * @param id 校区id
+     * @return
+     */
+    @GetMapping("/all/emp/today/{id}")
+    public Result selectAllEmpTodayAttendance(@PathVariable Integer id) {
+        return Result.success(empAttendService.selectAllEmpTodayAttendance(id));
+    }
+
+    /**
+     * 查询当日所有学生的打卡详细信息
+     * @param id 校区id
+     * @return
+     */
+    @GetMapping("/count/stu/today/{id}")
+    public Result selectCountStuTodayAttendance(@PathVariable Integer id) {
+        return Result.success(stuAttendService.getTodayAttendanceStatistics(id));
+    }
+
+    /**
+     * 查询当日所有教师的打卡详细信息
+     * @param id 校区id
+     * @return
+     */
+    @GetMapping("/count/emp/today/{id}")
+    public Result selectCountEmpTodayAttendance(@PathVariable Integer id) {
+        return Result.success(empAttendService.getTodayEmpAttendanceStatistics(id));
+    }
+
 }

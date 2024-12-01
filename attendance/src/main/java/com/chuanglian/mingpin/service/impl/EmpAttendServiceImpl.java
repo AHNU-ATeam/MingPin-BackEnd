@@ -10,7 +10,9 @@ import com.chuanglian.mingpin.entity.attendance.EmployeeAttendanceInfo;
 import com.chuanglian.mingpin.entity.attendance.StudentAttendance;
 import com.chuanglian.mingpin.entity.user.Teacher;
 import com.chuanglian.mingpin.entity.user.User;
+import com.chuanglian.mingpin.entity.vo.AttendanceStatisticsVo;
 import com.chuanglian.mingpin.entity.vo.EmployeeAttendanceVo;
+import com.chuanglian.mingpin.entity.vo.StudentAttendanceVo;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendInfoMapper;
 import com.chuanglian.mingpin.mapper.attendance.EmpAttendMapper;
 import com.chuanglian.mingpin.mapper.user.TeacherMapper;
@@ -178,6 +180,55 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
                 .stream()
                 .map(obj -> (Integer) obj)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EmployeeAttendanceVo> selectAllEmpTodayAttendance(Integer id) {
+        LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Teacher::getCampusId,id);
+        List<Teacher> teachers = teacherMapper.selectList(wrapper);
+        List<Integer> list = teachers.stream().map(Teacher::getUserId).toList();
+        LambdaQueryWrapper<EmployeeAttendance> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.in(EmployeeAttendance::getEmployeeId,list)
+                .eq(EmployeeAttendance::getDate,LocalDate.now());
+        List<EmployeeAttendance> employeeAttendances = empAttendMapper.selectList(wrapper1);
+        List<EmployeeAttendanceVo> employeeAttendanceVos = BeanUtil.copyToList(employeeAttendances, EmployeeAttendanceVo.class);
+        List<User> users = userMapper.selectBatchIds(list);
+        Map<Integer, String> userMap = users.stream().collect(Collectors.toMap(User::getId, User::getNickname));
+        for (EmployeeAttendanceVo vo : employeeAttendanceVos) {
+            String userName = userMap.get(vo.getEmployeeId()); // 从 Map 中获取对应的 userName
+            if (userName != null) {
+                vo.setName(userName); // 设置 vo 的 name
+            }
+        }
+        return employeeAttendanceVos;
+    }
+
+    @Override
+    public AttendanceStatisticsVo getTodayEmpAttendanceStatistics(Integer id) {
+        // 调用原有方法获取所有学生的今日打卡记录
+        List<EmployeeAttendanceVo> empAttendanceVos = selectAllEmpTodayAttendance(id);
+
+
+        // 统计已签到、仅签到未签退、已签退和未签到的学生数量
+        long notCheckedInCount = empAttendanceVos.stream()
+                .filter(vo -> vo.getType() == 0)
+                .count();
+        long checkedInCount = empAttendanceVos.stream()
+                .filter(vo -> vo.getType() == 1)
+                .count();
+        long checkedOutCount = empAttendanceVos.stream()
+                .filter(vo -> vo.getType() == 2)
+                .count();
+
+
+        // 创建并填充 AttendanceStatisticsVo
+        AttendanceStatisticsVo statisticsVo = new AttendanceStatisticsVo();
+        statisticsVo.setNotCheckedInCount((int) notCheckedInCount);
+        statisticsVo.setCheckedInCount((int) checkedInCount);
+        statisticsVo.setCheckedOutCount((int) checkedOutCount);
+
+        return statisticsVo;
     }
 
 }
