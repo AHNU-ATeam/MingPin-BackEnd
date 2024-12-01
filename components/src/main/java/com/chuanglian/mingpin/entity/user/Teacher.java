@@ -25,7 +25,7 @@ public class Teacher {
     private Integer campusId;
     private String sex;
     private String identificationNumber;
-    private int status; //0:禁用 1：删除
+    private Integer status; //0:禁用 1：删除
 //    private String permissionStatus;
 //    private String avatarAddress;
 }
