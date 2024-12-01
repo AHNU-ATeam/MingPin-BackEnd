@@ -153,8 +153,8 @@ public class LoginServiceImpl implements LoginService {
                     .campusId(campusIdList)
                     .classId(classIdList)
                     .balance(campMapper.selectById(campusIdList.get(0)).getBalance())
-                    .teacherNum(teacherMapper.selectCount(new LambdaQueryWrapper<Teacher>().eq(Teacher::getCampusId, campusIdList.get(0))))
-                    .studentNum(studentMapper.selectCount(new LambdaQueryWrapper<Student>().eq(Student::getCampusId, campusIdList.get(0))))
+                    .teacherNum(teacherMapper.selectCount(new LambdaQueryWrapper<Teacher>().eq(Teacher::getCampusId, campusIdList.get(0)).eq(Teacher::getStatus, 1)))
+                    .studentNum(studentMapper.selectCount(new LambdaQueryWrapper<Student>().eq(Student::getCampusId, campusIdList.get(0)).eq(Student::getStatus, 0)))
                     .build();
 
             userVO = principalVO;
