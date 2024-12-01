@@ -13,10 +13,6 @@ import com.chuanglian.mingpin.util.SimpleMultipartFile;
 import com.chuanglian.mingpin.utils.AliOSSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,11 +28,11 @@ import java.util.Map;
 @RequestMapping("/Attendance")
 public class AttendanceController {
     @Autowired
-    StuAttendService stuAttendService;
+    private StuAttendService stuAttendService;
     @Autowired
-    EmpAttendService empAttendService;
+    private EmpAttendService empAttendService;
     @Autowired
-    AliOSSUtils aliOSSUtils;
+    private AliOSSUtils aliOSSUtils;
 
     /**
      * 学生打卡
