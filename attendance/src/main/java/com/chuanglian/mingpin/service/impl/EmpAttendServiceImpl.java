@@ -74,7 +74,8 @@ public class EmpAttendServiceImpl extends ServiceImpl<EmpAttendMapper, EmployeeA
         for (EmployeeAttendanceInfo campus : campusList) {
             // 获取该校区的所有员工
             LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(Teacher::getCampusId, campus.getCampusId());
+            wrapper.eq(Teacher::getCampusId, campus.getCampusId())
+                    .eq(Teacher::getStatus,1);
             List<Teacher> teachers = teacherMapper.selectList(wrapper);
 
             // 将每个员工的考勤记录添加到列表中

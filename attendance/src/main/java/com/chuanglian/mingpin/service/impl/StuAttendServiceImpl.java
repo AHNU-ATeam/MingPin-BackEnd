@@ -58,7 +58,8 @@ public class StuAttendServiceImpl extends ServiceImpl<StuAttendMapper, StudentAt
     @Scheduled(cron = "0 0 5 * * ?")
     public void createDailyAttendanceRecords() {
         LocalDate today = LocalDate.now();
-        List<Student> students = studentMapper.selectList(null);
+        List<Student> students = studentMapper.selectList(new LambdaQueryWrapper<Student>()
+                .eq(Student::getStatus,0));
 
         List<StudentAttendance> attendanceList = new ArrayList<>();
 
