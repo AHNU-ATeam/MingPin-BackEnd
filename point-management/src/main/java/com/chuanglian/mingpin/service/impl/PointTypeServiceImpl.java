@@ -27,6 +27,8 @@ public class PointTypeServiceImpl extends ServiceImpl<PointTypeMapper,PointType>
 
     @Override
     public boolean addPointTypes(PointType pointType) {
+        if (pointType.getType().equals("签到"))
+            throw new RuntimeException("添加失败");
         boolean save = save(pointType);
         if(!save) throw new RuntimeException("添加失败");
         return save;
