@@ -39,7 +39,7 @@ public class PointTypeController {
      * @param id
      * @return
      */
-    @GetMapping("register/{id}")
+    @GetMapping("checkIn/{id}")
     public Result getRegister(@PathVariable("id")Integer id){
         return Result.success(pointTypeService.getRegister(id));
     }
