@@ -45,5 +45,11 @@ public class PointTypeServiceImpl extends ServiceImpl<PointTypeMapper,PointType>
         return b;
     }
 
+    @Override
+    public PointType getRegister(Integer id) {
+        PointType pointType = pointTypeMapper.selectOne(new LambdaQueryWrapper<PointType>().eq(PointType::getCampusId, id).eq(PointType::getType, "打卡获取积分"));
+        return pointType;
+    }
+
 
 }

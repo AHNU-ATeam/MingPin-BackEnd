@@ -13,4 +13,6 @@ public interface PointTypeService extends IService<PointType> {
     boolean deletePointType(Integer id);
 
     boolean updatePointType(PointType pointType);
+
+    PointType getRegister(Integer id);
 }
