@@ -34,6 +34,11 @@ public class PointTypeController {
         return Result.success(pointTypeService.updatePointType(pointType));
     }
 
+    /**
+     * 用户自定义打卡获得的积分
+     * @param id
+     * @return
+     */
     @GetMapping("register/{id}")
     public Result getRegister(@PathVariable("id")Integer id){
         return Result.success(pointTypeService.getRegister(id));
