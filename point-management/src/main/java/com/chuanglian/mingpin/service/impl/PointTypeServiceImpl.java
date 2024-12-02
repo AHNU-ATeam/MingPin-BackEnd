@@ -18,7 +18,8 @@ public class PointTypeServiceImpl extends ServiceImpl<PointTypeMapper,PointType>
     @Override
     public List<PointType> selectPointType(Integer campusId) {
         LambdaQueryWrapper<PointType> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(PointType::getCampusId,campusId);
+        wrapper.eq(PointType::getCampusId,campusId)
+                .ne(PointType::getType,"签到");
         List<PointType> pointTypes = pointTypeMapper.selectList(wrapper);
 
         return pointTypes;
