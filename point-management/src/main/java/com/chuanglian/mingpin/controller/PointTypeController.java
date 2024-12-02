@@ -33,5 +33,10 @@ public class PointTypeController {
     public Result updatePointType(@RequestBody PointType pointType){
         return Result.success(pointTypeService.updatePointType(pointType));
     }
+
+    @GetMapping("register/{id}")
+    public Result getRegister(@PathVariable("id")Integer id){
+        return Result.success(pointTypeService.getRegister(id));
+    }
     
 }
