@@ -94,7 +94,8 @@ public class HomeworkAssignmentServiceImpl implements HomeworkAssignmentService 
     public List<AssignmentVO> findByStudent(Integer studentUserId) {
         LambdaQueryWrapper<HomeworkAssignment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkAssignment::getStudentUserId, studentUserId)
-                .ne(HomeworkAssignment::getStatus, 1); // 不等于 1，即未被删除的作业
+                .ne(HomeworkAssignment::getStatus, 1) // 不等于 1，即未被删除的作业
+                .orderByDesc(HomeworkAssignment::getCreatedAt); // 按创建时间降序排序
         List<HomeworkAssignment> homeworkAssignmentS = homeworkAssignmentMapper.selectList(queryWrapper);
         List<AssignmentVO> assignmentVOS = new ArrayList<>();
         for (HomeworkAssignment homeworkAssignment : homeworkAssignmentS) {
